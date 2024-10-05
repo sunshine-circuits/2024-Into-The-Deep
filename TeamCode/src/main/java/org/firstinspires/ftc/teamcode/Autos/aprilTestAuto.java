@@ -11,6 +11,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.VisionProcessor;
 import org.firstinspires.ftc.apriltag.*;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @Autonomous(name= "AprilTagTest")
@@ -28,7 +29,7 @@ public class aprilTestAuto extends LinearOpMode {
         if(calibratedCamera){
             aprilTagProcessor = AprilTagProcessor.easyCreateWithDefaults();
         }else{
-            aprilTagProcessor = new AprilTagProcessor.Builder().setLensIntrinsics(fx,fy,cx,cy).build();
+            aprilTagProcessor = new AprilTagProcessor.Builder().setLensIntrinsics(fx,fy,cx,cy).setDrawAxes(true).setDrawCubeProjection(true).setDrawTagID(true).setDrawTagOutline(true).setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11).setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()).build();
         }
         VisionPortal visionPortal = new VisionPortal.Builder().setCamera(hardwareMap.get(WebcamName.class, "Webcam 1")).addProcessor(aprilTagProcessor).setCameraResolution(new Size(640,480)).build();
 
