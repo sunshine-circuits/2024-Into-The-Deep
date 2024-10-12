@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.utils.DeepTags;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
@@ -163,16 +164,15 @@ public class FirstAuto extends LinearOpMode{
         BLMotor = hardwareMap.get(DcMotor.class,"BLMotor");
         telemetry.addData("Motors","Got");
         telemetry.update();
+        DeepTags Aprils;
 
         AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder().setDrawAxes(true).setDrawCubeProjection(true).setDrawTagID(true).setDrawTagOutline(true).setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11).setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()).build();
         VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
         waitForStart();
         if (opModeIsActive()) {
-            driver(-1,1,1,-1,0.5, "Right");
-            driver(1,1,1,1,0.5, "Big Forward");
-            //outerloop:
-            //while (true) {
-            driverInteruptable(1,-1,-1,1,0.25, "interuptable left");
+            driver(-1100,1100,1100,-1100,0.1, "Right");
+            driver(3550,3550,3550,3550,0.1, "Big Forward");
+            driverInteruptable(500,-500,-500,500,0.05, "interuptable left");
             outerloop:
             while(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()) {
                 if (tagProcessor.getDetections().size() > 0) {
@@ -184,11 +184,11 @@ public class FirstAuto extends LinearOpMode{
                     }
                 }
             }
-            driver(0,0,0,0,0.5,"Stopping");
-            driver(-1,-1,-1,-1,0.5,"Back");
-            driver(-1,1,1,-1,0.5, "BIG RIGHT");
-            driver(-1,-1,-1,-1,0.5,"Back");
-            //}
+            driver(0,0,0,0,0,"Stopping");
+            driver(-500,-500,-500,-500,0.1,"Back");
+            driver(-1800,1800,1800,-1800,0.1, "BIG RIGHT");
+            driver(-1000,-1000,-1000,-1000,0.1,"Back");
+
 
 
             telemetry.addData("Moves","Done");
