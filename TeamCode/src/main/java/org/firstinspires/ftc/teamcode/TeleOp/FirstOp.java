@@ -25,6 +25,8 @@ public class FirstOp extends LinearOpMode
     public DcMotor backLeftWheel;
     public DcMotor leftArmMotor; //This is the arm on the left(if you are looking at the robot from behind)
     public double speedMultiplier =1;
+    public double myX;
+    public double myY;
 
     public Coordinate Aprils[] = {DeepTags.TAG11.cords,
             DeepTags.TAG12.cords,
@@ -138,11 +140,15 @@ public class FirstOp extends LinearOpMode
             if (tagProcessor.getDetections().size() > 0) {
                 for (int i = 0; i < tagProcessor.getDetections().size(); i++) {
                     AprilTagDetection tag = tagProcessor.getDetections().get(i);
-                    if (tag.id == 13) {
+                    double[] mycords = CameraCordinates(tag.id,tag.ftcPose.yaw,tag.ftcPose.x,tag.ftcPose.y);
+                    myX=mycords[0];
+                    myY=mycords[1];
 
-                    }
                 }
             }
+            telemetry.addData("myX",myX);
+            telemetry.addData("myX",myY);
+            telemetry.update();
         }
     }
 
