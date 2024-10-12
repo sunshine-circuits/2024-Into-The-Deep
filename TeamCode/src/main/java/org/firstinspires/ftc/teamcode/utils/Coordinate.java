@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.utils;
+import java.lang.Math;
 
 public class Coordinate {
     //definitions of the positions and rotation
@@ -13,6 +14,17 @@ public class Coordinate {
         zPosition = zPos;
         yawRotation = yawRot;
 
+    }
+    public double findCoordinateDistance(Coordinate otherCoordinate){
+        return Math.sqrt((xPosition - otherCoordinate.xPosition) * (xPosition - otherCoordinate.xPosition) + (yPosition - otherCoordinate.yPosition) * (yPosition - otherCoordinate.yPosition));
+    }
+    public Coordinate addCoordinates(Coordinate otherCoordinate){
+        return new Coordinate(xPosition + otherCoordinate.xPosition, yPosition + otherCoordinate.yPosition, 0, 0);
+        /* The other two parameters are set to zero because what else was I supposed to put?*/
+    }
+    public Coordinate subtractCoordinates(Coordinate otherCoordinate){
+        return new Coordinate(xPosition - otherCoordinate.xPosition, yPosition - otherCoordinate.yPosition, 0, 0);
+        /* The other two parameters are set to zero because what else was I supposed to put?*/
     }
     /*
     Coordinates of the AprilTags (Formatted to the defined field coordinate system):
