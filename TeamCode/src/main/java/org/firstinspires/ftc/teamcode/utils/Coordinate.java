@@ -2,12 +2,12 @@ package org.firstinspires.ftc.teamcode.utils;
 
 public class Coordinate {
     //definitions of the positions and rotation
-    public float xPosition;
-    public float yPosition;
-    public float zPosition;
-    public float yawRotation;
+    public double xPosition;
+    public double yPosition;
+    public double zPosition;
+    public double yawRotation;
     // constructor
-    Coordinate(float xPos, float yPos, float zPos, float yawRot) {
+    Coordinate(double xPos, double yPos, double zPos, double yawRot) {
         xPosition = xPos;
         yPosition = yPos;
         zPosition = zPos;

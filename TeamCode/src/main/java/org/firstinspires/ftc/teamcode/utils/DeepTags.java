@@ -7,7 +7,7 @@ public enum DeepTags {
     TAG14(120,144,6,180),
     TAG15(144,72,6,270),
     TAG16(120,0,6,0);
-    Coordinate cords;
+    public Coordinate cords;
     DeepTags(float xPos, float yPos, float zPos, float yawRot){
         this.cords = new Coordinate(xPos,yPos,zPos,yawRot);
     }

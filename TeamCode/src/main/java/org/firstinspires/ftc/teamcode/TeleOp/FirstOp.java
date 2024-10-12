@@ -1,8 +1,18 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import android.util.Size;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.utils.Coordinate;
+import org.firstinspires.ftc.teamcode.utils.DeepTags;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 
 @TeleOp(name="FirstOp")
@@ -16,8 +26,29 @@ public class FirstOp extends LinearOpMode
     public DcMotor leftArmMotor; //This is the arm on the left(if you are looking at the robot from behind)
     public double speedMultiplier =1;
 
+    public Coordinate Aprils[] = {DeepTags.TAG11.cords,
+            DeepTags.TAG12.cords,
+            DeepTags.TAG13.cords,
+            DeepTags.TAG14.cords,
+            DeepTags.TAG15.cords,
+            DeepTags.TAG16.cords
+    };
+
+    //calculates the position of the camera in our cordinate system based on the position of the april tag.
+    //our cordinate system is based on inches, and begins at the blue corner without the bucket.
+    public double[] CameraCordinates(int tag, double Yaw, double Xcamera, double Ycamera){
+        double distance=Math.sqrt((Xcamera*Xcamera)+(Ycamera*Ycamera));
+        double Xreltrue= Math.sin(Yaw)*distance;
+        double Yreltrue= Math.cos(Yaw)*distance;
+        double TagX=Aprils[tag-11].xPosition;
+        double TagY=Aprils[tag-11].yPosition;
+        double XtrueCord= TagX-Xreltrue;
+        double YtrueCord= TagY-Yreltrue;
+        return new double[]{XtrueCord, YtrueCord};
+    }
+
     @Override
-    public void runOpMode()
+    public void runOpMode() throws InterruptedException
     {
         frontRightWheel = hardwareMap.get(DcMotor.class,"FRMotor");
         frontLeftWheel = hardwareMap.get(DcMotor.class,"FLMotor");
@@ -34,6 +65,9 @@ public class FirstOp extends LinearOpMode
         backRightWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeftWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder().setDrawAxes(true).setDrawCubeProjection(true).setDrawTagID(true).setDrawTagOutline(true).setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11).setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()).build();
+        VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
 
         waitForStart();
         double frontRightTargetPow=0;
@@ -99,6 +133,16 @@ public class FirstOp extends LinearOpMode
             telemetry.addData("Handicap", speedMultiplier);
 
             leftArmMotor.setPower(leftArmTargetPow);
+
+            //Camera Processing--- Cordinates based on aprilTags
+            if (tagProcessor.getDetections().size() > 0) {
+                for (int i = 0; i < tagProcessor.getDetections().size(); i++) {
+                    AprilTagDetection tag = tagProcessor.getDetections().get(i);
+                    if (tag.id == 13) {
+
+                    }
+                }
+            }
         }
     }
 

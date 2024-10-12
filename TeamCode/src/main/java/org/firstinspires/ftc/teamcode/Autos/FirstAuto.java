@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.utils.Coordinate;
 import org.firstinspires.ftc.teamcode.utils.DeepTags;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -21,6 +22,9 @@ public class FirstAuto extends LinearOpMode{
     private DcMotor BRMotor;
     private DcMotor FLMotor;
     private DcMotor FRMotor;
+
+
+
     //    @Override
     public void driver(int FR, int FL, int BR, int BL, double pow, String telem){
         int FRtargetpos;
@@ -149,11 +153,8 @@ public class FirstAuto extends LinearOpMode{
         telemetry.update();
     }
 
-    public void DriveUpt(){
 
-    }
 
-    //*/
     public void runOpMode() throws InterruptedException
     {
         telemetry.addData("Motors","Grabbing");
@@ -164,7 +165,7 @@ public class FirstAuto extends LinearOpMode{
         BLMotor = hardwareMap.get(DcMotor.class,"BLMotor");
         telemetry.addData("Motors","Got");
         telemetry.update();
-        DeepTags Aprils;
+
 
         AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder().setDrawAxes(true).setDrawCubeProjection(true).setDrawTagID(true).setDrawTagOutline(true).setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11).setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()).build();
         VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
