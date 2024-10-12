@@ -1,18 +1,30 @@
 package org.firstinspires.ftc.teamcode.utils;
+import java.lang.Math;
 
 public class Coordinate {
     //definitions of the positions and rotation
-    public float xPosition;
-    public float yPosition;
-    public float zPosition;
-    public float yawRotation;
+    public double xPosition;
+    public double yPosition;
+    public double zPosition;
+    public double yawRotation;
     // constructor
-    Coordinate(float xPos, float yPos, float zPos, float yawRot) {
+    Coordinate(double xPos, double yPos, double zPos, double yawRot) {
         xPosition = xPos;
         yPosition = yPos;
         zPosition = zPos;
         yawRotation = yawRot;
 
+    }
+    public double findCoordinateDistance(Coordinate otherCoordinate){
+        return Math.sqrt((xPosition - otherCoordinate.xPosition) * (xPosition - otherCoordinate.xPosition) + (yPosition - otherCoordinate.yPosition) * (yPosition - otherCoordinate.yPosition));
+    }
+    public Coordinate addCoordinates(Coordinate otherCoordinate){
+        return new Coordinate(xPosition + otherCoordinate.xPosition, yPosition + otherCoordinate.yPosition, 0, 0);
+        /* The other two parameters are set to zero because what else was I supposed to put?*/
+    }
+    public Coordinate subtractCoordinates(Coordinate otherCoordinate){
+        return new Coordinate(xPosition - otherCoordinate.xPosition, yPosition - otherCoordinate.yPosition, 0, 0);
+        /* The other two parameters are set to zero because what else was I supposed to put?*/
     }
     /*
     Coordinates of the AprilTags (Formatted to the defined field coordinate system):
