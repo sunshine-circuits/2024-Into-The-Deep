@@ -153,8 +153,10 @@ public class FirstAuto extends LinearOpMode{
     public void InchDrive(double distance, double angle, double pow, String telem){
         double pulses = InchesToPulses(distance);
         int pulsesInt = (int)pulses;
+        int FLBRMotion = (int)((Math.sin(angle) + Math.cos(angle)) * 537.7);
+        int FRBLMotion = (int)((Math.sin(angle) - Math.cos(angle)) * 537.7);
         driver(pulsesInt,pulsesInt,pulsesInt,pulsesInt,pow,telem);
-        return;
+        driver(FRBLMotion, FLBRMotion, FLBRMotion, FRBLMotion, pow, telem);
     }
     public double InchesToPulses(double Inches){
         return 537.7*(Inches/((104*Math.PI)/25.4));
