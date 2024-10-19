@@ -26,6 +26,9 @@ public class Coordinate {
         return new Coordinate(xPosition - otherCoordinate.xPosition, yPosition - otherCoordinate.yPosition, 0, 0);
         /* The other two parameters are set to zero because what else was I supposed to put?*/
     }
+    public double findChangeInYawToSetYawToSomething(double newYaw) {
+        return newYaw - yawRotation;
+    }
     /*
     Coordinates of the AprilTags (Formatted to the defined field coordinate system):
     11: Coordinate(24,0,6,0);
