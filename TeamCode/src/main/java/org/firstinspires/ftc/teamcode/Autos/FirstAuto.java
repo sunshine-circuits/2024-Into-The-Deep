@@ -153,7 +153,10 @@ public class FirstAuto extends LinearOpMode{
     public void InchDrive(double distance, double angle, double pow, String telem){
         double pulses = InchesToPulses(distance);
         int pulsesInt = (int)pulses;
+        int FLBRMotion = (int)((Math.sin(angle) + Math.cos(angle)) * 537.7);
+        int FRBLMotion = (int)((Math.sin(angle) - Math.cos(angle)) * 537.7);
         driver(pulsesInt,pulsesInt,pulsesInt,pulsesInt,pow,telem);
+        driver(FRBLMotion, FLBRMotion, FLBRMotion, FRBLMotion, pow, telem);
     }
     public double InchesToPulses(double Inches){
         return 537.7*(Inches/((104*Math.PI)/25.4));
@@ -262,7 +265,6 @@ public class FirstAuto extends LinearOpMode{
         VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
         waitForStart();
         if (opModeIsActive()) {
-            /*
             driver(-1100,1100,1100,-1100,0.1, "Right");
             driver(3550,3550,3550,3550,0.1, "Big Forward");
             driverInteruptable(500,-500,-500,500,0.05, "interuptable left");
@@ -282,8 +284,7 @@ public class FirstAuto extends LinearOpMode{
             driver(-1800,1800,1800,-1800,0.1, "BIG RIGHT");
             driver(-1000,-1000,-1000,-1000,0.1,"Back");
             SingleMotorDriver(ArmJointMotor, 300,1,"Arm in position");
-            */
-            InchDrive(24,0,1,"RUN RABBIT RUN RABIT RUN RUN RUN");
+
 
             telemetry.addData("Moves","Done");
             telemetry.update();
