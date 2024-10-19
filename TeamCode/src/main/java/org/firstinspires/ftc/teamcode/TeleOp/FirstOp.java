@@ -80,6 +80,9 @@ public class FirstOp extends LinearOpMode
         AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder().setDrawAxes(true).setDrawCubeProjection(true).setDrawTagID(true).setDrawTagOutline(true).setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11).setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()).build();
         VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
 
+        double minArmExtensionPosition = ArmExtendMotor.getCurrentPosition();
+        double maxArmExtensionPosition = 1000;
+
         waitForStart();
         double frontRightTargetPow=0;
         double frontLeftTargetPow=0;
@@ -142,12 +145,12 @@ public class FirstOp extends LinearOpMode
             //arm code
             if (gamepad1.dpad_up){
                 ArmExtendMotor.setMode(defaultMode);
-                ArmExtendTargetPow=-1;
+                ArmExtendTargetPow=1;
                 ExtPos=true;
             }
             else if (gamepad1.dpad_down){
                 ArmExtendMotor.setMode(defaultMode);
-                ArmExtendTargetPow=1;
+                ArmExtendTargetPow=-1;
                 ExtPos=true;
             } else{
                 ArmExtendTargetPow=1;
