@@ -1,8 +1,17 @@
 package org.firstinspires.ftc.teamcode.utils;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 public class AutoDriver {
+    /*
+    public DcMotor BLMotor;
+    public DcMotor BRMotor;
+    public DcMotor FLMotor;
+    public DcMotor FRMotor;
+    public DcMotor ArmJointMotor;
     public void driver(int FR, int FL, int BR, int BL, double pow, String telem){
         int FRtargetpos;
         int FLtargetpos;
@@ -222,4 +231,5 @@ public class AutoDriver {
         telemetry.addData("Disruptable "+telem,"Started");
         telemetry.update();
     }
+    //*/
 }

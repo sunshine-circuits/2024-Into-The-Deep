@@ -5,14 +5,16 @@ import com.qualcomm.robotcore.hardware.HardwareDevice;
 
 import java.util.HashMap;
 
+
 public class RobotConfig {
-    public enum RobotConfig {
+    /*
+    public enum Config {
         LM0 (new HardwareMapObject("FRMotor", DcMotor.class))
     }
 
     private HashMap<String, HardwareDevice> hardwareConfig = new HashMap<>();
 
-    public RobotConfig(HardwareMapObject... hardwareObject) {
+    private Config(HardwareMapObject... hardwareObject) {
 
     }
 
@@ -28,4 +30,5 @@ public class RobotConfig {
 
         }
     }
+    //*/
 }
