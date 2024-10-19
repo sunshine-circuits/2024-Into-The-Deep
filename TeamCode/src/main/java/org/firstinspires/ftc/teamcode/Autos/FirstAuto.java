@@ -161,6 +161,15 @@ public class FirstAuto extends LinearOpMode{
     public double InchesToPulses(double Inches){
         return 537.7*(Inches/((104*Math.PI)/25.4));
     }
+    double myrot;
+    public void RotateDegrees(double angle, double pow, String telem){
+        double pulses = RotationsToPulses(angle-myrot);
+        int pulsesInt = (int)pulses;
+        driver(-pulsesInt,pulsesInt,-pulsesInt,pulsesInt,pow,telem);
+    }
+    public double RotationsToPulses(double degrees){
+        return ((degrees/90)*930);
+    }
 
     public void SingleMotorDriver(DcMotor OpMotor, int dist, double pow, String telem){
         int OpPos;
