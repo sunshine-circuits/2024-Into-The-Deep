@@ -8,7 +8,7 @@ public class Coordinate {
     public double zPosition;
     public double yawRotation;
     // constructor
-    Coordinate(double xPos, double yPos, double zPos, double yawRot) {
+    public Coordinate(double xPos, double yPos, double zPos, double yawRot) {
         xPosition = xPos;
         yPosition = yPos;
         zPosition = zPos;
