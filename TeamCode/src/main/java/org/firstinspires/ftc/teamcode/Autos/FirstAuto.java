@@ -5,10 +5,8 @@ import android.util.Size;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.utils.DeepTags;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
@@ -21,6 +19,10 @@ public class FirstAuto extends LinearOpMode{
     private DcMotor BRMotor;
     private DcMotor FLMotor;
     private DcMotor FRMotor;
+    private DcMotor ArmJointMotor;
+
+
+
     //    @Override
     public void driver(int FR, int FL, int BR, int BL, double pow, String telem){
         int FRtargetpos;
@@ -149,11 +151,83 @@ public class FirstAuto extends LinearOpMode{
         telemetry.update();
     }
 
-    public void DriveUpt(){
+    public void SingleMotorDriver(DcMotor OpMotor, int dist, double pow, String telem){
+        int OpPos;
+        telemetry.addData("Variables "+telem,"Declared");
+        telemetry.update();
 
+        OpPos=OpMotor.getCurrentPosition()+dist;
+
+        telemetry.addData("MotorData "+telem,"Snatched");
+        telemetry.update();
+
+        OpMotor.setTargetPosition(OpPos);
+
+        telemetry.addData("TargetPos "+telem,"Declared");
+        telemetry.addData("TargetPosFR ",OpPos);
+        telemetry.update();
+
+        OpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        telemetry.addData("Running "+telem,"Happening");
+        telemetry.update();
+
+        OpMotor.setPower(pow);
+
+        telemetry.addData("Power "+telem,"Set");
+        telemetry.update();
+
+        telemetry.addData("While "+telem,"Started");
+        telemetry.update();
+
+        while (opModeIsActive()&&(OpMotor.isBusy()))
+        {
+            telemetry.addData("CurrentPos",OpMotor.getCurrentPosition());
+
+            telemetry.addData("TargetPos ",OpPos);
+            telemetry.update();
+        }
+
+        telemetry.addData("While "+telem,"Done");
+        telemetry.update();
+
+        OpMotor.setPower(0);
+
+        telemetry.addData("Power","Zero");
+        telemetry.update();
     }
 
-    //*/
+    public void InteruptableSingleMotorDriver(DcMotor OpMotor, int dist, double pow, String telem){
+        int OpPos;
+        telemetry.addData("Variables "+telem,"Declared");
+        telemetry.update();
+
+        OpPos=OpMotor.getCurrentPosition()+dist;
+
+        telemetry.addData("MotorData "+telem,"Snatched");
+        telemetry.update();
+
+        OpMotor.setTargetPosition(OpPos);
+
+        telemetry.addData("TargetPos "+telem,"Declared");
+        telemetry.addData("TargetPosFR ",OpPos);
+        telemetry.update();
+
+        OpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        telemetry.addData("Running "+telem,"Happening");
+        telemetry.update();
+
+        OpMotor.setPower(pow);
+
+        telemetry.addData("Power "+telem,"Set");
+        telemetry.update();
+
+        telemetry.addData("Disruptable "+telem,"Started");
+        telemetry.update();
+    }
+
+
     public void runOpMode() throws InterruptedException
     {
         telemetry.addData("Motors","Grabbing");
@@ -162,9 +236,10 @@ public class FirstAuto extends LinearOpMode{
         FLMotor = hardwareMap.get(DcMotor.class,"FLMotor");
         BRMotor = hardwareMap.get(DcMotor.class,"BRMotor");
         BLMotor = hardwareMap.get(DcMotor.class,"BLMotor");
+        ArmJointMotor = hardwareMap.get(DcMotor.class,"ArmJointMotor");
         telemetry.addData("Motors","Got");
         telemetry.update();
-        DeepTags Aprils;
+
 
         AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder().setDrawAxes(true).setDrawCubeProjection(true).setDrawTagID(true).setDrawTagOutline(true).setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11).setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()).build();
         VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
@@ -188,12 +263,13 @@ public class FirstAuto extends LinearOpMode{
             driver(-500,-500,-500,-500,0.1,"Back");
             driver(-1800,1800,1800,-1800,0.1, "BIG RIGHT");
             driver(-1000,-1000,-1000,-1000,0.1,"Back");
-
+            SingleMotorDriver(ArmJointMotor, 300,1,"Arm in position");
 
 
             telemetry.addData("Moves","Done");
             telemetry.update();
             // RESET
+
         }
     }
 }
