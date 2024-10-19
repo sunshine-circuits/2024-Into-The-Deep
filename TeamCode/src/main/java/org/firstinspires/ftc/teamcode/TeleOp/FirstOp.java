@@ -107,7 +107,7 @@ public class FirstOp extends LinearOpMode
             telemetry.addData("Front Right TP", frontRightTargetPow);
             telemetry.addData("Front Right CP", frontRightWheel.getPower());
 
-            frontLeftTargetPow = 0 - gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x;
+            frontLeftTargetPow = 0 - gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;
             frontLeftWheel.setPower(speedMultiplier*frontLeftTargetPow);
             telemetry.addData("Front Left TP", frontLeftTargetPow);
             telemetry.addData("Front Left CP", frontLeftWheel.getPower());
@@ -117,7 +117,7 @@ public class FirstOp extends LinearOpMode
             telemetry.addData("Back Right TP", backRightTargetPow);
             telemetry.addData("Back Right CP", backRightWheel.getPower());
 
-            backLeftTargetPow = 0 - gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;
+            backLeftTargetPow = 0 - gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x;
             backLeftWheel.setPower(speedMultiplier*backLeftTargetPow);
             telemetry.addData("Back Left TP", backLeftTargetPow);
             telemetry.addData("Back Left CP", backLeftWheel.getPower());
@@ -186,13 +186,13 @@ public class FirstOp extends LinearOpMode
             ArmJointMotor.setPower(ArmJointTargetPow);
             //Servo Code
             if (gamepad1.x){
-                LeftServoPower=0.75;
-                RightServoPower=-0.75;
+                LeftServoPower=0.25;
+                RightServoPower=-0.25;
 
             }
             else if (gamepad1.y){
-                LeftServoPower=-0.75;
-                RightServoPower=0.75;
+                LeftServoPower=-0.25;
+                RightServoPower=0.25;
             } else{
                 LeftServoPower=0;
                 RightServoPower=0;
@@ -205,16 +205,19 @@ public class FirstOp extends LinearOpMode
             RightServo.setPower(RightServoPower);
             boolean april=false;
             //Camera Processing--- Cordinates based on aprilTags
-            if (tagProcessor.getDetections().size() > 0) {
+            if (!tagProcessor.getDetections().isEmpty()) {
                 for (int i = 0; i < tagProcessor.getDetections().size(); i++) {
                     april=true;
                     AprilTagDetection tag = tagProcessor.getDetections().get(i);
-                    double[] mycords = CameraCoordinates(tag.id,tag.ftcPose.yaw,tag.ftcPose.x,tag.ftcPose.y);
-                    myLocation.xPosition = mycords[0];
-                    myLocation.yPosition = mycords[1];
-                    telemetry.addData("myXbytag "+tag.id,myLocation.xPosition);
-                    telemetry.addData("myYbytag "+tag.id,myLocation.yPosition);
-
+                    try {
+                        double[] mycords = CameraCoordinates(tag.id, tag.ftcPose.yaw, tag.ftcPose.x, tag.ftcPose.y);
+                        myLocation.xPosition = mycords[0];
+                        myLocation.yPosition = mycords[1];
+                        telemetry.addData("myXbytag " + tag.id, myLocation.xPosition);
+                        telemetry.addData("myYbytag " + tag.id, myLocation.yPosition);
+                    } catch(Exception e){
+                        telemetry.addData("Unidentified tag","Unidentified tag" );
+                    }
                 }
             }
             telemetry.addData("CanSeeAprilTag",april);
