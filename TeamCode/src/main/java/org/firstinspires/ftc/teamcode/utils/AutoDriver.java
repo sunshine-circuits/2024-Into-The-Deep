@@ -12,7 +12,10 @@ public class AutoDriver {
 
     private Coordinate myLocation;
     public AutoDriver(RobotConfig.Config config){
-
+        this.frontRightMotor = (DcMotor)config.get("FRMotor");
+        this.rearRightMotor = (DcMotor)config.get("BRMotor");
+        this.frontLeftMotor = (DcMotor)config.get("FLMotor");
+        this.rearLeftMotor = (DcMotor)config.get("BLMotor");
     }
     public void drive(int FR, int FL, int BR, int BL, double pow){
         int FRtargetpos=frontRightMotor.getCurrentPosition()-(FR);
