@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import java.util.HashMap;
 
-class Keybind {
+public class Keybind {
 
     private static final float DEADZONE = .1f;
     public enum Input {
@@ -65,7 +65,7 @@ class Keybind {
         this.gamepad2 = gamepad2;
     }
 
-    private Input get(String action) {
+    public Input get(String action) {
         Input input = this.keybinding.get(action);
         if (input != null) {
             return input;
@@ -74,7 +74,7 @@ class Keybind {
     }
 
     //This method will add an action to the keybinding and return true if the value was updated.
-    private boolean addOrUpdate(String action, Input input) {
+    public boolean addOrUpdate(String action, Input input) {
         if (this.keybinding.containsKey(action)) {
             this.keybinding.replace(action, input);
             return true;

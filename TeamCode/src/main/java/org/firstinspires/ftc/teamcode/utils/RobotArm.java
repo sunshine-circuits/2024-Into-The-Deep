@@ -10,6 +10,13 @@ public class RobotArm {
     private CRServo rightClaw;
     private CRServo leftClaw;
 
+    public enum Direction {
+        DEPLOY,
+        RETRACT,
+        CLOCKWISE,
+        COUNTER_CLOCKWISE
+    }
+
     public RobotArm(RobotConfig.Config config) {
         this.armJoint = (DcMotor)config.get("ArmJointMotor");
         this.armExtend = (DcMotor)config.get("ArmExtendMotor");
@@ -25,11 +32,27 @@ public class RobotArm {
 
     }
 
+    //This method accepts a direction and speed and will rotate to a max/min value.
+    //0 degrees is straight up and down. Counter clockwise is negative and clockwise is positive.
+    //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
+    //robot.
+    public void rotateArmManual(Direction direction, double power) {
+
+    }
+
     //This method accepts a double of inches and will extend/retract to a value as an absolute position.
     //0 inches is fully retracted. X inches is fully extended. Ensure the arm will not attempt to
     //travel beyond the length of the arm nor retract past 0. This should also ensure we can not
     //extend the arm and collide with the robot.
     public void extendArmTo(double inches) {
+
+    }
+
+    //This method accepts a double of power and direction and will extend/retract to a max/min value.
+    //0 inches is fully retracted. X inches is fully extended. Ensure the arm will not attempt to
+    //travel beyond the length of the arm nor retract past 0. This should also ensure we can not
+    //extend the arm and collide with the robot.
+    public void extendArmManual(Direction direction, double power) {
 
     }
 
