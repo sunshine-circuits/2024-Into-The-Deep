@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.utils.Driver;
+import org.firstinspires.ftc.teamcode.utils.DriverOld;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name="DriverDeriver")
-public class DriverImport extends Driver
+public class DriverOldImport extends DriverOld
 {
     @Override
     public void runOpMode() throws InterruptedException

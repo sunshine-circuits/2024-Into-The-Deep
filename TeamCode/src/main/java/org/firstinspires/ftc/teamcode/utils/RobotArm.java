@@ -37,7 +37,7 @@ public class RobotArm {
     //0 degrees is straight up and down. Counter clockwise is negative and clockwise is positive.
     //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
     //robot.
-    public void setClawPosition(double degree, CRServo claw) {
+    private void setClawPosition(double degree, CRServo claw) {
 
     }
 
