@@ -152,14 +152,9 @@ public class Driver extends LinearOpMode{
 
     public void ArmExtendHandler(){
         //arm code
-        if (gamepad1.dpad_up){
+        if (Math.abs(gamepad2.right_stick_y)>=0.1){
             ArmExtendMotor.setMode(defaultMode);
-            ArmExtendTargetPow=1;
-            ExtPos=true;
-        }
-        else if (gamepad1.dpad_down){
-            ArmExtendMotor.setMode(defaultMode);
-            ArmExtendTargetPow=-1;
+            ArmExtendTargetPow=gamepad2.right_stick_y;
             ExtPos=true;
         } else{
             ArmExtendTargetPow=1;
@@ -174,12 +169,12 @@ public class Driver extends LinearOpMode{
     }
 
     public void ArmJointHandler(){
-        if (gamepad1.dpad_right){
+        if (gamepad2.dpad_right){
             ArmJointMotor.setMode(defaultMode);
             ArmJointTargetPow=0.5;
             ArmPos=true;
         }
-        else if (gamepad1.dpad_left){
+        else if (gamepad2.dpad_left){
             ArmJointMotor.setMode(defaultMode);
             ArmJointTargetPow=-0.5;
             ArmPos=true;
@@ -196,11 +191,11 @@ public class Driver extends LinearOpMode{
     }
     public void ServoHandler(){
         //Servo Code
-        if (gamepad1.x){
+        if (gamepad2.x){
             LeftServoPower=0.25;
             RightServoPower=-0.25;
         }
-        else if (gamepad1.y){
+        else if (gamepad2.y){
             LeftServoPower=-0.25;
             RightServoPower=0.25;
         } else{

@@ -169,7 +169,7 @@ public class FirstAuto extends LinearOpMode{
         driver(-pulsesInt,pulsesInt,-pulsesInt,pulsesInt,pow,telem);
     }
     public double RotationsToPulses(double degrees){
-        return ((degrees/90)*930);
+        return degrees*(((590/360)*537.7)/90);
     }
 
     public void SingleMotorDriver(DcMotor OpMotor, int dist, double pow, String telem){
