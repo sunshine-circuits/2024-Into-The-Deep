@@ -40,7 +40,7 @@ public class RobotConfig {
         }
 
         public HardwareDevice get(String key) {
-            if (null != this.hardwareConfig) {
+            if (null == this.hardwareConfig) {
                 return null;
             }
             return this.hardwareConfig.get(key);

@@ -11,12 +11,14 @@ public class AutoDriver {
     private DcMotor rearLeftMotor;
 
     private Coordinate myLocation;
+
     public AutoDriver(RobotConfig.Config config){
         this.frontRightMotor = (DcMotor)config.get("FRMotor");
         this.rearRightMotor = (DcMotor)config.get("BRMotor");
         this.frontLeftMotor = (DcMotor)config.get("FLMotor");
         this.rearLeftMotor = (DcMotor)config.get("BLMotor");
     }
+
     public void drive(int FR, int FL, int BR, int BL, double pow){
         int FRtargetpos=frontRightMotor.getCurrentPosition()-(FR);
         int FLtargetpos=frontLeftMotor.getCurrentPosition()+(FL);
@@ -39,28 +41,23 @@ public class AutoDriver {
         rearLeftMotor.setPower(0);
     }
 
-    public void inchDrive(double distance, double angle, double pow){
+    public void driveDistance(double distance, double angle, double pow){
         double pulses = inchesToPulses(distance);
         int pulsesInt = (int)pulses;
         drive(pulsesInt,pulsesInt,pulsesInt,pulsesInt,pow);
     }
-    public double inchesToPulses(double Inches){
+    private double inchesToPulses(double Inches){
         return 537.7*(Inches/((104*Math.PI)/25.4));
     }
 
-    public void rotateDegrees(double angle, double pow){
+    public void rotate(double angle, double pow){
         double pulses = rotationsToPulses(angle-myLocation.yawRotation);
         int pulsesInt = (int)pulses;
         drive(-pulsesInt,pulsesInt,-pulsesInt,pulsesInt,pow);
     }
-    public double rotationsToPulses(double degrees){
+    private double rotationsToPulses(double degrees){
         return ((degrees/90)*930);
     }
 
-    public void motorDriver(DcMotor motor, int dist, double pow){
-        motor.setTargetPosition(motor.getCurrentPosition()+dist);
-        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motor.setPower(pow);
-        motor.setPower(0);
-    }
+    //TODO: Add AprilTag processing here and also add basic flow logic for pathing
 }

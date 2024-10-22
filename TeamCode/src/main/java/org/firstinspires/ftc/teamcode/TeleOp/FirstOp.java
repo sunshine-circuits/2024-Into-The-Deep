@@ -38,8 +38,8 @@ public class FirstOp extends LinearOpMode
         double Xreltrue = Math.sin(Yaw)*distance;
         double Yreltrue = Math.cos(Yaw)*distance;
 
-        double TagX = Grid.AreasOfInterest.valueOf("TAG"+tagID).coord.xPosition;
-        double TagY = Grid.AreasOfInterest.valueOf("TAG"+tagID).coord.yPosition;
+        double TagX = Grid.valueOf("TAG"+tagID).coord.xPosition;
+        double TagY = Grid.valueOf("TAG"+tagID).coord.yPosition;
 
         double XtrueCord = TagX-Xreltrue;
         double YtrueCord = TagY-Yreltrue;
