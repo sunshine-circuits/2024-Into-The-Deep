@@ -151,7 +151,7 @@ public class FirstAuto extends LinearOpMode{
         telemetry.update();
     }
     public void InchDrive(double distance, double angle, double pow, String telem){
-        double pulses = InchesToPulses(distance);
+      gi   double pulses = InchesToPulses(distance);
         int pulsesInt = (int)pulses;
         driver(pulsesInt,pulsesInt,pulsesInt,pulsesInt,pow,telem);
     }

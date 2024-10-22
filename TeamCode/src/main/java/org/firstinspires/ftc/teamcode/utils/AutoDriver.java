@@ -23,7 +23,4 @@ public class AutoDriver {
         double ArmJointMotorTargetPow =
     }
 
-
-    }
-
 }
