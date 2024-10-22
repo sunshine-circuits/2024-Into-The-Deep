@@ -21,6 +21,11 @@ public class Driver {
 
         this.frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.rearRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        this.frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rearLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rearRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public double setSpeedMultiplier(double newSpeed) {
@@ -39,7 +44,7 @@ public class Driver {
         y = -y; // Remember, Y stick value is reversed
         x*=1.1; // Counteract imperfect strafing
 
-        double magnitude = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rotation), 1);
+        double magnitude = Math.max(Math.abs(y) + Math.abs(x) - Math.abs(rotation), 1);
         double frontLeftPower = (y + x + rotation) / magnitude;
         double rearLeftPower = (y - x + rotation) / magnitude;
         double frontRightPower = (y - x - rotation) / magnitude;

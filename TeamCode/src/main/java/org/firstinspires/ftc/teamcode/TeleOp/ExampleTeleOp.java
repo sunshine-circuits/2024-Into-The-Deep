@@ -11,9 +11,10 @@ import org.firstinspires.ftc.teamcode.utils.*;
 
 @TeleOp(name="DriverTest")
 public class ExampleTeleOp extends OpMode {
-private Driver driver;
-private RobotArm arm;
-private Keybind keybind;
+    private Driver driver;
+    private RobotArm arm;
+    private Keybind keybind;
+
     @Override
     public void init() {
         RobotConfig.Config.LM0.initConfig(hardwareMap);
@@ -30,6 +31,8 @@ private Keybind keybind;
         keybind.addOrUpdate("arm_rotation_cw", Keybind.Input.GAMEPAD_2_RIGHT_TRIGGER);
         keybind.addOrUpdate("arm_extend", Keybind.Input.GAMEPAD_2_A);
         keybind.addOrUpdate("arm_retract", Keybind.Input.GAMEPAD_2_B);
+        keybind.addOrUpdate("control_left_claw", Keybind.Input.GAMEPAD_2_LEFT_STICK_X);
+        keybind.addOrUpdate("control_right_claw", Keybind.Input.GAMEPAD_2_RIGHT_STICK_X);
         keybind.addOrUpdate("increase_speed", Keybind.Input.GAMEPAD_1_RIGHT_BUMPER);
         keybind.addOrUpdate("decrease_speed", Keybind.Input.GAMEPAD_1_LEFT_BUMPER);
     }
@@ -63,6 +66,14 @@ private Keybind keybind;
         } else {
             arm.setRightClawPosition(0);
             arm.setLeftClawPosition(0);
+        }
+
+        if (keybind.pollValue("control_left_claw") > 0) {
+            arm.setLeftClawPosition(keybind.pollValue("control_left_claw"));
+        }
+
+        if (keybind.pollValue("control_right_claw") > 0) {
+            arm.setRightClawPosition(keybind.pollValue("control_right_claw"));
         }
 
         if (keybind.poll("increase_speed")) {
