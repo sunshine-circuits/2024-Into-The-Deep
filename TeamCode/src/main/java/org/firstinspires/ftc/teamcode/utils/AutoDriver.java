@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.utils;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import com.qualcomm.robotcore.hardware.CRServo;
 
 public class AutoDriver {
 
@@ -60,5 +60,4 @@ public class AutoDriver {
     }
 
     //TODO: Add AprilTag processing here and also add basic flow logic for pathing
-
 }
