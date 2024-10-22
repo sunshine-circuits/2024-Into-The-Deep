@@ -45,10 +45,10 @@ public class Driver {
         double frontRightPower = (y - x - rotation) / magnitude;
         double rearRightPower = (y + x - rotation) / magnitude;
 
-        frontLeftMotor.setPower(frontLeftPower);
-        rearLeftMotor.setPower(rearLeftPower);
-        frontRightMotor.setPower(frontRightPower);
-        rearRightMotor.setPower(rearRightPower);
+        frontLeftMotor.setPower(frontLeftPower * speedMultiplier);
+        rearLeftMotor.setPower(rearLeftPower * speedMultiplier);
+        frontRightMotor.setPower(frontRightPower * speedMultiplier);
+        rearRightMotor.setPower(rearRightPower * speedMultiplier);
     }
 }
 

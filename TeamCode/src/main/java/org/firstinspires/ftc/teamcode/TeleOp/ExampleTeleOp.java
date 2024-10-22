@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.utils.Driver;
 import org.firstinspires.ftc.teamcode.utils.Keybind;
 import org.firstinspires.ftc.teamcode.utils.RobotArm;
 import org.firstinspires.ftc.teamcode.utils.RobotConfig;
+import org.firstinspires.ftc.teamcode.utils.*;
 
+@TeleOp(name="DriverTest")
 public class ExampleTeleOp extends OpMode {
 private Driver driver;
 private RobotArm arm;
@@ -40,20 +42,27 @@ private Keybind keybind;
             arm.extendArmManual(RobotArm.Direction.DEPLOY, 1);
         } else if (keybind.poll("arm_retract")) {
             arm.extendArmManual(RobotArm.Direction.RETRACT, 1);
+        } else {
+            arm.extendArmManual(RobotArm.Direction.RETRACT, 0);
         }
 
         if (keybind.pollValue("arm_rotation_ccw") > 0) {
             arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, keybind.pollValue("arm_rotation_ccw"));
-        } else if (keybind.pollValue("arm_retract") > 0) {
-            arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, keybind.pollValue("arm_rotation_ccw"));
+        } else if (keybind.pollValue("arm_rotation_cw") > 0) {
+            arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, keybind.pollValue("arm_rotation_cw"));
+        } else {
+            arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, 0);
         }
 
         if (keybind.poll("claw_open")) {
-            arm.setRightClawPosition(0);
-            arm.setLeftClawPosition(0);
+            arm.setRightClawPosition(-1);
+            arm.setLeftClawPosition(1);
         } else if (keybind.poll("claw_close")) {
             arm.setRightClawPosition(1);
-            arm.setLeftClawPosition(1);
+            arm.setLeftClawPosition(-1);
+        } else {
+            arm.setRightClawPosition(0);
+            arm.setLeftClawPosition(0);
         }
 
         if (keybind.poll("increase_speed")) {
