@@ -15,7 +15,7 @@ public class RobotConfig {
                 hardwareMapObjectFactory("BRMotor", DcMotor.class),
                 hardwareMapObjectFactory("FLMotor", DcMotor.class),
                 hardwareMapObjectFactory("BLMotor", DcMotor.class),
-                hardwareMapObjectFactory("ArmJoinMotor", DcMotor.class),
+                hardwareMapObjectFactory("ArmJointMotor", DcMotor.class),
                 hardwareMapObjectFactory("ArmExtendMotor", DcMotor.class),
                 hardwareMapObjectFactory("LeftServo", CRServo.class),
                 hardwareMapObjectFactory("RightServo", CRServo.class)

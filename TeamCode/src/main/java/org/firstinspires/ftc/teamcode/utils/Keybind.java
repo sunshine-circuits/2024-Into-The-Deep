@@ -112,12 +112,12 @@ public class Keybind {
             case GAMEPAD_1_RIGHT_STICK_BUTTON: return gamepad1.right_stick_button ? 0f : 1f;
             case GAMEPAD_1_LEFT_STICK_BUTTON: return gamepad1.left_stick_button ? 0f : 1f;
             case GAMEPAD_1_START: return gamepad1.start ? 0f : 1f;
-            case GAMEPAD_1_RIGHT_STICK_X: return gamepad1.right_stick_x > DEADZONE ? gamepad1.right_stick_x : 0f;
-            case GAMEPAD_1_RIGHT_STICK_Y: return gamepad1.right_stick_y > DEADZONE ? gamepad1.right_stick_y : 0f;
-            case GAMEPAD_1_LEFT_STICK_X: return gamepad1.left_stick_x > DEADZONE ? gamepad1.left_stick_x : 0f;
-            case GAMEPAD_1_LEFT_STICK_Y: return gamepad1.left_stick_y > DEADZONE ? gamepad1.left_stick_y : 0f;
-            case GAMEPAD_1_RIGHT_TRIGGER: return gamepad1.right_trigger > DEADZONE ? gamepad1.right_trigger : 0f;
-            case GAMEPAD_1_LEFT_TRIGGER: return gamepad1.left_trigger > DEADZONE ? gamepad1.left_trigger : 0f;
+            case GAMEPAD_1_RIGHT_STICK_X: return Math.abs(gamepad1.right_stick_x) > DEADZONE ? gamepad1.right_stick_x : 0f;
+            case GAMEPAD_1_RIGHT_STICK_Y: return Math.abs(gamepad1.right_stick_y) > DEADZONE ? gamepad1.right_stick_y : 0f;
+            case GAMEPAD_1_LEFT_STICK_X: return Math.abs(gamepad1.left_stick_x) > DEADZONE ? gamepad1.left_stick_x : 0f;
+            case GAMEPAD_1_LEFT_STICK_Y: return Math.abs(gamepad1.left_stick_y) > DEADZONE ? gamepad1.left_stick_y : 0f;
+            case GAMEPAD_1_RIGHT_TRIGGER: return Math.abs(gamepad1.right_trigger) > DEADZONE ? gamepad1.right_trigger : 0f;
+            case GAMEPAD_1_LEFT_TRIGGER: return Math.abs(gamepad1.left_trigger) > DEADZONE ? gamepad1.left_trigger : 0f;
 
             case GAMEPAD_2_A: return gamepad2.a ? 0f : 1f;
             case GAMEPAD_2_B: return gamepad2.b ? 0f : 1f;
@@ -134,12 +134,12 @@ public class Keybind {
             case GAMEPAD_2_RIGHT_STICK_BUTTON: return gamepad2.right_stick_button ? 0f : 1f;
             case GAMEPAD_2_LEFT_STICK_BUTTON: return gamepad2.left_stick_button ? 0f : 1f;
             case GAMEPAD_2_START: return gamepad2.start ? 0f : 1f;
-            case GAMEPAD_2_RIGHT_STICK_X: return gamepad2.right_stick_x > DEADZONE ? gamepad2.right_stick_x : 0f;
-            case GAMEPAD_2_RIGHT_STICK_Y: return gamepad2.right_stick_y > DEADZONE ? gamepad2.right_stick_y : 0f;
-            case GAMEPAD_2_LEFT_STICK_X: return gamepad2.left_stick_x > DEADZONE ? gamepad2.left_stick_x : 0f;
-            case GAMEPAD_2_LEFT_STICK_Y: return gamepad2.left_stick_y > DEADZONE ? gamepad2.left_stick_y : 0f;
-            case GAMEPAD_2_RIGHT_TRIGGER: return gamepad2.right_trigger > DEADZONE ? gamepad2.right_trigger : 0f;
-            case GAMEPAD_2_LEFT_TRIGGER: return gamepad2.left_trigger > DEADZONE ? gamepad2.left_trigger : 0f;
+            case GAMEPAD_2_RIGHT_STICK_X: return Math.abs(gamepad2.right_stick_x) > DEADZONE ? gamepad2.right_stick_x : 0f;
+            case GAMEPAD_2_RIGHT_STICK_Y: return Math.abs(gamepad2.right_stick_y) > DEADZONE ? gamepad2.right_stick_y : 0f;
+            case GAMEPAD_2_LEFT_STICK_X: return Math.abs(gamepad2.left_stick_x) > DEADZONE ? gamepad2.left_stick_x : 0f;
+            case GAMEPAD_2_LEFT_STICK_Y: return Math.abs(gamepad2.left_stick_y) > DEADZONE ? gamepad2.left_stick_y : 0f;
+            case GAMEPAD_2_RIGHT_TRIGGER: return Math.abs(gamepad2.right_trigger) > DEADZONE ? gamepad2.right_trigger : 0f;
+            case GAMEPAD_2_LEFT_TRIGGER: return Math.abs(gamepad2.left_trigger) > DEADZONE ? gamepad2.left_trigger : 0f;
 
             case INVALID_INPUT: return -2f;
             case INVALID_ACTION: return -3f;

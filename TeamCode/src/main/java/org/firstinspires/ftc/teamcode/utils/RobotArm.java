@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.utils;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 public class RobotArm {
     private DcMotor armJoint;
@@ -22,6 +23,9 @@ public class RobotArm {
         this.armExtend = (DcMotor)config.get("ArmExtendMotor");
         this.rightClaw = (CRServo)config.get("RightServo");
         this.leftClaw = (CRServo)config.get("LeftServo");
+
+        armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     //This method accepts a double of degrees and will rotate to that value as an absolute position.
@@ -37,7 +41,10 @@ public class RobotArm {
     //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
     //robot.
     public void rotateArmManual(Direction direction, double power) {
-
+        switch (direction) {
+            case COUNTER_CLOCKWISE: armJoint.setDirection(DcMotorSimple.Direction.FORWARD); armJoint.setPower(power); break;
+            case CLOCKWISE: armJoint.setDirection(DcMotorSimple.Direction.REVERSE); armJoint.setPower(power); break;
+        }
     }
 
     //This method accepts a double of inches and will extend/retract to a value as an absolute position.
@@ -53,7 +60,10 @@ public class RobotArm {
     //travel beyond the length of the arm nor retract past 0. This should also ensure we can not
     //extend the arm and collide with the robot.
     public void extendArmManual(Direction direction, double power) {
-
+        switch (direction) {
+            case DEPLOY: armExtend.setDirection(DcMotorSimple.Direction.FORWARD); armExtend.setPower(power); break;
+            case RETRACT: armExtend.setDirection(DcMotorSimple.Direction.REVERSE); armExtend.setPower(power); break;
+        }
     }
 
     //This method accepts a double of degrees and will rotate to that value as an absolute position.
@@ -61,7 +71,7 @@ public class RobotArm {
     //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
     //robot.
     private void setClawPosition(double degree, CRServo claw) {
-
+        claw.setPower(degree);
     }
 
 
