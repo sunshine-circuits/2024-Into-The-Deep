@@ -22,10 +22,11 @@ public class RobotConfig {
         );
 
 
-        private HashMap<String, Class> config;
+        /** @noinspection rawtypes*/
+        private final HashMap<String, Class> config;
         private HashMap<String, HardwareDevice> hardwareConfig;
 
-        private Config(HardwareMapObject... hardwareObject) {
+        Config(HardwareMapObject... hardwareObject) {
             this.config = new HashMap<>();
             for (HardwareMapObject hw : hardwareObject) {
                 config.put(hw.name, hw.device);
@@ -34,9 +35,7 @@ public class RobotConfig {
 
         public void initConfig(HardwareMap map) {
             this.hardwareConfig = new HashMap<>();
-            this.config.forEach((name, device) -> {
-                this.hardwareConfig.put(name, (HardwareDevice) map.get(device, name));
-            });
+            this.config.forEach((name, device) -> this.hardwareConfig.put(name, (HardwareDevice) map.get(device, name)));
         }
 
         public HardwareDevice get(String key) {
@@ -49,6 +48,8 @@ public class RobotConfig {
 
 
 }
+
+/** @noinspection rawtypes*/
 class HardwareMapObject {
     String name;
     Class device;

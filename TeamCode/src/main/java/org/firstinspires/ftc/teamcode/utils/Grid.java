@@ -20,9 +20,9 @@ public enum Grid {
     TAG15(144, 72, 6, 270),
     TAG16(120, 0, 6, 0);
 
-    public Coordinate coord;
+    public final Coordinate coord;
 
-    private Grid(double xPos, double yPos, double zPos, double yaw) {
+    Grid(double xPos, double yPos, double zPos, double yaw) {
         this.coord = new Coordinate(xPos, yPos, zPos, yaw);
     }
 }
