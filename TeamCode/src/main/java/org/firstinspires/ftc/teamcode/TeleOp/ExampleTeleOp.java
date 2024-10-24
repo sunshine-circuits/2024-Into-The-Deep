@@ -23,7 +23,6 @@ public class ExampleTeleOp extends OpMode {
         driver = new Driver(RobotConfig.Config.LM0);
         arm = new RobotArm(RobotConfig.Config.LM0);
         keybind = new Keybind(gamepad1, gamepad2);
-        arm.resetExtender();
 
         keybind.addOrUpdate("drive_y", Keybind.Input.GAMEPAD_1_LEFT_STICK_Y);
         keybind.addOrUpdate("drive_x", Keybind.Input.GAMEPAD_1_LEFT_STICK_X);
@@ -38,6 +37,8 @@ public class ExampleTeleOp extends OpMode {
         keybind.addOrUpdate("control_right_claw", Keybind.Input.GAMEPAD_2_RIGHT_STICK_X);
         keybind.addOrUpdate("increase_speed", Keybind.Input.GAMEPAD_1_RIGHT_BUMPER);
         keybind.addOrUpdate("decrease_speed", Keybind.Input.GAMEPAD_1_LEFT_BUMPER);
+
+//        arm.resetExtender();
     }
 
     @Override
@@ -53,7 +54,7 @@ public class ExampleTeleOp extends OpMode {
         } else {
             arm.extendArmManual(RobotArm.Direction.RETRACT, 0);
         }
-        arm.swapArmExtendModeIfNeeded();
+//        arm.runBackgroundArmExtendProcesses();
 
         if (keybind.pollValue("arm_rotation_ccw") > 0) {
             arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT));
