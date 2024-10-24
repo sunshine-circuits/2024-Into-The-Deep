@@ -17,7 +17,7 @@ public class Driver {
         this.rearRightMotor = (DcMotor)config.get("BRMotor");
         this.frontLeftMotor = (DcMotor)config.get("FLMotor");
         this.rearLeftMotor = (DcMotor)config.get("BLMotor");
-        speedMultiplier = 1;
+        speedMultiplier = 1.0;
 
         this.frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         this.rearRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -29,11 +29,14 @@ public class Driver {
     }
 
     public double setSpeedMultiplier(double newSpeed) {
-        return speedMultiplier = Math.max(0, Math.min(1, newSpeed));
+        speedMultiplier = Math.max(0, Math.min(1, newSpeed));
+        return speedMultiplier;
     }
 
     public double updateSpeedMultiplier(double increase) {
-        return speedMultiplier = Math.max(0, Math.min(1, speedMultiplier+increase));
+        speedMultiplier+=increase;
+        speedMultiplier = Math.max(0.0, Math.min(1.0, speedMultiplier));
+        return speedMultiplier;
     }
 
     public double getSpeedMultiplier() {

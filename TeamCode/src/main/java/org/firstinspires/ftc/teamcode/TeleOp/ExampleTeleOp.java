@@ -14,6 +14,8 @@ public class ExampleTeleOp extends OpMode {
     private Driver driver;
     private RobotArm arm;
     private Keybind keybind;
+    private boolean speedDebounce = false;
+    private final double ARM_SPEED_LIMIT = 0.4;
 
     @Override
     public void init() {
@@ -21,6 +23,7 @@ public class ExampleTeleOp extends OpMode {
         driver = new Driver(RobotConfig.Config.LM0);
         arm = new RobotArm(RobotConfig.Config.LM0);
         keybind = new Keybind(gamepad1, gamepad2);
+        arm.resetExtender();
 
         keybind.addOrUpdate("drive_y", Keybind.Input.GAMEPAD_1_LEFT_STICK_Y);
         keybind.addOrUpdate("drive_x", Keybind.Input.GAMEPAD_1_LEFT_STICK_X);
@@ -41,6 +44,8 @@ public class ExampleTeleOp extends OpMode {
     public void loop() {
         driver.drive(keybind.pollValue("drive_x"), keybind.pollValue("drive_y"), keybind.pollValue("rotate"));
 
+        telemetry.addData("Current Speed: ", driver.getSpeedMultiplier());
+
         if (keybind.poll("arm_extend")) {
             arm.extendArmManual(RobotArm.Direction.DEPLOY, 1);
         } else if (keybind.poll("arm_retract")) {
@@ -48,13 +53,14 @@ public class ExampleTeleOp extends OpMode {
         } else {
             arm.extendArmManual(RobotArm.Direction.RETRACT, 0);
         }
+        arm.swapArmExtendModeIfNeeded();
 
         if (keybind.pollValue("arm_rotation_ccw") > 0) {
-            arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, keybind.pollValue("arm_rotation_ccw"));
+            arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT));
         } else if (keybind.pollValue("arm_rotation_cw") > 0) {
-            arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, keybind.pollValue("arm_rotation_cw"));
+            arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT));
         } else {
-            arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, 0);
+            arm.rotateArmManual(RobotArm.Direction.BRAKE, 1);
         }
 
         if (keybind.poll("claw_open")) {
@@ -68,18 +74,26 @@ public class ExampleTeleOp extends OpMode {
             arm.setLeftClawPosition(0);
         }
 
-        if (keybind.pollValue("control_left_claw") > 0) {
+        if (keybind.pollValue("control_left_claw") != 0) {
             arm.setLeftClawPosition(keybind.pollValue("control_left_claw"));
         }
 
-        if (keybind.pollValue("control_right_claw") > 0) {
+        if (keybind.pollValue("control_right_claw") != 0) {
             arm.setRightClawPosition(keybind.pollValue("control_right_claw"));
         }
 
         if (keybind.poll("increase_speed")) {
-            driver.updateSpeedMultiplier(.1);
+            if (!speedDebounce) {
+                driver.updateSpeedMultiplier(0.1);
+            }
+            speedDebounce = true;
         } else if (keybind.poll("decrease_speed")) {
-            driver.updateSpeedMultiplier(-.1);
+            if (!speedDebounce) {
+                driver.updateSpeedMultiplier(-0.1);
+            }
+            speedDebounce = true;
+        } else {
+            speedDebounce = false;
         }
     }
 }
