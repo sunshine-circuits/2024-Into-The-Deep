@@ -21,6 +21,10 @@ android {
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }
+
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
 }
 
 dependencies {

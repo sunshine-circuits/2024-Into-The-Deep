@@ -44,11 +44,11 @@ public class Driver {
         y = -y; // Remember, Y stick value is reversed
         x*=1.1; // Counteract imperfect strafing
 
-        double magnitude = Math.max(Math.abs(y) + Math.abs(x) - Math.abs(rotation), 1);
-        double frontLeftPower = (y + x + rotation) / magnitude;
-        double rearLeftPower = (y - x + rotation) / magnitude;
-        double frontRightPower = (y - x - rotation) / magnitude;
-        double rearRightPower = (y + x - rotation) / magnitude;
+        double magnitude = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rotation), 1);
+        double frontLeftPower = (y + x - rotation) / magnitude;
+        double rearLeftPower = (y - x - rotation) / magnitude;
+        double frontRightPower = (y - x + rotation) / magnitude;
+        double rearRightPower = (y + x + rotation) / magnitude;
 
         frontLeftMotor.setPower(frontLeftPower * speedMultiplier);
         rearLeftMotor.setPower(rearLeftPower * speedMultiplier);
