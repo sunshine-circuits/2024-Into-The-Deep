@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.utils;
 
 import static org.firstinspires.ftc.teamcode.utils.HardwareMapObject.hardwareMapObjectFactory;
 
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -17,8 +17,8 @@ public class RobotConfig {
                 hardwareMapObjectFactory("BLMotor", DcMotor.class),
                 hardwareMapObjectFactory("ArmJointMotor", DcMotor.class),
                 hardwareMapObjectFactory("ArmExtendMotor", DcMotor.class),
-                hardwareMapObjectFactory("LeftServo", CRServo.class),
-                hardwareMapObjectFactory("RightServo", CRServo.class)
+                hardwareMapObjectFactory("LeftServo", Servo.class),
+                hardwareMapObjectFactory("RightServo", Servo.class)
         );
 
 

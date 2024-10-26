@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.utils;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -8,8 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class RobotArm {
     private DcMotor armJoint;
     private DcMotor armExtend;
-    private CRServo rightClaw;
-    private CRServo leftClaw;
+    private Servo rightClaw;
+    private Servo leftClaw;
     //This Double tracks the encoder position of the motor in the robot's linear actuator.
     double armExtendPositionRelativeToBasisInPulses;
     //this boolean tracks whether or not armExtend is in RUN_TO_POSITION mode.
@@ -32,8 +33,8 @@ public class RobotArm {
     public RobotArm(RobotConfig.Config config) {
         this.armJoint = (DcMotor)config.get("ArmJointMotor");
         this.armExtend = (DcMotor)config.get("ArmExtendMotor");
-        this.rightClaw = (CRServo)config.get("RightServo");
-        this.leftClaw = (CRServo)config.get("LeftServo");
+        this.rightClaw = (Servo)config.get("RightServo");
+        this.leftClaw = (Servo)config.get("LeftServo");
         defaultMotorMode=armExtend.getMode();
 
         armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -134,16 +135,18 @@ public class RobotArm {
     //0 degrees is straight up and down. Counter clockwise is negative and clockwise is positive.
     //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
     //robot.
-    private void setClawPosition(double degree, CRServo claw) {
-        claw.setPower(degree);
+    private void setClawPosition(double position, Servo claw) {
+        //claw.setPower(degree);
+        claw.setPosition(position);
+        //claw.getPosition();
     }
 
 
-    public void setRightClawPosition(double degree) {
-        setClawPosition(degree, this.rightClaw);
+    public void setRightClawPosition(double position) {
+        setClawPosition(position, this.rightClaw);
     }
 
-    public void setLeftClawPosition(double degree) {
-        setClawPosition(degree, this.leftClaw);
+    public void setLeftClawPosition(double position) {
+        setClawPosition(position, this.leftClaw);
     }
 }

@@ -9,13 +9,13 @@ import org.firstinspires.ftc.teamcode.utils.RobotArm;
 import org.firstinspires.ftc.teamcode.utils.RobotConfig;
 import org.firstinspires.ftc.teamcode.utils.*;
 
-@TeleOp(name="DriverTest")
+@TeleOp(name="ExampleTeleOp.java")
 public class ExampleTeleOp extends OpMode {
     private Driver driver;
     private RobotArm arm;
     private Keybind keybind;
     private boolean speedDebounce = false;
-    private final double ARM_SPEED_LIMIT = 0.4;
+    private final double ARM_SPEED_LIMIT = 0.2;
 
     @Override
     public void init() {
@@ -65,14 +65,14 @@ public class ExampleTeleOp extends OpMode {
         }
 
         if (keybind.poll("claw_open")) {
-            arm.setRightClawPosition(-1);
+            arm.setRightClawPosition(0);
             arm.setLeftClawPosition(1);
         } else if (keybind.poll("claw_close")) {
             arm.setRightClawPosition(1);
-            arm.setLeftClawPosition(-1);
-        } else {
-            arm.setRightClawPosition(0);
             arm.setLeftClawPosition(0);
+        } else {
+            arm.setRightClawPosition(0.5);
+            arm.setLeftClawPosition(0.5);
         }
 
         if (keybind.pollValue("control_left_claw") != 0) {
