@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class RobotArm {
     private DcMotor armJoint;
     private DcMotor armExtend;
-    private Servo rightClaw;
-    private Servo leftClaw;
+    private CRServo rightClaw;
+    private CRServo leftClaw;
     //This Double tracks the encoder position of the motor in the robot's linear actuator.
     double armExtendPositionRelativeToBasisInPulses;
     //this boolean tracks whether or not armExtend is in RUN_TO_POSITION mode.
@@ -33,9 +33,12 @@ public class RobotArm {
     public RobotArm(RobotConfig.Config config) {
         this.armJoint = (DcMotor)config.get("ArmJointMotor");
         this.armExtend = (DcMotor)config.get("ArmExtendMotor");
-        this.rightClaw = (Servo)config.get("RightServo");
-        this.leftClaw = (Servo)config.get("LeftServo");
+        this.rightClaw = (CRServo)config.get("RightServo");
+        this.leftClaw = (CRServo)config.get("LeftServo");
         defaultMotorMode=armExtend.getMode();
+
+        this.rightClaw.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.leftClaw.setDirection(DcMotorSimple.Direction.REVERSE);
 
         armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -135,9 +138,9 @@ public class RobotArm {
     //0 degrees is straight up and down. Counter clockwise is negative and clockwise is positive.
     //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
     //robot.
-    private void setClawPosition(double position, Servo claw) {
-        //claw.setPower(degree);
-        claw.setPosition(position);
+    private void setClawPosition(double position, CRServo claw) {
+        claw.setPower(position);
+        //claw.setPosition(position);
         //claw.getPosition();
     }
 
