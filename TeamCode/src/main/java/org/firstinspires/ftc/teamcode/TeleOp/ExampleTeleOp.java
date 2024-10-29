@@ -61,7 +61,7 @@ public class ExampleTeleOp extends OpMode {
         } else if (keybind.pollValue("arm_rotation_cw") > 0) {
             arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT));
         } else {
-            arm.rotateArmManual(RobotArm.Direction.BRAKE, 1);
+            arm.rotateArmManual(RobotArm.Direction.BRAKE, 0.4);
         }
 
         if (keybind.poll("claw_open")) {
