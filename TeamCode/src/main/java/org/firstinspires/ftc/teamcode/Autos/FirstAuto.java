@@ -153,10 +153,24 @@ public class FirstAuto extends LinearOpMode{
     public void InchDrive(double distance, double angle, double pow, String telem){
         double pulses = InchesToPulses(distance);
         int pulsesInt = (int)pulses;
-        int FLBRMotion = (int)((Math.sin(angle) + Math.cos(angle)) * 537.7);
-        int FRBLMotion = (int)((Math.sin(angle) - Math.cos(angle)) * 537.7);
-        driver(pulsesInt,pulsesInt,pulsesInt,pulsesInt,pow,telem);
-        driver(FRBLMotion, FLBRMotion, FLBRMotion, FRBLMotion, pow, telem);
+        double diameterOfWheels = 10.4 / 2.54;
+        double pulsesInX = ((Math.cos(angle) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
+        double pulsesInY = ((Math.sin(angle) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
+        driver((int)(pulsesInY - pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY - pulsesInX), pow, telem);
+        //FR, FL, BR, BL
+    }
+    public void RotationDrive(double distance, double angleDrive, double angle, double pow, String telem){
+        /*
+        * The angleDrive variable is the angle that the robot is driving in(according to orientation)
+        * The distance variable is the distance being driven(will scale the the x, y, and z)
+        * the angle variable is the angle that the robot will turn in while driving*/
+        double pulses = InchesToPulses(distance);
+        int pulsesInt = (int)pulses;
+        double diameterOfWheels = 10.4 / 2.54;
+        double rotationsInX = ((Math.cos(angleDrive) * distance) / (Math.PI * diameterOfWheels));
+        double rotationsInY = ((Math.sin(angleDrive) * distance) / (Math.PI * diameterOfWheels));
+        driver((int)((rotationsInY - rotationsInX - angle/360) * 537.7), (int)((rotationsInY + rotationsInX + angle/360) * 537.7), (int)((rotationsInY + rotationsInX - angle/360) * 537.7), (int)((rotationsInY - rotationsInX + angle/360) * 537.7), pow, telem);
+        //FR, FL, BR, BL
     }
     public void InchDriveAngle(double distanceInches, double angle, double pow, String telem){
         double forwardDistance=distanceInches*Math.sin((angle*Math.PI)/180);
