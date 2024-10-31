@@ -12,7 +12,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name="FirstAuto")
+@Autonomous(name="FirstInchAuto")
 
 public class FirstAuto extends LinearOpMode{
     private DcMotor BLMotor;
@@ -20,7 +20,6 @@ public class FirstAuto extends LinearOpMode{
     private DcMotor FLMotor;
     private DcMotor FRMotor;
     private DcMotor ArmJointMotor;
-
 
 
     //    @Override
@@ -78,15 +77,15 @@ public class FirstAuto extends LinearOpMode{
                 )
         )
         {
-            telemetry.addData("CurrentPosFR",FRMotor.getCurrentPosition());
-            telemetry.addData("CurrentPosFL",FLMotor.getCurrentPosition());
-            telemetry.addData("CurrentPosBR",BRMotor.getCurrentPosition());
-            telemetry.addData("CurrentPosBL",BLMotor.getCurrentPosition());
+            telemetry.addData(telem+" CurrentPosFR",FRMotor.getCurrentPosition());
+            telemetry.addData(telem+" CurrentPosFL",FLMotor.getCurrentPosition());
+            telemetry.addData(telem+" CurrentPosBR",BRMotor.getCurrentPosition());
+            telemetry.addData(telem+" CurrentPosBL",BLMotor.getCurrentPosition());
 
-            telemetry.addData("TargetPosFR ",FRtargetpos);
-            telemetry.addData("TargetPosFL ",FLtargetpos);
-            telemetry.addData("TargetPosBR ",BRtargetpos);
-            telemetry.addData("TargetPosBL ",BLtargetpos);
+            telemetry.addData(telem+" TargetPosFR ",FRtargetpos);
+            telemetry.addData(telem+" TargetPosFL ",FLtargetpos);
+            telemetry.addData(telem+" TargetPosBR ",BRtargetpos);
+            telemetry.addData(telem+" TargetPosBL ",BLtargetpos);
             telemetry.update();
         }
 
@@ -152,10 +151,9 @@ public class FirstAuto extends LinearOpMode{
     }
     public void InchDrive(double distance, double angle, double pow, String telem){
         double pulses = InchesToPulses(distance);
-        int pulsesInt = (int)pulses;
-        double diameterOfWheels = 10.4 / 2.54;
-        double pulsesInX = ((Math.cos(angle) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
-        double pulsesInY = ((Math.sin(angle) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
+        double diameterOfWheels = 104.0 / 25.4;
+        double pulsesInX = ((Math.cos((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
+        double pulsesInY = ((Math.sin((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
         driver((int)(pulsesInY - pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY - pulsesInX), pow, telem);
         //FR, FL, BR, BL
     }
@@ -165,19 +163,11 @@ public class FirstAuto extends LinearOpMode{
         * The distance variable is the distance being driven(will scale the the x, y, and z)
         * the angle variable is the angle that the robot will turn in while driving*/
         double pulses = InchesToPulses(distance);
-        int pulsesInt = (int)pulses;
-        double diameterOfWheels = 10.4 / 2.54;
-        double rotationsInX = ((Math.cos(angleDrive) * distance) / (Math.PI * diameterOfWheels));
-        double rotationsInY = ((Math.sin(angleDrive) * distance) / (Math.PI * diameterOfWheels));
+        double diameterOfWheels = 104 / 25.4;
+        double rotationsInX = ((Math.cos(angleDrive*Math.PI/180) * distance) / (Math.PI * diameterOfWheels));
+        double rotationsInY = ((Math.sin(angleDrive*Math.PI/180) * distance) / (Math.PI * diameterOfWheels));
         driver((int)((rotationsInY - rotationsInX - angle/360) * 537.7), (int)((rotationsInY + rotationsInX + angle/360) * 537.7), (int)((rotationsInY + rotationsInX - angle/360) * 537.7), (int)((rotationsInY - rotationsInX + angle/360) * 537.7), pow, telem);
         //FR, FL, BR, BL
-    }
-    public void InchDriveAngle(double distanceInches, double angle, double pow, String telem){
-        double forwardDistance=distanceInches*Math.sin((angle*Math.PI)/180);
-        double sidewaysDistance=distanceInches*Math.cos((angle*Math.PI)/180);
-        double forwardPulses=InchesToPulses(forwardDistance);
-        double sidewaysPulses=InchesToPulses(sidewaysDistance);
-        driver((int)(forwardPulses));
     }
     public double InchesToPulses(double Inches){
         return 537.7*(Inches/((104*Math.PI)/25.4));
@@ -286,9 +276,10 @@ public class FirstAuto extends LinearOpMode{
         VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
         waitForStart();
         if (opModeIsActive()) {
-            driver(-1100,1100,1100,-1100,0.1, "Right");
-            driver(3550,3550,3550,3550,0.1, "Big Forward");
-            driverInteruptable(500,-500,-500,500,0.05, "interuptable left");
+            /*
+            InchDrive(24,0,0.25, "Right");
+            InchDrive(67.5,90,0.25, "Big Forward");
+            driverInteruptable(500,-500,-500,500,0.125, "interuptable left");
             outerloop:
             while(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()) {
                 if (tagProcessor.getDetections().size() > 0) {
@@ -300,12 +291,12 @@ public class FirstAuto extends LinearOpMode{
                     }
                 }
             }
-            driver(0,0,0,0,0,"Stopping");
-            driver(-500,-500,-500,-500,0.1,"Back");
-            driver(-1800,1800,1800,-1800,0.1, "BIG RIGHT");
-            driver(-1000,-1000,-1000,-1000,0.1,"Back");
-            SingleMotorDriver(ArmJointMotor, 300,1,"Arm in position");
-
+            driver(0,0,0,0,0.125,"Stopping");
+            InchDrive(6,-90,0.25,"Back");
+            InchDrive(36,0,0.25,"RightOnceMore");
+            InchDrive(18,-90,0.25,"Back");
+            SingleMotorDriver(ArmJointMotor, 300,25,"Arm in position");
+            */
 
             telemetry.addData("Moves","Done");
             telemetry.update();
