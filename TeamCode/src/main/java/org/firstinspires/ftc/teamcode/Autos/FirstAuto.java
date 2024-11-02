@@ -276,10 +276,10 @@ public class FirstAuto extends LinearOpMode{
         VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
         waitForStart();
         if (opModeIsActive()) {
-            /*
-            InchDrive(24,0,0.25, "Right");
+            InchDrive(4,0,0.25, "Right");
             InchDrive(67.5,90,0.25, "Big Forward");
             driverInteruptable(500,-500,-500,500,0.125, "interuptable left");
+            /*
             outerloop:
             while(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()) {
                 if (tagProcessor.getDetections().size() > 0) {
@@ -292,11 +292,11 @@ public class FirstAuto extends LinearOpMode{
                 }
             }
             driver(0,0,0,0,0.125,"Stopping");
+            */
             InchDrive(6,-90,0.25,"Back");
-            InchDrive(36,0,0.25,"RightOnceMore");
+            InchDrive(56,0,0.25,"RightOnceMore");
             InchDrive(18,-90,0.25,"Back");
             SingleMotorDriver(ArmJointMotor, 300,25,"Arm in position");
-            */
 
             telemetry.addData("Moves","Done");
             telemetry.update();
