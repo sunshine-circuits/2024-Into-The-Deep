@@ -5,6 +5,9 @@ import android.util.Size;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.LED;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -20,7 +23,9 @@ public class FirstAuto extends LinearOpMode{
     private DcMotor FLMotor;
     private DcMotor FRMotor;
     private DcMotor ArmJointMotor;
-
+    private Servo Headlight;
+    private TouchSensor ArmHomeSensor;
+    private double powerlevel=0.85;
 
     //    @Override
     public void driver(int FR, int FL, int BR, int BL, double pow, String telem){
@@ -268,35 +273,47 @@ public class FirstAuto extends LinearOpMode{
         BRMotor = hardwareMap.get(DcMotor.class,"BRMotor");
         BLMotor = hardwareMap.get(DcMotor.class,"BLMotor");
         ArmJointMotor = hardwareMap.get(DcMotor.class,"ArmJointMotor");
+        Headlight = hardwareMap.get(Servo.class, "Headlight");
+        ArmHomeSensor = hardwareMap.get(TouchSensor.class, "ArmHomeTouchSensor");
         telemetry.addData("Motors","Got");
         telemetry.update();
 
-
         AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder().setDrawAxes(true).setDrawCubeProjection(true).setDrawTagID(true).setDrawTagOutline(true).setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11).setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()).build();
         VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
+        Headlight.setPosition(0);
         waitForStart();
+        /*
+        while(ArmHomeSensor.isPressed()==false){
+            ArmJointMotor.setPower(-0.25);
+            ArmJointMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+        ArmJointMotor.setPower(0);
+        */
+        Headlight.setPosition(1);
         if (opModeIsActive()) {
-            InchDrive(4,0,0.25, "Right");
-            InchDrive(67.5,90,0.25, "Big Forward");
-            driverInteruptable(500,-500,-500,500,0.125, "interuptable left");
+            InchDrive(2,0,powerlevel, "Right");
+            InchDrive(82.5,90,powerlevel, "Big Forward");
             /*
+            driverInteruptable(400,-400,-400,400,powerlevel/2, "interuptable left");
             outerloop:
             while(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()) {
                 if (tagProcessor.getDetections().size() > 0) {
                     for (int i = 0; i < tagProcessor.getDetections().size(); i++) {
                         AprilTagDetection tag = tagProcessor.getDetections().get(i);
                         if (tag.id == 13) {
+
                             break outerloop;
                         }
                     }
                 }
             }
-            driver(0,0,0,0,0.125,"Stopping");
+            driver(0,0,0,0,powerlevel/2,"Stopping");
             */
-            InchDrive(6,-90,0.25,"Back");
-            InchDrive(56,0,0.25,"RightOnceMore");
-            InchDrive(18,-90,0.25,"Back");
-            SingleMotorDriver(ArmJointMotor, 300,25,"Arm in position");
+            InchDrive(19,-90,powerlevel,"Back");
+            InchDrive(54,0,powerlevel,"RightOnceMore");
+            SingleMotorDriver(ArmJointMotor, 5000,powerlevel,"Arm almost ready to fire");
+            InchDrive(15,-90,powerlevel,"Back");
+            SingleMotorDriver(ArmJointMotor, -5000,powerlevel,"Arm in position");
 
             telemetry.addData("Moves","Done");
             telemetry.update();

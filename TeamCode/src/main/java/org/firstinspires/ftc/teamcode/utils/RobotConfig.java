@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.HashMap;
 
@@ -17,8 +18,9 @@ public class RobotConfig {
                 hardwareMapObjectFactory("BLMotor", DcMotor.class),
                 hardwareMapObjectFactory("ArmJointMotor", DcMotor.class),
                 hardwareMapObjectFactory("ArmExtendMotor", DcMotor.class),
-                hardwareMapObjectFactory("LeftServo", CRServo.class),
-                hardwareMapObjectFactory("RightServo", CRServo.class)
+                hardwareMapObjectFactory("LeftServo", Servo.class),
+                hardwareMapObjectFactory("RightServo", Servo.class),
+                hardwareMapObjectFactory("Headlight", Servo.class)
         );
 
 

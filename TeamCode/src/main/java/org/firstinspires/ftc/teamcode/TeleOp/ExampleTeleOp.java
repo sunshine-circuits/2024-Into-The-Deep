@@ -29,6 +29,10 @@ public class ExampleTeleOp extends OpMode {
         keybind.addOrUpdate("rotate", Keybind.Input.GAMEPAD_1_RIGHT_STICK_X);
         keybind.addOrUpdate("claw_open", Keybind.Input.GAMEPAD_2_RIGHT_BUMPER);
         keybind.addOrUpdate("claw_close", Keybind.Input.GAMEPAD_2_LEFT_BUMPER);
+        keybind.addOrUpdate("left_claw_down", Keybind.Input.GAMEPAD_2_DPAD_LEFT);
+        keybind.addOrUpdate("left_claw_up", Keybind.Input.GAMEPAD_2_DPAD_RIGHT);
+        keybind.addOrUpdate("right_claw_down", Keybind.Input.GAMEPAD_2_DPAD_DOWN);
+        keybind.addOrUpdate("right_claw_up", Keybind.Input.GAMEPAD_2_DPAD_UP);
         keybind.addOrUpdate("arm_rotation_ccw", Keybind.Input.GAMEPAD_2_LEFT_TRIGGER);
         keybind.addOrUpdate("arm_rotation_cw", Keybind.Input.GAMEPAD_2_RIGHT_TRIGGER);
         keybind.addOrUpdate("arm_extend", Keybind.Input.GAMEPAD_2_A);
@@ -61,10 +65,12 @@ public class ExampleTeleOp extends OpMode {
         } else if (keybind.pollValue("arm_rotation_cw") > 0) {
             arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT));
         } else {
-            arm.rotateArmManual(RobotArm.Direction.BRAKE, 0.4);
+            arm.rotateArmManual(RobotArm.Direction.BRAKE, 0.3);
         }
 
-        if (keybind.poll("claw_open")) {
+        if (keybind.poll("left_claw_down")) {
+            arm.setLeftClawPosition(-1);
+        }else if (keybind.poll("claw_open")) {
             arm.setRightClawPosition(-1);
             arm.setLeftClawPosition(1);
         } else if (keybind.poll("claw_close")) {
