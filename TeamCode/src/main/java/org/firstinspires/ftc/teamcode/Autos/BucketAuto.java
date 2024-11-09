@@ -65,7 +65,7 @@ public class BucketAuto extends InchAutoParent {
             driver(0,0,0,0,powerlevel/2,"Stopping");
             */
             InchDrive(19,-90,powerlevel,"Back");
-            InchDrive(54,0,powerlevel,"RightOnceMore");
+            InchDrive(51,0,powerlevel,"RightOnceMore");
             driver(2000,-2000,2000,-2000, powerlevel, "rotation");
             InchDrive(14,90,powerlevel,"Back");
             SingleMotorDriver(ArmJointMotor, 500,1,"Arm almost ready to fire");

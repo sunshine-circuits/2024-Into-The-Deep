@@ -13,7 +13,7 @@ public class InchAutoParent extends LinearOpMode {
     protected DcMotor ArmJointMotor;
     protected Servo Headlight;
     protected TouchSensor ArmHomeSensor;
-    protected double powerlevel=0.85;
+    protected double powerlevel=0.75;
 
     //    @Override
     public void driver(int FR, int FL, int BR, int BL, double pow, String telem){
