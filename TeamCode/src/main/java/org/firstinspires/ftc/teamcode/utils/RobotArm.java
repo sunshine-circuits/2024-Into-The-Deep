@@ -42,7 +42,6 @@ public class RobotArm {
 
         armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armExtend.setMode(RunMode.STOP_AND_RESET_ENCODER);
     }
 
     //this double contains the number of pulses the encoder runs to move one rotation

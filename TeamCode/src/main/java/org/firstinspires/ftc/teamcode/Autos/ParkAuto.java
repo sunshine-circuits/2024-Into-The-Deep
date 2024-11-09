@@ -47,9 +47,9 @@ public class ParkAuto extends InchAutoParent {
         Headlight.setPosition(1);
         if (opModeIsActive()) {
             InchDrive(26,0,powerlevel, "Right");
-            InchDrive(78,90,powerlevel, "Big Forward");
-            InchDrive(-24,180,powerlevel, "left");
-            InchDrive(4.5,90,powerlevel, "Big Forward");
+            InchDrive(80,90,powerlevel, "Big Forward");
+            InchDrive(24,180,powerlevel, "left");
+            InchDrive(2.5,90,powerlevel, "Big Forward");
 
             /*
             driverInteruptable(400,-400,-400,400,powerlevel/2, "interuptable left");
@@ -67,8 +67,11 @@ public class ParkAuto extends InchAutoParent {
             }
             driver(0,0,0,0,powerlevel/2,"Stopping");
             */
-            InchDrive(19,-90,powerlevel,"Back");
-            InchDrive(54,0,powerlevel,"RightOnceMore");
+            InchDrive(2,-90,powerlevel,"Back");
+            InchDrive(18,0,powerlevel,"RightOnceMore");
+            InchDrive(12,-90,powerlevel,"Back");
+            InchDrive(33,0,powerlevel,"RightOnceMore");
+            InchDrive(5,-90,powerlevel,"Back");
             driver(2000,-2000,2000,-2000, powerlevel, "rotation");
             InchDrive(14,90,powerlevel,"Back");
             SingleMotorDriver(ArmJointMotor, 500,1,"Arm almost ready to fire");
