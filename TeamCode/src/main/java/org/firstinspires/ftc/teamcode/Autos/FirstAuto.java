@@ -311,9 +311,11 @@ public class FirstAuto extends LinearOpMode{
             */
             InchDrive(19,-90,powerlevel,"Back");
             InchDrive(54,0,powerlevel,"RightOnceMore");
-            SingleMotorDriver(ArmJointMotor, 5000,powerlevel,"Arm almost ready to fire");
-            InchDrive(15,-90,powerlevel,"Back");
-            SingleMotorDriver(ArmJointMotor, -5000,powerlevel,"Arm in position");
+            driver(2000,-2000,2000,-2000, powerlevel, "rotation");
+            InchDrive(15,90,powerlevel,"Back");
+            SingleMotorDriver(ArmJointMotor, 500,1,"Arm almost ready to fire");
+            SingleMotorDriver(ArmJointMotor, 500,-1,"Arm almost ready to fire");
+
 
             telemetry.addData("Moves","Done");
             telemetry.update();
