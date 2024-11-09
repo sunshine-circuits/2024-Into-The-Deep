@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils;
 
+import com.qualcomm.ftccommon.configuration.RobotConfigFile;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -46,6 +47,7 @@ public class AutoDriver {
         int pulsesInt = (int)pulses;
         drive(pulsesInt,pulsesInt,pulsesInt,pulsesInt,pow);
     }
+
     private double inchesToPulses(double Inches){
         return 537.7*(Inches/((104*Math.PI)/25.4));
     }

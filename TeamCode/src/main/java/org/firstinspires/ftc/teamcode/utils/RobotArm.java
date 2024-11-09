@@ -16,9 +16,9 @@ public class RobotArm {
     double armExtendPositionRelativeToBasisInPulses;
     //this boolean tracks whether or not armExtend is in RUN_TO_POSITION mode.
     boolean armExtendInRunToPosMode=false;
-    //this boolean tracks wheter or not armJoint's position needs set for the braking system.
+    //this boolean tracks whether or not armJoint's position needs set for the braking system.
     boolean armJointPositionNeedsSet=true;
-    //this RunMode is the runmode motors are set to when they are first initalized.
+    //this RunMode is the runmode motors are set to when they are first initialized.
     private RunMode defaultMotorMode;
     boolean zeroPositionFound=false;
     double BasisInPulses;
