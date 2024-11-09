@@ -1,31 +1,19 @@
-package org.firstinspires.ftc.teamcode.Autos;
+package org.firstinspires.ftc.teamcode.utils;
 
-import android.util.Size;
-
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.LED;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
-@Autonomous(name="FirstInchAuto")
-
-public class FirstAuto extends LinearOpMode{
-    private DcMotor BLMotor;
-    private DcMotor BRMotor;
-    private DcMotor FLMotor;
-    private DcMotor FRMotor;
-    private DcMotor ArmJointMotor;
-    private Servo Headlight;
-    private TouchSensor ArmHomeSensor;
-    private double powerlevel=0.85;
+public class InchAutoParent extends LinearOpMode {
+    protected DcMotor BLMotor;
+    protected DcMotor BRMotor;
+    protected DcMotor FLMotor;
+    protected DcMotor FRMotor;
+    protected DcMotor ArmJointMotor;
+    protected Servo Headlight;
+    protected TouchSensor ArmHomeSensor;
+    protected double powerlevel=0.85;
 
     //    @Override
     public void driver(int FR, int FL, int BR, int BL, double pow, String telem){
@@ -263,64 +251,8 @@ public class FirstAuto extends LinearOpMode{
         telemetry.update();
     }
 
+    @Override
+    public void runOpMode() throws InterruptedException {
 
-    public void runOpMode() throws InterruptedException
-    {
-        telemetry.addData("Motors","Grabbing");
-        telemetry.update();
-        FRMotor = hardwareMap.get(DcMotor.class,"FRMotor");
-        FLMotor = hardwareMap.get(DcMotor.class,"FLMotor");
-        BRMotor = hardwareMap.get(DcMotor.class,"BRMotor");
-        BLMotor = hardwareMap.get(DcMotor.class,"BLMotor");
-        ArmJointMotor = hardwareMap.get(DcMotor.class,"ArmJointMotor");
-        Headlight = hardwareMap.get(Servo.class, "Headlight");
-        ArmHomeSensor = hardwareMap.get(TouchSensor.class, "ArmHomeTouchSensor");
-        telemetry.addData("Motors","Got");
-        telemetry.update();
-
-        AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder().setDrawAxes(true).setDrawCubeProjection(true).setDrawTagID(true).setDrawTagOutline(true).setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11).setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()).build();
-        VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
-        Headlight.setPosition(0);
-        waitForStart();
-        /*
-        while(ArmHomeSensor.isPressed()==false){
-            ArmJointMotor.setPower(-0.25);
-            ArmJointMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-        ArmJointMotor.setPower(0);
-        */
-        Headlight.setPosition(1);
-        if (opModeIsActive()) {
-            InchDrive(2,0,powerlevel, "Right");
-            InchDrive(82.5,90,powerlevel, "Big Forward");
-            /*
-            driverInteruptable(400,-400,-400,400,powerlevel/2, "interuptable left");
-            outerloop:
-            while(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()) {
-                if (tagProcessor.getDetections().size() > 0) {
-                    for (int i = 0; i < tagProcessor.getDetections().size(); i++) {
-                        AprilTagDetection tag = tagProcessor.getDetections().get(i);
-                        if (tag.id == 13) {
-
-                            break outerloop;
-                        }
-                    }
-                }
-            }
-            driver(0,0,0,0,powerlevel/2,"Stopping");
-            */
-            InchDrive(19,-90,powerlevel,"Back");
-            InchDrive(54,0,powerlevel,"RightOnceMore");
-            driver(2000,-2000,2000,-2000, powerlevel, "rotation");
-            InchDrive(15,90,powerlevel,"Back");
-            SingleMotorDriver(ArmJointMotor, 500,1,"Arm almost ready to fire");
-            SingleMotorDriver(ArmJointMotor, 500,-1,"Arm almost ready to fire");
-
-
-            telemetry.addData("Moves","Done");
-            telemetry.update();
-            // RESET
-
-        }
     }
 }

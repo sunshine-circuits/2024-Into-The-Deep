@@ -77,14 +77,14 @@ public class ExampleTeleOp extends OpMode {
         }else if (keybind.poll("right_claw_up")) {
             arm.setRightClawPosition(1);
         }else if (keybind.poll("claw_open")) {
-            arm.setRightClawPosition(0);
-            arm.setLeftClawPosition(1);
+            arm.setRightClawPosition(0.15);
+            arm.setLeftClawPosition(0.85);
         } else if (keybind.poll("claw_close")) {
             arm.setRightClawPosition(1);
             arm.setLeftClawPosition(0);
         } else {
-            arm.setRightClawPosition(0.5);
-            arm.setLeftClawPosition(0.5);
+            arm.setRightClawPosition(0.45);
+            arm.setLeftClawPosition(0.55);
         }
 
         if (keybind.pollValue("control_left_claw") != 0) {
