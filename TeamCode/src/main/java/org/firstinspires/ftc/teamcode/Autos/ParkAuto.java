@@ -69,10 +69,9 @@ public class ParkAuto extends InchAutoParent {
             */
             InchDrive(2,-90,powerlevel,"Back");
             InchDrive(18,0,powerlevel,"RightOnceMore");
-            InchDrive(12,-90,powerlevel,"Back");
-            InchDrive(33,0,powerlevel,"RightOnceMore");
-            InchDrive(5,-90,powerlevel,"Back");
-            driver(2000,-2000,2000,-2000, powerlevel, "rotation");
+            InchDrive(19,-90,powerlevel,"Back");
+            InchDrive(35,0,powerlevel,"RightOnceMore");
+            driver(1975,-1975,1975,-1975, powerlevel, "rotation");
             InchDrive(14,90,powerlevel,"Back");
             SingleMotorDriver(ArmJointMotor, 500,1,"Arm almost ready to fire");
             SingleMotorDriver(ArmJointMotor, 500,-1,"Arm almost ready to fire");

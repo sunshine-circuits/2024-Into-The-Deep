@@ -3,58 +3,28 @@ package org.firstinspires.ftc.teamcode.Autos;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
+
+import org.firstinspires.ftc.teamcode.utils.InchAutoParent;
 
 @Autonomous(name="ThisIsNothingIgnoreIt")
-public class TestAuto extends LinearOpMode {
-
-    public DcMotor ExtendArm;
-
-    public void SingleMotorDriver(DcMotor OpMotor, int dist, double pow, String telem){
-        int OpPos;
-        telemetry.addData("Variables "+telem,"Declared");
-
-        OpPos=OpMotor.getCurrentPosition()+dist;
-
-        telemetry.addData("MotorData "+telem,"Snatched");
-
-        OpMotor.setTargetPosition(OpPos);
-
-        telemetry.addData("TargetPos "+telem,"Declared");
-        telemetry.addData("TargetPosFR ",OpPos);
-
-        OpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        telemetry.addData("Running "+telem,"Happening");
-        telemetry.update();
-
-        OpMotor.setPower(pow);
-
-        telemetry.addData("Power "+telem,"Set");
-        telemetry.update();
-
-        telemetry.addData("While "+telem,"Started");
-        telemetry.update();
-
-        while (opModeIsActive()&&(OpMotor.isBusy()))
-        {
-            telemetry.addData("CurrentPos",OpMotor.getCurrentPosition());
-
-            telemetry.addData("TargetPos ",OpPos);
-            telemetry.update();
-        }
-
-        telemetry.addData("While "+telem,"Done");
-        telemetry.update();
-
-        OpMotor.setPower(0);
-
-        telemetry.addData("Power","Zero");
-        telemetry.update();
-    }
+public class TestAuto extends InchAutoParent {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
+        telemetry.addData("Motors","Grabbing");
+        telemetry.update();
+        FRMotor = hardwareMap.get(DcMotor.class,"FRMotor");
+        FLMotor = hardwareMap.get(DcMotor.class,"FLMotor");
+        BRMotor = hardwareMap.get(DcMotor.class,"BRMotor");
+        BLMotor = hardwareMap.get(DcMotor.class,"BLMotor");
+        ArmJointMotor = hardwareMap.get(DcMotor.class,"ArmJointMotor");
+        Headlight = hardwareMap.get(Servo.class, "Headlight");
+        ArmHomeSensor = hardwareMap.get(TouchSensor.class, "ArmHomeTouchSensor");
+        telemetry.addData("Motors","Got");
+        telemetry.update();
         waitForStart();
+        DistanceDrive(24,24,0.25,"Frick");
     }
 }
