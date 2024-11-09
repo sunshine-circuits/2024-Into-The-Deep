@@ -150,6 +150,14 @@ public class InchAutoParent extends LinearOpMode {
         driver((int)(pulsesInY - pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY - pulsesInX), pow, telem);
         //FR, FL, BR, BL
     }
+    public void DistanceDrive(double changex, double changey, double pow, String telem){
+        //changex is the change in x(inches)
+        //changey is the change in y(inches)
+        double circumferenceOfWheels = (104.0 / 25.4) * Math.PI;
+        int flbrmovement = (int)(((changey + changex) / circumferenceOfWheels) * 268.85);
+        int frblmovement = (int)(((changey - changex) / circumferenceOfWheels) * 268.85);
+        driver((int)(frblmovement), (int)(flbrmovement), (int)(flbrmovement), (int)(frblmovement), pow, telem);
+    }
     public void RotationDrive(double distance, double angleDrive, double angle, double pow, String telem){
         /*
         * The angleDrive variable is the angle that the robot is driving in(according to orientation)
