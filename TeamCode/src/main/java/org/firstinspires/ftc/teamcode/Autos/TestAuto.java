@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.Autos;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+@Autonomous(name="ThisIsNothingIgnoreIt")
 public class TestAuto extends LinearOpMode {
 
     public DcMotor ExtendArm;
