@@ -154,8 +154,8 @@ public class InchAutoParent extends LinearOpMode {
         //changex is the change in x(inches)
         //changey is the change in y(inches)
         double circumferenceOfWheels = (104.0 / 25.4) * Math.PI;
-        int flbrmovement = (int)(((changey + changex) / circumferenceOfWheels) * 268.85);
-        int frblmovement = (int)(((changey - changex) / circumferenceOfWheels) * 268.85);
+        int flbrmovement = (int)(((changey + changex) / circumferenceOfWheels) * 537.7);
+        int frblmovement = (int)(((changey - changex) / circumferenceOfWheels) * 537.7);
         driver((int)(frblmovement), (int)(flbrmovement), (int)(flbrmovement), (int)(frblmovement), pow, telem);
     }
     public void RotationDrive(double distance, double angleDrive, double angle, double pow, String telem){
