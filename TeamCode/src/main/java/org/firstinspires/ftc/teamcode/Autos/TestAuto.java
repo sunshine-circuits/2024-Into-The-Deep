@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.utils.InchAutoParent;
 
 @Autonomous(name="ThisIsNothingIgnoreIt")
+
 public class TestAuto extends InchAutoParent {
 
     @Override
