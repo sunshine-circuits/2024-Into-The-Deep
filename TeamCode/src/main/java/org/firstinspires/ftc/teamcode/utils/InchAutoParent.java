@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.utils;
 
+import static java.lang.Math.sin;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.robot.Robot;
 
 public class InchAutoParent extends LinearOpMode {
     protected DcMotor BLMotor;
@@ -146,7 +149,7 @@ public class InchAutoParent extends LinearOpMode {
         double pulses = InchesToPulses(distance);
         double diameterOfWheels = 104.0 / 25.4;
         double pulsesInX = ((Math.cos((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
-        double pulsesInY = ((Math.sin((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
+        double pulsesInY = ((sin((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
         driver((int)(pulsesInY - pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY - pulsesInX), pow, telem);
         //FR, FL, BR, BL
     }
@@ -158,6 +161,14 @@ public class InchAutoParent extends LinearOpMode {
         int frblmovement = (int)(((changey - changex) / circumferenceOfWheels) * 537.7);
         driver((int)(frblmovement), (int)(flbrmovement), (int)(flbrmovement), (int)(frblmovement), pow, telem);
     }
+    public void DriveIrrespectiveOfAngle(double RobotAngle, double changex, double changey, double pow, String telem){
+        //this drives irrespective of the robot angle with respect to the field
+        //the RobotAngle should be in degrees(sorry!)
+        double angleinradians = (RobotAngle / 180) * Math.PI;
+        double anglesin = Math.sin(angleinradians);
+        double anglecos = Math.cos(angleinradians);
+        DistanceDrive(anglesin * changex + anglecos * changex, anglesin * changey + anglecos * changey, pow, telem);
+    }
     public void RotationDrive(double distance, double angleDrive, double angle, double pow, String telem){
         /*
         * The angleDrive variable is the angle that the robot is driving in(according to orientation)
@@ -166,7 +177,7 @@ public class InchAutoParent extends LinearOpMode {
         double pulses = InchesToPulses(distance);
         double diameterOfWheels = 104 / 25.4;
         double rotationsInX = ((Math.cos(angleDrive*Math.PI/180) * distance) / (Math.PI * diameterOfWheels));
-        double rotationsInY = ((Math.sin(angleDrive*Math.PI/180) * distance) / (Math.PI * diameterOfWheels));
+        double rotationsInY = ((sin(angleDrive*Math.PI/180) * distance) / (Math.PI * diameterOfWheels));
         driver((int)((rotationsInY - rotationsInX - angle/360) * 537.7), (int)((rotationsInY + rotationsInX + angle/360) * 537.7), (int)((rotationsInY + rotationsInX - angle/360) * 537.7), (int)((rotationsInY - rotationsInX + angle/360) * 537.7), pow, telem);
         //FR, FL, BR, BL
     }
