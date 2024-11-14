@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.util.HashMap;
 
@@ -20,7 +21,8 @@ public class RobotConfig {
                 hardwareMapObjectFactory("ArmExtendMotor", DcMotor.class),
                 hardwareMapObjectFactory("LeftServo", Servo.class),
                 hardwareMapObjectFactory("RightServo", Servo.class),
-                hardwareMapObjectFactory("Headlight", Servo.class)
+                hardwareMapObjectFactory("Headlight", Servo.class),
+                hardwareMapObjectFactory("TouchSensor", TouchSensor.class)
         );
 
 
