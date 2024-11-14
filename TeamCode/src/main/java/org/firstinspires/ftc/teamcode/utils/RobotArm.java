@@ -42,6 +42,10 @@ public class RobotArm {
 
         armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armExtend.setMode(RunMode.STOP_AND_RESET_ENCODER);
+        armExtend.setMode(defaultMotorMode);
+        armJoint.setMode(RunMode.STOP_AND_RESET_ENCODER);
+        armJoint.setMode(defaultMotorMode);
     }
 
     //this double contains the number of pulses the encoder runs to move one rotation
@@ -83,8 +87,18 @@ public class RobotArm {
     //robot.
     public void rotateArmManual(Direction direction, double power) {
         switch (direction) {
-            case COUNTER_CLOCKWISE: armJoint.setMode(defaultMotorMode); armJoint.setDirection(DcMotorSimple.Direction.FORWARD); armJoint.setPower(power); armJointPositionNeedsSet=true; break;
-            case CLOCKWISE: armJoint.setMode(defaultMotorMode); armJoint.setDirection(DcMotorSimple.Direction.REVERSE); armJoint.setPower(power); armJointPositionNeedsSet=true; break;
+            case COUNTER_CLOCKWISE:
+                armJoint.setMode(defaultMotorMode);
+                armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
+                armJoint.setPower(power);
+                armJointPositionNeedsSet=true;
+                break;
+            case CLOCKWISE:
+                armJoint.setMode(defaultMotorMode);
+                armJoint.setDirection(DcMotorSimple.Direction.REVERSE);
+                armJoint.setPower(power);
+                armJointPositionNeedsSet=true;
+                break;
             case BRAKE:
                 armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
                 armJoint.setPower(power);
