@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 //import com.revrobotics.ColorSensorV3;
 
 public class RobotArm {
-    private DcMotor armJoint;
+    public DcMotor armJoint;
     private DcMotor armExtend;
     private Servo rightClaw;
     private Servo leftClaw;
