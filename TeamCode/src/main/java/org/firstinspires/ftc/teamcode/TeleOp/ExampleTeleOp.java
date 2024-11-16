@@ -42,6 +42,8 @@ public class ExampleTeleOp extends OpMode {
         keybind.addOrUpdate("increase_speed", Keybind.Input.GAMEPAD_1_RIGHT_BUMPER);
         keybind.addOrUpdate("decrease_speed", Keybind.Input.GAMEPAD_1_LEFT_BUMPER);
 
+        arm.moveToOrigin();
+
 //        arm.resetExtender();
     }
 
@@ -61,9 +63,7 @@ public class ExampleTeleOp extends OpMode {
 //        arm.runBackgroundArmExtendProcesses();
         telemetry.addData("Arm Limit Set?",arm.jointLimitSet);
         telemetry.addData("Arm touch sensor pressed",arm.JointTouchSensor.isPressed());
-        if(arm.jointLimitSet==false){
-            arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, ARM_SPEED_LIMIT);
-        }else if (keybind.pollValue("arm_rotation_ccw") > 0) {
+        if (keybind.pollValue("arm_rotation_ccw") > 0) {
             arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT));
         } else if (keybind.pollValue("arm_rotation_cw") > 0) {
             arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT));

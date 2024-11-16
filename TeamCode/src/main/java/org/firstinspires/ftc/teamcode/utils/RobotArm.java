@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+//import com.revrobotics.ColorSensorV3;
 
 public class RobotArm {
     private DcMotor armJoint;
@@ -85,53 +86,64 @@ public class RobotArm {
 
     }
 
+    public void moveToOrigin() throws Exception {
+        armJoint.setTargetPosition(-1000);
+        armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armJoint.setPower(0.2);
+        while(armJoint.isBusy() && !JointTouchSensor.isPressed());
+        //Same thing, but by increments.
+        //        int count = 0;
+        //        while (!JointTouchSensor.isPressed()){
+        //            armJoint.setTargetPosition(-10 * count);
+        //            armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //            armJoint.setPower(0.2);
+        //            while(armJoint.isBusy());
+        //            count++;
+        //        }
+        if (!JointTouchSensor.isPressed()) {
+            throw new Exception("Could not move to origin");
+        }
+        armJoint.setMode(RunMode.STOP_AND_RESET_ENCODER);
+        armJoint.setMode(defaultMotorMode);
+
+
+    }
+
     //This method accepts a direction and speed and will rotate to a max/min value.
     //0 degrees is straight up and down. Counter clockwise is negative and clockwise is positive.
     //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
     //robot.
     public void rotateArmManual(Direction direction, double power) {
-        if(jointLimitSet==true) {
-            if(armJoint.getCurrentPosition() < 350) {
-                armJoint.setTargetPosition(365);
-                armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }else {
-                switch (direction) {
-                    case COUNTER_CLOCKWISE:
-                        armJoint.setMode(defaultMotorMode);
-                        armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
-                        armJoint.setPower(power);
-                        armJointPositionNeedsSet = true;
-                        break;
-                    case CLOCKWISE:
-                        armJoint.setMode(defaultMotorMode);
-                        armJoint.setDirection(DcMotorSimple.Direction.REVERSE);
-                        armJoint.setPower(power);
-                        armJointPositionNeedsSet = true;
-                        break;
-                    case BRAKE:
-                        armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
-                        armJoint.setPower(power);
-                        if (armJointPositionNeedsSet) {
+        if(armJoint.getCurrentPosition() < 350) {
+            armJoint.setTargetPosition(365);
+            armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }else {
+            switch (direction) {
+                case COUNTER_CLOCKWISE:
+                    armJoint.setMode(defaultMotorMode);
+                    armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
+                    armJoint.setPower(power);
+                    armJointPositionNeedsSet = true;
+                    break;
+                case CLOCKWISE:
+                    armJoint.setMode(defaultMotorMode);
+                    armJoint.setDirection(DcMotorSimple.Direction.REVERSE);
+                    armJoint.setPower(power);
+                    armJointPositionNeedsSet = true;
+                    break;
+                case BRAKE:
+                    armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
+                    armJoint.setPower(power);
+                    if (armJointPositionNeedsSet) {
 
-                            armJoint.setTargetPosition(armJoint.getCurrentPosition());
-                            armJointPositionNeedsSet = false;
-                        }
-                        armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        break;
-                }
-            }
-        }else{
-            if (JointTouchSensor.isPressed()){
-                armJoint.setMode(RunMode.STOP_AND_RESET_ENCODER);
-                armJoint.setMode(defaultMotorMode);
-                jointLimitSet=true;
-                return;
-            }else{
-                armJoint.setTargetPosition(-1000);
-                armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                armJoint.setPower(0.2);
+                        armJoint.setTargetPosition(armJoint.getCurrentPosition());
+                        armJointPositionNeedsSet = false;
+                    }
+                    armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    break;
             }
         }
+
     }
 
     //This method accepts a double of inches and will extend/retract to a value as an absolute position.
