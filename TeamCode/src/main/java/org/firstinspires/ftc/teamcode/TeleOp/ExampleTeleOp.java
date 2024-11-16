@@ -63,6 +63,8 @@ public class ExampleTeleOp extends OpMode {
 //        arm.runBackgroundArmExtendProcesses();
         telemetry.addData("Arm Limit Set?",arm.jointLimitSet);
         telemetry.addData("Arm touch sensor pressed",arm.JointTouchSensor.isPressed());
+        telemety.addData("Arm Target Position",armJoint.getTargetPosition());
+        telemety.addData("Arm current Position",armJoint.getCurrentPosition());
         if (keybind.pollValue("arm_rotation_ccw") > 0) {
             arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT));
         } else if (keybind.pollValue("arm_rotation_cw") > 0) {
