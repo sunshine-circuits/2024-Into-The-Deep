@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.utils;
 
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-//import com.revrobotics.ColorSensorV3;
+import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl;
 
 public class RobotArm {
     private DcMotor armJoint;
@@ -16,6 +17,7 @@ public class RobotArm {
     private Servo headlight;
 
     public TouchSensor JointTouchSensor;
+    public DistanceSensor clawDistanceSensor;
     //This Double tracks the encoder position of the motor in the robot's linear actuator.
     double armExtendPositionRelativeToBasisInPulses;
     //this boolean tracks whether or not armExtend is in RUN_TO_POSITION mode.
@@ -41,7 +43,9 @@ public class RobotArm {
         this.rightClaw = (Servo)config.get("RightServo");
         this.leftClaw = (Servo)config.get("LeftServo");
         this.headlight = (Servo)config.get("Headlight");
-        this.JointTouchSensor=(TouchSensor)config.get("TouchSensor");
+        this.JointTouchSensor = (TouchSensor)config.get("TouchSensor");
+        this.clawDistanceSensor = (DistanceSensor)config.get("DistanceSensor");
+
         this.headlight.setPosition(1);
         defaultMotorMode=armExtend.getMode();
 
@@ -87,10 +91,12 @@ public class RobotArm {
     }
 
     public void moveToOrigin() throws Exception {
-        armJoint.setTargetPosition(-1000);
         armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armJoint.setTargetPosition(-1000);
         armJoint.setPower(0.2);
-        while(armJoint.isBusy() && !JointTouchSensor.isPressed());
+        while(armJoint.isBusy() && !JointTouchSensor.isPressed()) {
+
+        }
         //Same thing, but by increments.
         //        int count = 0;
         //        while (!JointTouchSensor.isPressed()){

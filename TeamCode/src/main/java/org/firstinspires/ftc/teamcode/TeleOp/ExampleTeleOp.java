@@ -42,7 +42,11 @@ public class ExampleTeleOp extends OpMode {
         keybind.addOrUpdate("increase_speed", Keybind.Input.GAMEPAD_1_RIGHT_BUMPER);
         keybind.addOrUpdate("decrease_speed", Keybind.Input.GAMEPAD_1_LEFT_BUMPER);
 
-        arm.moveToOrigin();
+        try {
+            arm.moveToOrigin();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
 //        arm.resetExtender();
     }
