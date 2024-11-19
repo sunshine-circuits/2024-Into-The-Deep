@@ -15,7 +15,6 @@ public class InchAutoParent extends LinearOpMode {
     protected DcMotor FRMotor;
     protected DcMotor ArmJointMotor;
     protected Servo Headlight;
-    protected TouchSensor ArmHomeSensor;
     protected double powerlevel=0.7;
 
     //    @Override

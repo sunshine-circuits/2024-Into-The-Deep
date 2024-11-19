@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.utils.Keybind;
 import org.firstinspires.ftc.teamcode.utils.RobotArm;
 import org.firstinspires.ftc.teamcode.utils.RobotConfig;
@@ -47,12 +48,14 @@ public class ExampleTeleOp extends OpMode {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
 //        arm.resetExtender();
     }
 
     @Override
     public void loop() {
+        telemetry.addData("Arm Distance Cm" , arm.clawDistanceSensor.getDistance(DistanceUnit.CM));
+        arm.SetLightToDistance();
+
         driver.drive(keybind.pollValue("drive_x"), keybind.pollValue("drive_y"), keybind.pollValue("rotate"));
 
         telemetry.addData("Current Speed: ", driver.getSpeedMultiplier());

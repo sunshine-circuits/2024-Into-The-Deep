@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.utils;
 
 import static org.firstinspires.ftc.teamcode.utils.HardwareMapObject.hardwareMapObjectFactory;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -24,7 +25,7 @@ public class RobotConfig {
                 hardwareMapObjectFactory("RightServo", Servo.class),
                 hardwareMapObjectFactory("Headlight", Servo.class),
                 hardwareMapObjectFactory("TouchSensor", TouchSensor.class),
-                hardwareMapObjectFactory("DistanceSensor", DistanceSensor.class)
+                hardwareMapObjectFactory("DistanceSensor", RevColorSensorV3.class)
         );
 
 

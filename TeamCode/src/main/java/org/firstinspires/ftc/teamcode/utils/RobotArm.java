@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -9,15 +10,16 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 public class RobotArm {
     public DcMotor armJoint;
     private DcMotor armExtend;
     private Servo rightClaw;
     private Servo leftClaw;
     private Servo headlight;
-
     public TouchSensor JointTouchSensor;
-    public DistanceSensor clawDistanceSensor;
+    public RevColorSensorV3 clawDistanceSensor;
     //This Double tracks the encoder position of the motor in the robot's linear actuator.
     double armExtendPositionRelativeToBasisInPulses;
     //this boolean tracks whether or not armExtend is in RUN_TO_POSITION mode.
@@ -44,7 +46,7 @@ public class RobotArm {
         this.leftClaw = (Servo)config.get("LeftServo");
         this.headlight = (Servo)config.get("Headlight");
         this.JointTouchSensor = (TouchSensor)config.get("TouchSensor");
-        this.clawDistanceSensor = (DistanceSensor)config.get("DistanceSensor");
+        this.clawDistanceSensor = (RevColorSensorV3)config.get("DistanceSensor");
 
         this.headlight.setPosition(1);
         defaultMotorMode=armExtend.getMode();
@@ -56,6 +58,7 @@ public class RobotArm {
         armJoint.setMode(RunMode.STOP_AND_RESET_ENCODER);
         armJoint.setMode(defaultMotorMode);
     }
+
 
     //this double contains the number of pulses the encoder runs to move one rotation
     private final double PULSES_PER_ROTATION = 537.7;
@@ -92,7 +95,7 @@ public class RobotArm {
 
     public void moveToOrigin() throws Exception {
         armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armJoint.setTargetPosition(-1000);
+        armJoint.setTargetPosition(-2000);
         armJoint.setPower(0.2);
         while(armJoint.isBusy() && !JointTouchSensor.isPressed()) {
 
@@ -120,8 +123,9 @@ public class RobotArm {
     //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
     //robot.
     public void rotateArmManual(Direction direction, double power) {
-        if(armJoint.getCurrentPosition() < 350) {
-            armJoint.setTargetPosition(365);
+        if(armJoint.getCurrentPosition() < 830) {
+            armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
+            armJoint.setTargetPosition(845);
             armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }else {
             switch (direction) {
@@ -132,10 +136,12 @@ public class RobotArm {
                     armJointPositionNeedsSet = true;
                     break;
                 case CLOCKWISE:
-                    armJoint.setMode(defaultMotorMode);
-                    armJoint.setDirection(DcMotorSimple.Direction.REVERSE);
-                    armJoint.setPower(power);
-                    armJointPositionNeedsSet = true;
+                    if (armJoint.getCurrentPosition()>830) {
+                        armJoint.setMode(defaultMotorMode);
+                        armJoint.setDirection(DcMotorSimple.Direction.REVERSE);
+                        armJoint.setPower(power);
+                        armJointPositionNeedsSet = true;
+                    }
                     break;
                 case BRAKE:
                     armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -210,5 +216,10 @@ public class RobotArm {
 
     public void setLeftClawPosition(double position) {
         setClawPosition(position, this.leftClaw);
+    }
+
+    //using Headlight for Telemetry
+    public void SetLightToDistance(){
+        headlight.setPosition(clawDistanceSensor.getDistance(DistanceUnit.CM)/6);
     }
 }
