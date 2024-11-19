@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.utils.Keybind;
 import org.firstinspires.ftc.teamcode.utils.RobotArm;
 import org.firstinspires.ftc.teamcode.utils.RobotConfig;
@@ -42,11 +43,19 @@ public class ExampleTeleOp extends OpMode {
         keybind.addOrUpdate("increase_speed", Keybind.Input.GAMEPAD_1_RIGHT_BUMPER);
         keybind.addOrUpdate("decrease_speed", Keybind.Input.GAMEPAD_1_LEFT_BUMPER);
 
+        try {
+            arm.moveToOrigin();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 //        arm.resetExtender();
     }
 
     @Override
     public void loop() {
+        telemetry.addData("Arm Distance Cm" , arm.clawDistanceSensor.getDistance(DistanceUnit.CM));
+        arm.SetLightToDistance();
+
         driver.drive(keybind.pollValue("drive_x"), keybind.pollValue("drive_y"), keybind.pollValue("rotate"));
 
         telemetry.addData("Current Speed: ", driver.getSpeedMultiplier());
@@ -59,7 +68,10 @@ public class ExampleTeleOp extends OpMode {
             arm.extendArmManual(RobotArm.Direction.RETRACT, 0);
         }
 //        arm.runBackgroundArmExtendProcesses();
-
+        telemetry.addData("Arm Limit Set?",arm.jointLimitSet);
+        telemetry.addData("Arm touch sensor pressed",arm.JointTouchSensor.isPressed());
+        telemetry.addData("Arm Target Position",arm.armJoint.getTargetPosition());
+        telemetry.addData("Arm current Position",arm.armJoint.getCurrentPosition());
         if (keybind.pollValue("arm_rotation_ccw") > 0) {
             arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT));
         } else if (keybind.pollValue("arm_rotation_cw") > 0) {

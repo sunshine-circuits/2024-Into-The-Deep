@@ -2,11 +2,14 @@ package org.firstinspires.ftc.teamcode.utils;
 
 import static org.firstinspires.ftc.teamcode.utils.HardwareMapObject.hardwareMapObjectFactory;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import java.util.HashMap;
 
@@ -20,7 +23,9 @@ public class RobotConfig {
                 hardwareMapObjectFactory("ArmExtendMotor", DcMotor.class),
                 hardwareMapObjectFactory("LeftServo", Servo.class),
                 hardwareMapObjectFactory("RightServo", Servo.class),
-                hardwareMapObjectFactory("Headlight", Servo.class)
+                hardwareMapObjectFactory("Headlight", Servo.class),
+                hardwareMapObjectFactory("TouchSensor", TouchSensor.class),
+                hardwareMapObjectFactory("DistanceSensor", RevColorSensorV3.class)
         );
 
 

@@ -29,7 +29,6 @@ public class ParkAuto extends InchAutoParent {
         BLMotor = hardwareMap.get(DcMotor.class,"BLMotor");
         ArmJointMotor = hardwareMap.get(DcMotor.class,"ArmJointMotor");
         Headlight = hardwareMap.get(Servo.class, "Headlight");
-        ArmHomeSensor = hardwareMap.get(TouchSensor.class, "ArmHomeTouchSensor");
         telemetry.addData("Motors","Got");
         telemetry.update();
 
