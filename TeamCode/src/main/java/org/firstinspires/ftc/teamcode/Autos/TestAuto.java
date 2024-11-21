@@ -36,6 +36,9 @@ public class TestAuto extends InchAutoParent {
         DistanceDrive(0, 21, autonomouspower, AutonomousTelemetry);
         DistanceDrive(25,0, autonomouspower, AutonomousTelemetry);
         DistanceDrive(0 , 3 + (rw / 2), autonomouspower, AutonomousTelemetry);
+        DistanceDrive(-24, 0, autonomouspower, AutonomousTelemetry);
+        RotateDegrees(45, autonomouspower, AutonomousTelemetry);
+        DriveIrrespectiveOfAngle(45, -24, 24, autonomouspower, AutonomousTelemetry);
 
 
         /*
