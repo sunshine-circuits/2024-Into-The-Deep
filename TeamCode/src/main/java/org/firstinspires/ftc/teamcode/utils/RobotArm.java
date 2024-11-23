@@ -19,7 +19,6 @@ public class RobotArm {
     private Servo leftClaw;
     private Servo headlight;
     public TouchSensor JointTouchSensor;
-    public RevColorSensorV3 clawDistanceSensor;
     //This Double tracks the encoder position of the motor in the robot's linear actuator.
     double armExtendPositionRelativeToBasisInPulses;
     //this boolean tracks whether or not armExtend is in RUN_TO_POSITION mode.
@@ -46,7 +45,6 @@ public class RobotArm {
         this.leftClaw = (Servo)config.get("LeftServo");
         this.headlight = (Servo)config.get("Headlight");
         this.JointTouchSensor = (TouchSensor)config.get("TouchSensor");
-        this.clawDistanceSensor = (RevColorSensorV3)config.get("DistanceSensor");
 
         this.headlight.setPosition(1);
         defaultMotorMode=armExtend.getMode();
@@ -123,25 +121,27 @@ public class RobotArm {
     //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
     //robot.
     public void rotateArmManual(Direction direction, double power) {
-        if(armJoint.getCurrentPosition() < 830) {
+        if((armJoint.getCurrentPosition() < 830)&&(armExtend.getCurrentPosition()>250)) {
             armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
             armJoint.setTargetPosition(845);
             armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }else {
             switch (direction) {
                 case COUNTER_CLOCKWISE:
-                    armJoint.setMode(defaultMotorMode);
-                    armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
-                    armJoint.setPower(power);
+                    if ((armJoint.getCurrentPosition()<1300)||(armExtend.getCurrentPosition()<=1470)) {
+                        armJoint.setMode(defaultMotorMode);
+                        armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
+                        armJoint.setPower(power);
+                    }
                     armJointPositionNeedsSet = true;
                     break;
                 case CLOCKWISE:
-                    if (armJoint.getCurrentPosition()>830) {
+                    if ((armJoint.getCurrentPosition()>830)||(armExtend.getCurrentPosition()<=250)) {
                         armJoint.setMode(defaultMotorMode);
                         armJoint.setDirection(DcMotorSimple.Direction.REVERSE);
                         armJoint.setPower(power);
-                        armJointPositionNeedsSet = true;
                     }
+                    armJointPositionNeedsSet = true;
                     break;
                 case BRAKE:
                     armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -184,8 +184,13 @@ public class RobotArm {
 //                armExtend.setPower(power);
 //            }
 //            break;
-                armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
-                armExtend.setPower(power);
+                if((armJoint.getCurrentPosition()>830)&&(armJoint.getCurrentPosition()<1300)) {
+                    armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
+                    armExtend.setPower(power);
+                }else if(armExtend.getCurrentPosition()<=1470){
+                    armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
+                    armExtend.setPower(power);
+                }
                 break;
             case RETRACT:
                 armExtend.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -219,7 +224,4 @@ public class RobotArm {
     }
 
     //using Headlight for Telemetry
-    public void SetLightToDistance(){
-        headlight.setPosition(clawDistanceSensor.getDistance(DistanceUnit.CM)/6);
-    }
 }

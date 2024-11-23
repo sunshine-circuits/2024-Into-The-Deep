@@ -54,8 +54,6 @@ public class ExampleTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        telemetry.addData("Arm Distance Cm" , arm.clawDistanceSensor.getDistance(DistanceUnit.CM));
-        arm.SetLightToDistance();
 
         driver.drive(keybind.pollValue("drive_x"), keybind.pollValue("drive_y"), keybind.pollValue("rotate"));
 
