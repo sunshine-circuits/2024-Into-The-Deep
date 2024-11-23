@@ -4,19 +4,18 @@ import android.util.Size;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.utils.InchAutoParent;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name="BucketZoneAuto")
+@Autonomous(name="BucketZoneAutoBlue")
 
-public class BucketAuto extends InchAutoParent {
+public class BucketAutoBlue extends InchAutoParent {
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -58,25 +57,23 @@ public class BucketAuto extends InchAutoParent {
         Headlight.setPosition(1);
         if (opModeIsActive()) {
             InchDrive(2,0,powerlevel, "Right");
-            InchDrive(22.5,90,powerlevel, "Big Forward");
-            /*
-            driverInteruptable(400,-400,-400,400,powerlevel/2, "interuptable left");
+            InchDrive(3.5,90,powerlevel, "Big Forward");
+
+            driverInteruptable(400,-400,-400,400,powerlevel/3, "interuptable left");
             outerloop:
             while(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()) {
                 if (tagProcessor.getDetections().size() > 0) {
                     for (int i = 0; i < tagProcessor.getDetections().size(); i++) {
                         AprilTagDetection tag = tagProcessor.getDetections().get(i);
                         if (tag.id == 13) {
-
                             break outerloop;
                         }
                     }
                 }
             }
             driver(0,0,0,0,powerlevel/2,"Stopping");
-            */
-            InchDrive(19,-90,powerlevel,"Back");
-            InchDrive(57,0,powerlevel,"RightOnceMore");
+
+            InchDrive(58,0,powerlevel,"RightOnceMore");
             driver(1975,-1975,1975,-1975, powerlevel, "rotation");
             InchDrive(12,90,powerlevel,"Back");
             SingleMotorDriver(ArmJointMotor, 500,1,"Arm almost ready to fire");

@@ -123,7 +123,7 @@ public class RobotArm {
     //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
     //robot.
     public void rotateArmManual(Direction direction, double power) {
-        if(armJoint.getCurrentPosition() < 830) {
+        if((armJoint.getCurrentPosition() < 830)&&(clawDistanceSensor.getDistance(DistanceUnit.CM)>2)) {
             armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
             armJoint.setTargetPosition(845);
             armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -136,7 +136,7 @@ public class RobotArm {
                     armJointPositionNeedsSet = true;
                     break;
                 case CLOCKWISE:
-                    if (armJoint.getCurrentPosition()>830) {
+                    if ((armJoint.getCurrentPosition()>830)||(clawDistanceSensor.getDistance(DistanceUnit.CM)<=2)) {
                         armJoint.setMode(defaultMotorMode);
                         armJoint.setDirection(DcMotorSimple.Direction.REVERSE);
                         armJoint.setPower(power);
