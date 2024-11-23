@@ -12,19 +12,27 @@ public class ViperTest extends LinearOpMode
 {
     // Hardware declarations
     public DcMotor ViperMotor;
+    public DcMotor ArmJointMotor;
     public boolean isPressed;
+    public boolean ArmPos;
+
 
     @Override
     public void runOpMode()
     {
         ViperMotor = hardwareMap.get(DcMotor.class,"ViperMotor");
+        ArmJointMotor = hardwareMap.get(DcMotor.class, "ArmJointMotor");
+        DcMotor.RunMode defaultMode = ArmJointMotor.getMode();
 
         telemetry.addData("Status","Intialized");
         telemetry.update();
         ViperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        ViperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         waitForStart();
         double ViperMotorTargetPower=0.2;
+        double ArmJointTargetPower=0.2;
         while(opModeIsActive())
         {
             telemetry.addData("Status","Running");
@@ -44,6 +52,27 @@ public class ViperTest extends LinearOpMode
             } else {isPressed = false;}
             telemetry.addData("Handicap Viper Motor", ViperMotorTargetPower);
             telemetry.update();
+
+            if (gamepad1.dpad_right){
+                ArmJointMotor.setMode(defaultMode);
+                ArmJointTargetPower=0.2;
+                ArmPos=true;
+            }
+            else if (gamepad1.dpad_left){
+                ArmJointMotor.setMode(defaultMode);
+                ArmJointTargetPower=-0.2;
+                ArmPos=true;
+            } else{
+                ArmJointTargetPower=1;
+                if (ArmPos==true) {
+                    ArmJointMotor.setTargetPosition(ArmJointMotor.getCurrentPosition());
+                    ArmPos=false;
+                }
+                ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            telemetry.addData("JoinPow", ArmJointTargetPower);
+
+            ArmJointMotor.setPower(ArmJointTargetPower);
 
         }
     }

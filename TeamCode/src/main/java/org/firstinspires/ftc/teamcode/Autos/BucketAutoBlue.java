@@ -45,13 +45,13 @@ public class BucketAutoBlue extends InchAutoParent {
         if (opModeIsActive()) {
             InchDrive(2,0,powerlevel, "Right");
             InchDrive(3.5,90,powerlevel, "Big Forward");
-
-            driverInteruptable(400,-400,-400,400,powerlevel/2, "interuptable left");
+            /*
+            driverInteruptable(517,-517,-517,517,powerlevel/2, "interuptable left");
             Headlight.setPosition(1);
             outerloop:
             while(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()) {
                 if (tagProcessor.getDetections().size() > 0) {
-                    for (int i = 0; i < tagProcessor.getDetections().size(); i++) {
+                    for (int i = 0; i < tagProcessor.getDetections().size(); i++) {N
                         AprilTagDetection tag = tagProcessor.getDetections().get(i);
                         if (tag.id == 13) {
 
@@ -63,9 +63,18 @@ public class BucketAutoBlue extends InchAutoParent {
             Headlight.setPosition(0);
             driver(0,0,0,0,powerlevel/2,"Stopping");
             //*/
-            InchDrive(58,0,powerlevel,"RightOnceMore");
+            InchDrive(50,0,powerlevel,"RightOnceMore");
+            InchDrive(6,90,powerlevel,"touch forward");
+            InchDrive(44,180,powerlevel,"BIG LEFT");
+            InchDrive(2,0,powerlevel,"slight right");
+            InchDrive(12,270,powerlevel,"back");
+            InchDrive(6,180,powerlevel,"left again");
+            InchDrive(18,0,powerlevel,"push forward");
+            InchDrive(6,270,powerlevel,"go back");
+
+            InchDrive(56,0,powerlevel,"RightOnceMore");
             driver(1975,-1975,1975,-1975, powerlevel, "rotation");
-            InchDrive(12,90,powerlevel,"Back");
+            InchDrive(18,90,powerlevel,"Back");
             SingleMotorDriver(ArmJointMotor, 500,1,"Arm almost ready to fire");
             SingleMotorDriver(ArmJointMotor, 500,-1,"Arm almost ready to fire");
 
