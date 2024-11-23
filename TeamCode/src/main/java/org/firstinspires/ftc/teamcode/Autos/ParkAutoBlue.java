@@ -4,19 +4,18 @@ import android.util.Size;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.utils.InchAutoParent;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name="ParkZoneAuto")
+@Autonomous(name="ParkZoneAutoRed")
 
-public class ParkAuto extends InchAutoParent {
+public class ParkAutoBlue extends InchAutoParent {
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -43,13 +42,13 @@ public class ParkAuto extends InchAutoParent {
         }
         ArmJointMotor.setPower(0);
         */
-        Headlight.setPosition(1);
         if (opModeIsActive()) {
             InchDrive(26,0,powerlevel, "Right");
             InchDrive(83.5,90,powerlevel, "Big Forward");
-            InchDrive(24,180,powerlevel, "left");
-            /*
-            driverInteruptable(400,-400,-400,400,powerlevel/2, "interuptable left");
+            InchDrive(20,180,powerlevel, "left");
+            Headlight.setPosition(1);
+            //*
+            driverInteruptable(517,-517,-517,517,powerlevel/2, "interuptable left");
             outerloop:
             while(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()) {
                 if (tagProcessor.getDetections().size() > 0) {
@@ -63,7 +62,8 @@ public class ParkAuto extends InchAutoParent {
                 }
             }
             driver(0,0,0,0,powerlevel/2,"Stopping");
-            */
+            //*/
+            Headlight.setPosition(0);
             InchDrive(19,0,powerlevel,"RightOnceMore");
             InchDrive(19,-90,powerlevel,"Back");
             InchDrive(35,0,powerlevel,"RightOnceMore");

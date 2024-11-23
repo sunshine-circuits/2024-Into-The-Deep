@@ -42,12 +42,12 @@ public class BucketAutoBlue extends InchAutoParent {
         }
         ArmJointMotor.setPower(0);
         */
-        Headlight.setPosition(1);
         if (opModeIsActive()) {
             InchDrive(2,0,powerlevel, "Right");
             InchDrive(3.5,90,powerlevel, "Big Forward");
 
             driverInteruptable(400,-400,-400,400,powerlevel/2, "interuptable left");
+            Headlight.setPosition(1);
             outerloop:
             while(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()) {
                 if (tagProcessor.getDetections().size() > 0) {
@@ -60,6 +60,7 @@ public class BucketAutoBlue extends InchAutoParent {
                     }
                 }
             }
+            Headlight.setPosition(0);
             driver(0,0,0,0,powerlevel/2,"Stopping");
             //*/
             InchDrive(58,0,powerlevel,"RightOnceMore");

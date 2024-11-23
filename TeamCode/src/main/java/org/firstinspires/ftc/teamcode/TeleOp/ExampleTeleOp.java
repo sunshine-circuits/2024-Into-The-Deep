@@ -17,6 +17,7 @@ public class ExampleTeleOp extends OpMode {
     private Keybind keybind;
     private boolean speedDebounce = false;
     private final double ARM_SPEED_LIMIT = 0.2;
+    public boolean aprilTagDetected;
 
     @Override
     public void init() {

@@ -13,9 +13,9 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name="BucketZoneAutoBlue")
+@Autonomous(name="ParkZoneAutoRed")
 
-public class BucketAutoRed extends InchAutoParent {
+public class ParkAutoRed extends InchAutoParent {
 
     @Override
     public void runOpMode() throws InterruptedException
@@ -42,30 +42,33 @@ public class BucketAutoRed extends InchAutoParent {
         }
         ArmJointMotor.setPower(0);
         */
-        Headlight.setPosition(1);
         if (opModeIsActive()) {
-            InchDrive(2,0,powerlevel, "Right");
-            InchDrive(3.5,90,powerlevel, "Big Forward");
-
-            driverInteruptable(400,-400,-400,400,powerlevel/2, "interuptable left");
+            InchDrive(26,0,powerlevel, "Right");
+            InchDrive(83.5,90,powerlevel, "Big Forward");
+            InchDrive(20,180,powerlevel, "left");
             Headlight.setPosition(1);
+            //*
+            driverInteruptable(517,-517,-517,517,powerlevel/2, "interuptable left");
             outerloop:
             while(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()) {
                 if (tagProcessor.getDetections().size() > 0) {
                     for (int i = 0; i < tagProcessor.getDetections().size(); i++) {
                         AprilTagDetection tag = tagProcessor.getDetections().get(i);
                         if (tag.id == 16) {
+
                             break outerloop;
                         }
                     }
                 }
             }
-            Headlight.setPosition(0);
             driver(0,0,0,0,powerlevel/2,"Stopping");
             //*/
-            InchDrive(58,0,powerlevel,"RightOnceMore");
+            Headlight.setPosition(0);
+            InchDrive(19,0,powerlevel,"RightOnceMore");
+            InchDrive(19,-90,powerlevel,"Back");
+            InchDrive(35,0,powerlevel,"RightOnceMore");
             driver(1975,-1975,1975,-1975, powerlevel, "rotation");
-            InchDrive(12,90,powerlevel,"Back");
+            InchDrive(14,90,powerlevel,"Back");
             SingleMotorDriver(ArmJointMotor, 500,1,"Arm almost ready to fire");
             SingleMotorDriver(ArmJointMotor, 500,-1,"Arm almost ready to fire");
 
