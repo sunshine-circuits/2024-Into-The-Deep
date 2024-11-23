@@ -163,21 +163,15 @@ public class InchAutoParent extends LinearOpMode {
     public void DriveIrrespectiveOfAngle(double RobotAngle, double changex, double changey, double pow, String telem){
         //this drives irrespective of the robot angle with respect to the field
         //the RobotAngle should be in degrees(sorry!)
-        double angleinradians = (RobotAngle / 180) * Math.PI;
-        double anglesin = Math.sin(angleinradians);
-        double anglecos = Math.cos(angleinradians);
-        DistanceDrive(anglesin * changex + anglecos * changex, anglesin * changey + anglecos * changey, pow, telem);
+        DistanceDrive((Math.cos(90-RobotAngle)*changex)+(Math.cos(0-RobotAngle)*changex), (Math.sin(90-RobotAngle)*changey)+(Math.sin(RobotAngle)*changey), pow, telem);
     }
-    public void RotationDrive(double distance, double angleDrive, double angle, double pow, String telem){
+    public void RotationDrive(double distance, double angle, double pow, String telem){
         /*
         * The angleDrive variable is the angle that the robot is driving in(according to orientation)
         * The distance variable is the distance being driven(will scale the the x, y, and z)
         * the angle variable is the angle that the robot will turn in while driving*/
-        double pulses = InchesToPulses(distance);
-        double diameterOfWheels = 104 / 25.4;
-        double rotationsInX = ((Math.cos(angleDrive*Math.PI/180) * distance) / (Math.PI * diameterOfWheels));
-        double rotationsInY = ((sin(angleDrive*Math.PI/180) * distance) / (Math.PI * diameterOfWheels));
-        driver((int)((rotationsInY - rotationsInX - angle/360) * 537.7), (int)((rotationsInY + rotationsInX + angle/360) * 537.7), (int)((rotationsInY + rotationsInX - angle/360) * 537.7), (int)((rotationsInY - rotationsInX + angle/360) * 537.7), pow, telem);
+
+        DistanceDrive(Math.cos(0-angle), Math.sin(0-angle), pow, telem);
         //FR, FL, BR, BL
     }
     public double InchesToPulses(double Inches){

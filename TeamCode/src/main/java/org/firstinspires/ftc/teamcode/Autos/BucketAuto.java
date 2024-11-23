@@ -32,8 +32,20 @@ public class BucketAuto extends InchAutoParent {
         telemetry.addData("Motors","Got");
         telemetry.update();
 
-        AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder().setDrawAxes(true).setDrawCubeProjection(true).setDrawTagID(true).setDrawTagOutline(true).setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11).setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()).build();
-        VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
+        AprilTagProcessor tagProcessor = new AprilTagProcessor
+                .Builder()
+                .setDrawAxes(true)
+                .setDrawCubeProjection(true)
+                .setDrawTagID(true)
+                .setDrawTagOutline(true)
+                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+                .setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary())
+                .build();
+        VisionPortal visionPortal= new VisionPortal.Builder()
+                .addProcessor(tagProcessor)
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam"))
+                .setCameraResolution(new Size(640,480))
+                .build();
         Headlight.setPosition(0);
         waitForStart();
         /*
@@ -76,5 +88,51 @@ public class BucketAuto extends InchAutoParent {
             // RESET
 
         }
+    }
+    private void drivepathred(double rx, double ry, double rot, double pow, String telem)
+    {
+        double robotwidth = 18;
+        /*The rx is "Robot x" in relation to the field(blue observation zone is (0, 0))
+          The ry is "Robot y" in relation to the field(blue observation zone is (0, 0))
+          The rot is the "Robot rotation" in relation to the feild(0 degrees is straight 'upward')
+          The robot always starts the autonomous touching the edge!
+        */
+        DriveIrrespectiveOfAngle(rot, 108-rx, 36-ry, pow, telem);
+        //set it to be (108, 36)
+        RotateDegrees(0-rot, pow, telem);
+        //Make Bot straight
+        DistanceDrive(-24, 0, pow, telem);
+        //set bot to be (84, 36)
+        DistanceDrive(0, -12, pow, telem);
+        //set bot to be (84, 24)
+        DistanceDrive(36-(robotwidth/2), 0, pow, telem);
+        //set bot to be (120-(robotwidth/2), 24)
+        RotateDegrees(45, pow, telem);
+        //Rotate the robot 45 degrees clockwise
+        DistanceDrive(6+(robotwidth/2), -6, pow, telem);
+        //set bot to be (126, 18)
+    }
+    private void drivepathblue(double rx, double ry, double rot, double pow, String telem)
+    {
+        double robotwidth = 18;
+        /*The rx is "Robot x" in relation to the field(blue observation zone is (0, 0))
+          The ry is "Robot y" in relation to the field(blue observation zone is (0, 0))
+          The rot is the "Robot rotation" in relation to the feild(0 degrees is straight 'upward')
+          The robot always starts the autonomous touching the edge!
+        */
+        DriveIrrespectiveOfAngle(rot, 36-rx, 108-ry, pow, telem);
+        //set it to be (36, 108)
+        RotateDegrees(0-rot, pow, telem);
+        //Make Bot straight
+        DistanceDrive(24, 0, pow, telem);
+        //set bot to be (60, 108)
+        DistanceDrive(0, 12, pow, telem);
+        //set bot to be (60, 120)
+        DistanceDrive(-36+(robotwidth/2), 0, pow, telem);
+        //set bot to be (24+(robotwidth/2), 120)
+        RotateDegrees(-45, pow, telem);
+        //Rotate the robot 45 degrees counterclockwise
+        DistanceDrive(-6-(robotwidth/2), 6, pow, telem);
+        //set bot to be (18, 126)
     }
 }

@@ -27,7 +27,11 @@ public class AprilTestAuto2 extends LinearOpMode {
         }else{
             aprilTagProcessor = new AprilTagProcessor.Builder().setLensIntrinsics(fx,fy,cx,cy).build();
         }
-        VisionPortal visionPortal = new VisionPortal.Builder().setCamera(hardwareMap.get(WebcamName.class, "Webcam 1")).addProcessor(aprilTagProcessor).setCameraResolution(new Size(640,480)).build();
+        VisionPortal visionPortal = new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .addProcessor(aprilTagProcessor)
+                .setCameraResolution(new Size(640,480))
+                .build();
 
 
         waitForStart();
