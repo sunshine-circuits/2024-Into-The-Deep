@@ -14,6 +14,8 @@ public class InchAutoParent extends LinearOpMode {
     protected DcMotor FLMotor;
     protected DcMotor FRMotor;
     protected DcMotor ArmJointMotor;
+    protected Servo LeftServo;
+    protected Servo RightServo;
     protected Servo Headlight;
     protected double powerlevel=0.7;
 
@@ -239,7 +241,7 @@ public class InchAutoParent extends LinearOpMode {
         telemetry.update();
     }
 
-    public void InteruptableSingleMotorDriver(DcMotor OpMotor, int dist, double pow, String telem){
+    public void InterruptibleSingleMotorDriver(DcMotor OpMotor, int dist, double pow, String telem){
         int OpPos;
         telemetry.addData("Variables "+telem,"Declared");
         telemetry.update();
@@ -268,6 +270,26 @@ public class InchAutoParent extends LinearOpMode {
         telemetry.addData("Disruptable "+telem,"Started");
         telemetry.update();
     }
+    protected void setClawPosition(double position, Servo claw) {
+        claw.setPosition(position);
+        //claw.getPosition();
+    }
+    protected void setRightClawPosition(double position) {
+        setClawPosition(position, this.RightServo);
+    }
+
+    protected void setLeftClawPosition(double position) {
+        setClawPosition(position, this.LeftServo);
+    }
+    protected void CloseClaws() {
+        setRightClawPosition(1);
+        setLeftClawPosition(0);
+    }
+    protected void OpenClaws() {
+        setRightClawPosition(0);
+        setLeftClawPosition(1);
+    }
+
 
     @Override
     public void runOpMode() throws InterruptedException {

@@ -47,7 +47,7 @@ public class BucketAutoRed extends InchAutoParent {
             InchDrive(2,0,powerlevel, "Right");
             InchDrive(3.5,90,powerlevel, "Big Forward");
 
-            driverInteruptable(400,-400,-400,400,powerlevel/2, "interuptable left");
+            driverInteruptable(537,-537,-537,537,powerlevel/2, "interuptable left");
             Headlight.setPosition(1);
             outerloop:
             while(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()) {

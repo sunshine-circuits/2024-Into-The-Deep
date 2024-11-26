@@ -24,8 +24,8 @@ public class RobotConfig {
                 hardwareMapObjectFactory("LeftServo", Servo.class),
                 hardwareMapObjectFactory("RightServo", Servo.class),
                 hardwareMapObjectFactory("Headlight", Servo.class),
-                hardwareMapObjectFactory("TouchSensor", TouchSensor.class),
-                hardwareMapObjectFactory("DistanceSensor", RevColorSensorV3.class)
+                hardwareMapObjectFactory("TouchSensor", TouchSensor.class)
+                //hardwareMapObjectFactory("DistanceSensor", RevColorSensorV3.class)
         );
 
 

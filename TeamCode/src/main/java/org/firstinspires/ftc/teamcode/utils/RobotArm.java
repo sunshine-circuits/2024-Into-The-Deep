@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class RobotArm {
     public DcMotor armJoint;
-    private DcMotor armExtend;
+    public DcMotor armExtend;
     private Servo rightClaw;
     private Servo leftClaw;
     private Servo headlight;
@@ -25,10 +25,12 @@ public class RobotArm {
     public boolean jointLimitSet=false;
     //this boolean tracks whether or not armJoint's position needs set for the braking system.
     boolean armJointPositionNeedsSet=true;
+    boolean armExtendPositionNeedsSet = true;
     //this RunMode is the runmode motors are set to when they are first initialized.
     private RunMode defaultMotorMode;
     boolean zeroPositionFound=false;
     double BasisInPulses;
+    public double PowerDecrease = 0.5;
 
     public enum Direction {
         DEPLOY,
@@ -46,7 +48,7 @@ public class RobotArm {
         this.headlight = (Servo)config.get("Headlight");
         this.JointTouchSensor = (TouchSensor)config.get("TouchSensor");
 
-        this.headlight.setPosition(1);
+        //this.headlight.setPosition(1);
         defaultMotorMode=armExtend.getMode();
 
         armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -121,40 +123,44 @@ public class RobotArm {
     //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
     //robot.
     public void rotateArmManual(Direction direction, double power) {
-        if((armJoint.getCurrentPosition() < 830)&&(armExtend.getCurrentPosition()>250)) {
-            armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
-            armJoint.setTargetPosition(845);
-            armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }else {
-            switch (direction) {
-                case COUNTER_CLOCKWISE:
-                    if ((armJoint.getCurrentPosition()<1300)||(armExtend.getCurrentPosition()<=1470)) {
-                        armJoint.setMode(defaultMotorMode);
-                        armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
-                        armJoint.setPower(power);
-                    }
-                    armJointPositionNeedsSet = true;
-                    break;
-                case CLOCKWISE:
-                    if ((armJoint.getCurrentPosition()>830)||(armExtend.getCurrentPosition()<=250)) {
-                        armJoint.setMode(defaultMotorMode);
-                        armJoint.setDirection(DcMotorSimple.Direction.REVERSE);
-                        armJoint.setPower(power);
-                    }
-                    armJointPositionNeedsSet = true;
-                    break;
-                case BRAKE:
-                    armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
-                    armJoint.setPower(power);
-                    if (armJointPositionNeedsSet) {
 
-                        armJoint.setTargetPosition(armJoint.getCurrentPosition());
-                        armJointPositionNeedsSet = false;
+        switch (direction) {
+            case COUNTER_CLOCKWISE:
+                if ((armJoint.getCurrentPosition()<900)||(armExtend.getCurrentPosition()<=1300)) {
+                    armJoint.setMode(defaultMotorMode);
+                    armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
+                    if (armJoint.getCurrentPosition()>950) {
+                        armJoint.setPower(power*PowerDecrease);
+                    } else {
+                        armJoint.setPower(power);
                     }
-                    armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    break;
-            }
+                }
+                armJointPositionNeedsSet = true;
+                break;
+            case CLOCKWISE:
+                if ((armJoint.getCurrentPosition()>635)||(armExtend.getCurrentPosition()<=150)) {
+                    armJoint.setMode(defaultMotorMode);
+                    armJoint.setDirection(DcMotorSimple.Direction.REVERSE);
+                    if(armJoint.getCurrentPosition()<635){
+                        armJoint.setPower(power*PowerDecrease);
+                    }else {
+                        armJoint.setPower(power);
+                    }
+                }
+                armJointPositionNeedsSet = true;
+                break;
+            case BRAKE:
+                armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
+                armJoint.setPower(power);
+                if (armJointPositionNeedsSet) {
+
+                    armJoint.setTargetPosition(armJoint.getCurrentPosition());
+                    armJointPositionNeedsSet = false;
+                }
+                armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                break;
         }
+
 
     }
 
@@ -175,8 +181,24 @@ public class RobotArm {
     //travel beyond the length of the arm nor retract past 0. This should also ensure we can not
     //extend the arm and collide with the robot.
     public void extendArmManual(Direction direction, double power) {
-        switch (direction) {
-            case DEPLOY:
+        if((armJoint.getCurrentPosition() < 635)&&(Math.abs(armExtend.getCurrentPosition())>=210)) {
+            armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
+            armExtend.setTargetPosition((Math.abs(armExtend.getCurrentPosition())/armExtend.getCurrentPosition())*100);
+            armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armExtend.setPower(1);
+        }else if(Math.abs(armExtend.getCurrentPosition())>=3050){
+            armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
+            armExtend.setTargetPosition((Math.abs(armExtend.getCurrentPosition())/armExtend.getCurrentPosition())*2950);
+            armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armExtend.setPower(power);
+        }else if((armJoint.getCurrentPosition() > 900)&&(Math.abs(armExtend.getCurrentPosition())>=1300)) {
+            armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
+            armExtend.setTargetPosition((Math.abs(armExtend.getCurrentPosition())/armExtend.getCurrentPosition())*1000);
+            armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            armExtend.setPower(1);
+        } else {
+            switch (direction) {
+                case DEPLOY:
 //            if(armExtendPositionRelativeToBasisInPulses>=InchesToPulses(7.5)){
 //
 //            }else{
@@ -184,18 +206,33 @@ public class RobotArm {
 //                armExtend.setPower(power);
 //            }
 //            break;
-                if((armJoint.getCurrentPosition()>830)&&(armJoint.getCurrentPosition()<1300)) {
+                    armExtend.setMode(defaultMotorMode);
+                    if ((armJoint.getCurrentPosition() > 635) && (armJoint.getCurrentPosition() < 190)) {
+                        armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
+                        armExtend.setPower(power);
+                    } else if (armExtend.getCurrentPosition() <= 1300) {
+                        armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
+                        armExtend.setPower(power);
+                    }
+                    armExtendPositionNeedsSet = true;
+                    break;
+                case RETRACT:
+                    armExtend.setMode(defaultMotorMode);
+                    armExtend.setDirection(DcMotorSimple.Direction.REVERSE);
+                    armExtend.setPower(power);
+                    armExtendPositionNeedsSet = true;
+                    break;
+                case BRAKE:
                     armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
                     armExtend.setPower(power);
-                }else if(armExtend.getCurrentPosition()<=1470){
-                    armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
-                    armExtend.setPower(power);
-                }
-                break;
-            case RETRACT:
-                armExtend.setDirection(DcMotorSimple.Direction.REVERSE);
-                armExtend.setPower(power);
-                break;
+                    if (armExtendPositionNeedsSet) {
+
+                        armExtend.setTargetPosition(armExtend.getCurrentPosition());
+                        armExtendPositionNeedsSet = false;
+                    }
+                    armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    break;
+            }
         }
     }
     //this method, when called, reverses the motion of the arm
@@ -213,7 +250,6 @@ public class RobotArm {
         claw.setPosition(position);
         //claw.getPosition();
     }
-
 
     public void setRightClawPosition(double position) {
         setClawPosition(position, this.rightClaw);
