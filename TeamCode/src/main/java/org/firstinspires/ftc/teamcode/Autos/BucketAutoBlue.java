@@ -4,6 +4,7 @@ import android.util.Size;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -14,7 +15,6 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 @Autonomous(name="BucketZoneAutoBlue")
-
 public class BucketAutoBlue extends InchAutoParent {
 
     @Override
@@ -26,10 +26,18 @@ public class BucketAutoBlue extends InchAutoParent {
         FLMotor = hardwareMap.get(DcMotor.class,"FLMotor");
         BRMotor = hardwareMap.get(DcMotor.class,"BRMotor");
         BLMotor = hardwareMap.get(DcMotor.class,"BLMotor");
+        RightServo = hardwareMap.get(Servo.class, "RightServo");
+        LeftServo = hardwareMap.get(Servo.class, "LeftServo");
         ArmJointMotor = hardwareMap.get(DcMotor.class,"ArmJointMotor");
+        ArmExtendMotor = hardwareMap.get(DcMotor.class,"ArmExtendMotor");
         Headlight = hardwareMap.get(Servo.class, "Headlight");
         telemetry.addData("Motors","Got");
         telemetry.update();
+
+        ArmExtendMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        ArmJointMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        ArmExtendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        ArmJointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder().setDrawAxes(true).setDrawCubeProjection(true).setDrawTagID(true).setDrawTagOutline(true).setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11).setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()).build();
         VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
@@ -43,8 +51,33 @@ public class BucketAutoBlue extends InchAutoParent {
         ArmJointMotor.setPower(0);
         */
         if (opModeIsActive()) {
+            CloseClaws();
             InchDrive(2,0,powerlevel, "Right");
-            InchDrive(3.5,90,powerlevel, "Big Forward");
+            ArmJointMotor.setTargetPosition(750);
+            ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ArmJointMotor.setPower(1);
+            ArmExtendMotor.setTargetPosition(-3000);
+            ArmExtendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ArmExtendMotor.setDirection(DcMotor.Direction.FORWARD);
+            ArmExtendMotor.setPower(1);
+            while((ArmExtendMotor.getCurrentPosition()>-2975)||(ArmJointMotor.getCurrentPosition()<700)){
+                telemetry.addData("ExtendPosition: ",ArmExtendMotor.getCurrentPosition());
+                telemetry.addData("JointPosition: ",ArmJointMotor.getCurrentPosition());
+                telemetry.update();
+            }
+            InchDrive(21,90,powerlevel/3, "Forward");
+            InchDrive(1.95,180,powerlevel/3, "Left");
+            OpenClaws();
+
+            InchDrive(11.95,0,powerlevel/3, "right");
+            ArmJointMotor.setPower(0.3);
+            ArmExtendMotor.setPower(0.3);
+            ArmExtendMotor.setTargetPosition(-1);
+            while(ArmExtendMotor.getCurrentPosition()<=-100){
+
+            }
+            ArmJointMotor.setTargetPosition(50);
+
             //*
             driverInteruptable(537,-537,-537,537,powerlevel/2, "interuptable left");
             Headlight.setPosition(1);
@@ -62,6 +95,9 @@ public class BucketAutoBlue extends InchAutoParent {
             Headlight.setPosition(0);
             driver(0,0,0,0,powerlevel/2,"Stopping");
             //*/
+            ArmJointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            ArmExtendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            InchDrive(12,270,powerlevel, "Back");
             InchDrive(54,0,powerlevel,"RightOnceMore");
             InchDrive(6,90,powerlevel,"touch forward");
             InchDrive(44,180,powerlevel,"BIG LEFT");
@@ -74,6 +110,7 @@ public class BucketAutoBlue extends InchAutoParent {
             InchDrive(56,0,powerlevel,"RightOnceMore");
             driver(1975,-1975,1975,-1975, powerlevel, "rotation");
             InchDrive(18,90,powerlevel,"Back");
+            CloseClaws();
             SingleMotorDriver(ArmJointMotor, 500,1,"Arm almost ready to fire");
             SingleMotorDriver(ArmJointMotor, 500,-1,"Arm almost ready to fire");
 

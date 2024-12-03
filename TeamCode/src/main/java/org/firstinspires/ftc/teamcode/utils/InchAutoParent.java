@@ -14,6 +14,7 @@ public class InchAutoParent extends LinearOpMode {
     protected DcMotor FLMotor;
     protected DcMotor FRMotor;
     protected DcMotor ArmJointMotor;
+    protected DcMotor ArmExtendMotor;
     protected Servo LeftServo;
     protected Servo RightServo;
     protected Servo Headlight;
@@ -150,7 +151,7 @@ public class InchAutoParent extends LinearOpMode {
         double pulses = InchesToPulses(distance);
         double diameterOfWheels = 104.0 / 25.4;
         double pulsesInX = ((Math.cos((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
-        double pulsesInY = ((sin((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
+        double pulsesInY = ((Math.sin((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
         driver((int)(pulsesInY - pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY - pulsesInX), pow, telem);
         //FR, FL, BR, BL
     }
@@ -282,12 +283,12 @@ public class InchAutoParent extends LinearOpMode {
         setClawPosition(position, this.LeftServo);
     }
     protected void CloseClaws() {
-        setRightClawPosition(1);
-        setLeftClawPosition(0);
-    }
-    protected void OpenClaws() {
         setRightClawPosition(0);
         setLeftClawPosition(1);
+    }
+    protected void OpenClaws() {
+        setRightClawPosition(1);
+        setLeftClawPosition(0);
     }
 
 

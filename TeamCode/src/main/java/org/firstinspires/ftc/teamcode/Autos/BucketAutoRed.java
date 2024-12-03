@@ -13,7 +13,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
-@Autonomous(name="BucketZoneAutoBlue")
+@Autonomous(name="BucketZoneAutoRed")
 
 public class BucketAutoRed extends InchAutoParent {
 
