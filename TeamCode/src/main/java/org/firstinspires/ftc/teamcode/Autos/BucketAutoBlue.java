@@ -53,28 +53,49 @@ public class BucketAutoBlue extends InchAutoParent {
         if (opModeIsActive()) {
             CloseClaws();
             InchDrive(2,0,powerlevel, "Right");
-            ArmJointMotor.setTargetPosition(750);
+            ArmJointMotor.setTargetPosition(650);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(1);
             ArmExtendMotor.setTargetPosition(-3000);
             ArmExtendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmExtendMotor.setDirection(DcMotor.Direction.FORWARD);
             ArmExtendMotor.setPower(1);
-            while((ArmExtendMotor.getCurrentPosition()>-2975)||(ArmJointMotor.getCurrentPosition()<700)){
+            while((ArmExtendMotor.getCurrentPosition()>-2975)||(ArmJointMotor.getCurrentPosition()<650)){
                 telemetry.addData("ExtendPosition: ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("JointPosition: ",ArmJointMotor.getCurrentPosition());
                 telemetry.update();
             }
-            InchDrive(21,90,powerlevel/3, "Forward");
-            InchDrive(1.95,180,powerlevel/3, "Left");
+            InchDrive(22,90,powerlevel/3, "Forward");
+            InchDrive(2,180,powerlevel/3, "Left");
+
+            ArmJointMotor.setTargetPosition(725);
+            ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ArmJointMotor.setPower(0.5);
+            while(ArmJointMotor.getCurrentPosition()<720){
+                telemetry.addData("ExtendPosition: ",ArmExtendMotor.getCurrentPosition());
+                telemetry.addData("JointPosition: ",ArmJointMotor.getCurrentPosition());
+                telemetry.update();
+            }
+
             OpenClaws();
 
-            InchDrive(11.95,0,powerlevel/3, "right");
+            ArmJointMotor.setTargetPosition(600);
+            ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ArmJointMotor.setPower(1);
+            while(ArmJointMotor.getCurrentPosition()>650){
+                telemetry.addData("ExtendPosition: ",ArmExtendMotor.getCurrentPosition());
+                telemetry.addData("JointPosition: ",ArmJointMotor.getCurrentPosition());
+                telemetry.update();
+            }
+
+            InchDrive(15,0,powerlevel/3, "right");
             ArmJointMotor.setPower(0.3);
             ArmExtendMotor.setPower(0.3);
             ArmExtendMotor.setTargetPosition(-1);
-            while(ArmExtendMotor.getCurrentPosition()<=-100){
-
+            while(Math.abs(ArmExtendMotor.getCurrentPosition())>100){
+                telemetry.addData("ExtendPosition: ",ArmExtendMotor.getCurrentPosition());
+                telemetry.addData("JointPosition: ",ArmJointMotor.getCurrentPosition());
+                telemetry.update();
             }
             ArmJointMotor.setTargetPosition(50);
 
@@ -93,11 +114,11 @@ public class BucketAutoBlue extends InchAutoParent {
                 }
             }
             Headlight.setPosition(0);
-            driver(0,0,0,0,powerlevel/2,"Stopping");
+            driver(0,0,0,0,powerlevel/2, "Stopping");
             //*/
             ArmJointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             ArmExtendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            InchDrive(12,270,powerlevel, "Back");
+            InchDrive(13,270,powerlevel, "Back");
             InchDrive(54,0,powerlevel,"RightOnceMore");
             InchDrive(6,90,powerlevel,"touch forward");
             InchDrive(44,180,powerlevel,"BIG LEFT");
