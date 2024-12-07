@@ -14,6 +14,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.concurrent.TimeUnit;
+
 @Autonomous(name="BucketZoneAutoBlue")
 public class BucketAutoBlue extends InchAutoParent {
 
@@ -30,14 +32,17 @@ public class BucketAutoBlue extends InchAutoParent {
         LeftServo = hardwareMap.get(Servo.class, "LeftServo");
         ArmJointMotor = hardwareMap.get(DcMotor.class,"ArmJointMotor");
         ArmExtendMotor = hardwareMap.get(DcMotor.class,"ArmExtendMotor");
+        hangArm = hardwareMap.get(DcMotor.class,"hangArm");
         Headlight = hardwareMap.get(Servo.class, "Headlight");
         telemetry.addData("Motors","Got");
         telemetry.update();
 
         ArmExtendMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         ArmJointMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hangArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         ArmExtendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         ArmJointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hangArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder().setDrawAxes(true).setDrawCubeProjection(true).setDrawTagID(true).setDrawTagOutline(true).setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11).setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()).build();
         VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
@@ -56,29 +61,32 @@ public class BucketAutoBlue extends InchAutoParent {
             ArmJointMotor.setTargetPosition(650);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(1);
-            ArmExtendMotor.setTargetPosition(-3000);
+            ArmExtendMotor.setTargetPosition(-2500);
             ArmExtendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmExtendMotor.setDirection(DcMotor.Direction.FORWARD);
             ArmExtendMotor.setPower(1);
-            while((ArmExtendMotor.getCurrentPosition()>-2975)||(ArmJointMotor.getCurrentPosition()<650)){
+            while((ArmExtendMotor.getCurrentPosition()>-2475)||(ArmJointMotor.getCurrentPosition()<650)){
                 telemetry.addData("ExtendPosition: ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("JointPosition: ",ArmJointMotor.getCurrentPosition());
                 telemetry.update();
             }
-            InchDrive(22,90,powerlevel/3, "Forward");
+            InchDrive(17,90,powerlevel/3, "Forward");
             InchDrive(2,180,powerlevel/3, "Left");
 
-            ArmJointMotor.setTargetPosition(725);
+            //*
+            ArmJointMotor.setTargetPosition(775);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            ArmJointMotor.setPower(0.5);
-            while(ArmJointMotor.getCurrentPosition()<720){
+            ArmJointMotor.setPower(0.4);
+            while(ArmJointMotor.getCurrentPosition()<750){
                 telemetry.addData("ExtendPosition: ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("JointPosition: ",ArmJointMotor.getCurrentPosition());
                 telemetry.update();
             }
-
+            //*/
+            TimeUnit.SECONDS.sleep(1);
             OpenClaws();
-
+            TimeUnit.SECONDS.sleep(1);
+            CloseClaws();
             ArmJointMotor.setTargetPosition(600);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(1);
@@ -90,9 +98,9 @@ public class BucketAutoBlue extends InchAutoParent {
 
             InchDrive(15,0,powerlevel/3, "right");
             ArmJointMotor.setPower(0.3);
-            ArmExtendMotor.setPower(0.3);
+            ArmExtendMotor.setPower(0.6);
             ArmExtendMotor.setTargetPosition(-1);
-            while(Math.abs(ArmExtendMotor.getCurrentPosition())>100){
+            while(Math.abs(ArmExtendMotor.getCurrentPosition())>50){
                 telemetry.addData("ExtendPosition: ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("JointPosition: ",ArmJointMotor.getCurrentPosition());
                 telemetry.update();
@@ -118,22 +126,15 @@ public class BucketAutoBlue extends InchAutoParent {
             //*/
             ArmJointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             ArmExtendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            InchDrive(13,270,powerlevel, "Back");
-            InchDrive(54,0,powerlevel,"RightOnceMore");
-            InchDrive(6,90,powerlevel,"touch forward");
-            InchDrive(44,180,powerlevel,"BIG LEFT");
-            InchDrive(2,0,powerlevel,"slight right");
-            InchDrive(12,270,powerlevel,"back");
-            InchDrive(6,180,powerlevel,"left again");
-            InchDrive(18,0,powerlevel,"push forward");
-            InchDrive(6,270,powerlevel,"go back");
 
+            InchDrive(6, 270,powerlevel,"Back");
             InchDrive(56,0,powerlevel,"RightOnceMore");
-            driver(1975,-1975,1975,-1975, powerlevel, "rotation");
-            InchDrive(18,90,powerlevel,"Back");
+            InchDrive(26,270,powerlevel,"Back");
             CloseClaws();
-            SingleMotorDriver(ArmJointMotor, 500,1,"Arm almost ready to fire");
-            SingleMotorDriver(ArmJointMotor, 500,-1,"Arm almost ready to fire");
+            hangArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            hangArm.setPower(-0.5);
+            TimeUnit.MILLISECONDS.sleep(1200);
+            hangArm.setPower(0);
 
 
             telemetry.addData("Moves","Done");

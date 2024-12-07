@@ -15,9 +15,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class RobotArm {
     public DcMotor armJoint;
     public DcMotor armExtend;
+    public DcMotor hangArm;
     private Servo rightClaw;
     private Servo leftClaw;
-    private Servo headlight;
+    public Servo headlight;
     public TouchSensor JointTouchSensor;
     //This Double tracks the encoder position of the motor in the robot's linear actuator.
     double armExtendPositionRelativeToBasisInPulses;
@@ -26,6 +27,7 @@ public class RobotArm {
     //this boolean tracks whether or not armJoint's position needs set for the braking system.
     boolean armJointPositionNeedsSet=true;
     boolean armExtendPositionNeedsSet = true;
+    boolean hangArmPositionNeedsSet=true;
     //this RunMode is the runmode motors are set to when they are first initialized.
     private RunMode defaultMotorMode;
     boolean zeroPositionFound=false;
@@ -43,20 +45,24 @@ public class RobotArm {
     public RobotArm(RobotConfig.Config config) {
         this.armJoint = (DcMotor)config.get("ArmJointMotor");
         this.armExtend = (DcMotor)config.get("ArmExtendMotor");
+        this.hangArm = (DcMotor)config.get("hangArm");
         this.rightClaw = (Servo)config.get("RightServo");
         this.leftClaw = (Servo)config.get("LeftServo");
         this.headlight = (Servo)config.get("Headlight");
         this.JointTouchSensor = (TouchSensor)config.get("TouchSensor");
 
-        //this.headlight.setPosition(1);
+        this.headlight.setPosition(-1);
         defaultMotorMode=armExtend.getMode();
 
         armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hangArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armExtend.setMode(RunMode.STOP_AND_RESET_ENCODER);
         armExtend.setMode(defaultMotorMode);
         armJoint.setMode(RunMode.STOP_AND_RESET_ENCODER);
         armJoint.setMode(defaultMotorMode);
+        hangArm.setMode(RunMode.STOP_AND_RESET_ENCODER);
+        hangArm.setMode(defaultMotorMode);
     }
 
 
@@ -122,7 +128,7 @@ public class RobotArm {
     //0 degrees is straight up and down. Counter clockwise is negative and clockwise is positive.
     //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
     //robot.
-    public void rotateArmManual(Direction direction, double power) {
+   public void rotateArmManual(Direction direction, double power) {
         if((armJoint.getCurrentPosition() < 635)&&(Math.abs(armExtend.getCurrentPosition())>=210)) {
             armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
             armJoint.setTargetPosition(650);
@@ -131,7 +137,7 @@ public class RobotArm {
         }else {
             switch (direction) {
                 case COUNTER_CLOCKWISE:
-                    if ((armJoint.getCurrentPosition() < 900) || (armExtend.getCurrentPosition() <= 1300)) {
+                    if ((armJoint.getCurrentPosition() < 800) || (armExtend.getCurrentPosition() <= 375)) {
                         armJoint.setMode(defaultMotorMode);
                         armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
                         if (armJoint.getCurrentPosition() > 950) {
@@ -192,10 +198,9 @@ public class RobotArm {
             armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             armExtend.setPower(power);
         }else
-
-        if((armJoint.getCurrentPosition() > 900)&&(Math.abs(armExtend.getCurrentPosition())>=1300)) {
+        if((armJoint.getCurrentPosition() > 800)&&(Math.abs(armExtend.getCurrentPosition())>=375)) {
             armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
-            armExtend.setTargetPosition((Math.abs(armExtend.getCurrentPosition())/armExtend.getCurrentPosition())*1000);
+            armExtend.setTargetPosition((Math.abs(armExtend.getCurrentPosition())/armExtend.getCurrentPosition())*325);
             armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             armExtend.setPower(1);
         }else {
@@ -209,7 +214,7 @@ public class RobotArm {
 //            }
 //            break;
                     armExtend.setMode(defaultMotorMode);
-                    if ((armJoint.getCurrentPosition() > 635) && (armExtend.getCurrentPosition() <= 1300)) {
+                    if ((armJoint.getCurrentPosition() > 635) && (armExtend.getCurrentPosition() <= 375)) {
                         armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
                         armExtend.setPower(power);
                     }
@@ -233,6 +238,38 @@ public class RobotArm {
                     break;
             }
         }
+    }
+
+    //This method accepts a direction and speed and will rotate the hang arm based on power level
+
+    //I have no idea why this doesn't do what I thought it would.
+    //it's just supposed to rotate when power is applied then brake when it's not.
+    //instead, it just keeps rotating and doesn't stop.
+    public void rotateHangArm(Direction direction, double power) {
+        switch (direction) {
+            case COUNTER_CLOCKWISE:
+                hangArm.setMode(defaultMotorMode);
+                hangArm.setDirection(DcMotorSimple.Direction.FORWARD);
+                hangArm.setPower(power);
+                hangArmPositionNeedsSet = true;
+                break;
+            case CLOCKWISE:
+                hangArm.setMode(defaultMotorMode);
+                hangArm.setDirection(DcMotorSimple.Direction.REVERSE);
+                hangArm.setPower(power);
+                hangArmPositionNeedsSet = true;
+                break;
+            case BRAKE:
+                hangArm.setDirection(DcMotorSimple.Direction.FORWARD);
+                hangArm.setPower(0);
+                if (hangArmPositionNeedsSet) {
+                    hangArm.setTargetPosition(hangArm.getCurrentPosition());
+                    hangArmPositionNeedsSet = false;
+                }
+                hangArm.setMode(RunMode.RUN_TO_POSITION);
+                break;
+        }
+
     }
     //this method, when called, reverses the motion of the arm
 //    public void resetExtender(){

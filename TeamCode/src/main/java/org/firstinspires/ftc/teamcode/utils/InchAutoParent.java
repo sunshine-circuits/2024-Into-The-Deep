@@ -15,6 +15,7 @@ public class InchAutoParent extends LinearOpMode {
     protected DcMotor FRMotor;
     protected DcMotor ArmJointMotor;
     protected DcMotor ArmExtendMotor;
+    protected DcMotor hangArm;
     protected Servo LeftServo;
     protected Servo RightServo;
     protected Servo Headlight;

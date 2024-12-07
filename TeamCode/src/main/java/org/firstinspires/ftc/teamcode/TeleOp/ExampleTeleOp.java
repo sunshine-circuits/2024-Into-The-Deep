@@ -24,6 +24,7 @@ public class ExampleTeleOp extends OpMode {
         RobotConfig.Config.LM0.initConfig(hardwareMap);
         driver = new Driver(RobotConfig.Config.LM0);
         arm = new RobotArm(RobotConfig.Config.LM0);
+        arm.headlight.setPosition(-1);
         keybind = new Keybind(gamepad1, gamepad2);
 
         keybind.addOrUpdate("drive_y", Keybind.Input.GAMEPAD_1_LEFT_STICK_Y);
@@ -39,6 +40,8 @@ public class ExampleTeleOp extends OpMode {
         keybind.addOrUpdate("arm_rotation_cw", Keybind.Input.GAMEPAD_2_RIGHT_TRIGGER);
         keybind.addOrUpdate("arm_extend", Keybind.Input.GAMEPAD_2_A);
         keybind.addOrUpdate("arm_retract", Keybind.Input.GAMEPAD_2_B);
+        keybind.addOrUpdate("hang_rotation_ccw", Keybind.Input.GAMEPAD_2_X);
+        keybind.addOrUpdate("hang_rotation_cw", Keybind.Input.GAMEPAD_2_Y);
         keybind.addOrUpdate("control_left_claw", Keybind.Input.GAMEPAD_2_LEFT_STICK_X);
         keybind.addOrUpdate("control_right_claw", Keybind.Input.GAMEPAD_2_RIGHT_STICK_X);
         keybind.addOrUpdate("increase_speed", Keybind.Input.GAMEPAD_1_RIGHT_BUMPER);
@@ -59,6 +62,9 @@ public class ExampleTeleOp extends OpMode {
 
         telemetry.addData("Current Speed: ", driver.getSpeedMultiplier());
 
+        telemetry.addData("-------------------------","");
+        telemetry.addData("Arm Extend Target Position",arm.armExtend.getTargetPosition());
+        telemetry.addData("Arm Extend Current Position",arm.armExtend.getCurrentPosition());
         if (keybind.poll("arm_extend")) {
             arm.extendArmManual(RobotArm.Direction.DEPLOY, 0.5);
         } else if (keybind.poll("arm_retract")) {
@@ -66,15 +72,12 @@ public class ExampleTeleOp extends OpMode {
         } else {
             arm.extendArmManual(RobotArm.Direction.BRAKE, 1);
         }
-//        arm.runBackgroundArmExtendProcesses();
+        telemetry.addData("--------------------------","");
         telemetry.addData("Arm Limit Set?",arm.jointLimitSet);
         telemetry.addData("Arm touch sensor pressed",arm.JointTouchSensor.isPressed());
-        telemetry.addData("--------------------------","");
+        telemetry.addData("---------------------------","");
         telemetry.addData("Arm Joint Target Position",arm.armJoint.getTargetPosition());
         telemetry.addData("Arm Joint Current Position",arm.armJoint.getCurrentPosition());
-        telemetry.addData("---------------------------","");
-        telemetry.addData("Arm Extend Target Position",arm.armExtend.getTargetPosition());
-        telemetry.addData("Arm Extend Current Position",arm.armExtend.getCurrentPosition());
         if (keybind.pollValue("arm_rotation_ccw") > 0) {
             arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT));
         } else if (keybind.pollValue("arm_rotation_cw") > 0) {
@@ -82,6 +85,21 @@ public class ExampleTeleOp extends OpMode {
         } else {
             arm.rotateArmManual(RobotArm.Direction.BRAKE, 1);
         }
+
+        telemetry.addData("----------------------------","");
+        telemetry.addData("Hang Arm Target Position",arm.hangArm.getTargetPosition());
+        telemetry.addData("Hang Arm Current Position",arm.hangArm.getCurrentPosition());
+        if (keybind.poll("hang_rotation_ccw")) {
+            arm.rotateHangArm(RobotArm.Direction.COUNTER_CLOCKWISE, 1);
+            telemetry.addData("Hang Arm Case","CounterClock");
+        } else if (keybind.poll("hang_rotation_cw")) {
+            arm.rotateHangArm(RobotArm.Direction.CLOCKWISE, 1);
+            telemetry.addData("Hang Arm Case","Clock");
+        } else {
+            arm.rotateHangArm(RobotArm.Direction.BRAKE, 1);
+            telemetry.addData("Hang Arm Case","Brake");
+        }
+        telemetry.addData("Hang Arm Mode",arm.hangArm.getMode());
 
         if (keybind.poll("left_claw_down")) {
             arm.setLeftClawPosition(0);
