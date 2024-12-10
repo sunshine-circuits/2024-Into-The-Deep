@@ -15,7 +15,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.concurrent.TimeUnit;
 
-@Autonomous(name="BucketZoneAutoRed")
+@Autonomous(name="TestingAuto")
 
 public class DriveTestAuto extends InchAutoParent {
 
