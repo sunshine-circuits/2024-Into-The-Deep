@@ -24,7 +24,7 @@ public class ExampleTeleOp extends OpMode {
         RobotConfig.Config.LM0.initConfig(hardwareMap);
         driver = new Driver(RobotConfig.Config.LM0);
         arm = new RobotArm(RobotConfig.Config.LM0);
-        arm.headlight.setPosition(-1);
+        arm.headlight.setPosition(0);
         keybind = new Keybind(gamepad1, gamepad2);
 
         keybind.addOrUpdate("drive_y", Keybind.Input.GAMEPAD_1_LEFT_STICK_Y);
