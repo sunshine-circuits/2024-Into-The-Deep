@@ -20,12 +20,13 @@ public class AprilTestAuto2 extends LinearOpMode {
     public final boolean calibratedCamera=false;
     private AprilTagProcessor aprilTagProcessor;
     @Override
+
     public void runOpMode() throws InterruptedException {
         //640x480
         if(calibratedCamera){
             aprilTagProcessor = AprilTagProcessor.easyCreateWithDefaults();
         }else{
-            aprilTagProcessor = new AprilTagProcessor.Builder().setLensIntrinsics(fx,fy,cx,cy).build();
+            aprilTagProcessor = new AprilTagProcessor.Builder().setLensIntrinsics(fx,y,cx,cy).build();
         }
         VisionPortal visionPortal = new VisionPortal.Builder().setCamera(hardwareMap.get(WebcamName.class, "Webcam 1")).addProcessor(aprilTagProcessor).setCameraResolution(new Size(640,480)).build();
 
