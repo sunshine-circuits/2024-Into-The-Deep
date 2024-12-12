@@ -56,6 +56,9 @@ public class ExampleTeleOp extends OpMode {
     @Override
     public void loop() {
 
+        arm.headlight.scaleRange(0,1);
+        arm.headlight.setPosition(0.001);
+
         driver.drive(keybind.pollValue("drive_x"), keybind.pollValue("drive_y"), keybind.pollValue("rotate"));
 
         telemetry.addData("Current Speed: ", driver.getSpeedMultiplier());
@@ -104,7 +107,7 @@ public class ExampleTeleOp extends OpMode {
                 telemetry.addData("Hang Arm Case", "Brake");
             }
         }else{
-            arm.rotateHangArm(RobotArm.Direction.CLOCKWISE, 1);
+            arm.rotateHangArm(RobotArm.Direction.COUNTER_CLOCKWISE, 1);
             telemetry.addData("Hang Arm Case", "Clock");
         }
         telemetry.addData("Hang Arm Mode",arm.hangArm.getMode());

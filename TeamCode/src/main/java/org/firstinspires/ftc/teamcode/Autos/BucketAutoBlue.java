@@ -133,7 +133,7 @@ public class BucketAutoBlue extends InchAutoParent {
             CloseClaws();
             hangArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             hangArm.setPower(-0.5);
-            TimeUnit.MILLISECONDS.sleep(1200);
+            TimeUnit.MILLISECONDS.sleep(1375);
             hangArm.setPower(0);
 
 

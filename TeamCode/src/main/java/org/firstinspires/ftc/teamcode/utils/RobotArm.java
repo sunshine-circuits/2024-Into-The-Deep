@@ -51,7 +51,8 @@ public class RobotArm {
         this.headlight = (Servo)config.get("Headlight");
         this.JointTouchSensor = (TouchSensor)config.get("TouchSensor");
 
-        this.headlight.setPosition(-1);
+        this.headlight.scaleRange(0,1);
+        this.headlight.setPosition(0.001);
         defaultMotorMode=armExtend.getMode();
 
         armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -129,7 +130,7 @@ public class RobotArm {
     //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
     //robot.
    public void rotateArmManual(Direction direction, double power) {
-        if((armJoint.getCurrentPosition() < 635)&&(Math.abs(armExtend.getCurrentPosition())>=210)) {
+        if((armJoint.getCurrentPosition() < 635)&&(Math.abs(armExtend.getCurrentPosition())>=410)) {
             armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
             armJoint.setTargetPosition(650);
             armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -149,7 +150,7 @@ public class RobotArm {
                     armJointPositionNeedsSet = true;
                     break;
                 case CLOCKWISE:
-                    if ((armJoint.getCurrentPosition() > 635) || (armExtend.getCurrentPosition() <= 250)) {
+                    if ((armJoint.getCurrentPosition() > 635) || (armExtend.getCurrentPosition() <= 450)) {
                         armJoint.setMode(defaultMotorMode);
                         armJoint.setDirection(DcMotorSimple.Direction.REVERSE);
                         if (armJoint.getCurrentPosition() < 635) {
