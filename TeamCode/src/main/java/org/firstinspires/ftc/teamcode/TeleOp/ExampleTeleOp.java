@@ -18,13 +18,17 @@ public class ExampleTeleOp extends OpMode {
     private boolean speedDebounce = false;
     private final double ARM_SPEED_LIMIT = 0.3;
     public boolean aprilTagDetected;
+    public boolean Hanging=false;
 
     @Override
     public void init() {
         RobotConfig.Config.LM0.initConfig(hardwareMap);
         driver = new Driver(RobotConfig.Config.LM0);
         arm = new RobotArm(RobotConfig.Config.LM0);
+<<<<<<< HEAD
         arm.headlight.setPosition(0);
+=======
+>>>>>>> b89c1293f1919e1b7122ab6c7011c5afa3fd9158
         keybind = new Keybind(gamepad1, gamepad2);
 
         keybind.addOrUpdate("drive_y", Keybind.Input.GAMEPAD_1_LEFT_STICK_Y);
@@ -32,10 +36,8 @@ public class ExampleTeleOp extends OpMode {
         keybind.addOrUpdate("rotate", Keybind.Input.GAMEPAD_1_RIGHT_STICK_X);
         keybind.addOrUpdate("claw_open", Keybind.Input.GAMEPAD_2_RIGHT_BUMPER);
         keybind.addOrUpdate("claw_close", Keybind.Input.GAMEPAD_2_LEFT_BUMPER);
-        keybind.addOrUpdate("left_claw_down", Keybind.Input.GAMEPAD_2_DPAD_LEFT);
-        keybind.addOrUpdate("left_claw_up", Keybind.Input.GAMEPAD_2_DPAD_RIGHT);
-        keybind.addOrUpdate("right_claw_down", Keybind.Input.GAMEPAD_2_DPAD_DOWN);
-        keybind.addOrUpdate("right_claw_up", Keybind.Input.GAMEPAD_2_DPAD_UP);
+        keybind.addOrUpdate("disengage_hang", Keybind.Input.GAMEPAD_2_DPAD_DOWN);
+        keybind.addOrUpdate("engage_hang", Keybind.Input.GAMEPAD_2_DPAD_UP);
         keybind.addOrUpdate("arm_rotation_ccw", Keybind.Input.GAMEPAD_2_LEFT_TRIGGER);
         keybind.addOrUpdate("arm_rotation_cw", Keybind.Input.GAMEPAD_2_RIGHT_TRIGGER);
         keybind.addOrUpdate("arm_extend", Keybind.Input.GAMEPAD_2_A);
@@ -89,29 +91,31 @@ public class ExampleTeleOp extends OpMode {
         telemetry.addData("----------------------------","");
         telemetry.addData("Hang Arm Target Position",arm.hangArm.getTargetPosition());
         telemetry.addData("Hang Arm Current Position",arm.hangArm.getCurrentPosition());
-        if (keybind.poll("hang_rotation_ccw")) {
-            arm.rotateHangArm(RobotArm.Direction.COUNTER_CLOCKWISE, 1);
-            telemetry.addData("Hang Arm Case","CounterClock");
-        } else if (keybind.poll("hang_rotation_cw")) {
+        if(keybind.poll("engage_hang")){
+            Hanging=true;
+        }else if(keybind.poll("disengage_hang")){
+            Hanging=false;
+        }
+        if(Hanging==false) {
+            if (keybind.poll("hang_rotation_ccw")) {
+                arm.rotateHangArm(RobotArm.Direction.COUNTER_CLOCKWISE, 1);
+                telemetry.addData("Hang Arm Case", "CounterClock");
+            } else if (keybind.poll("hang_rotation_cw")) {
+                arm.rotateHangArm(RobotArm.Direction.CLOCKWISE, 1);
+                telemetry.addData("Hang Arm Case", "Clock");
+            } else {
+                arm.rotateHangArm(RobotArm.Direction.BRAKE, 1);
+                telemetry.addData("Hang Arm Case", "Brake");
+            }
+        }else{
             arm.rotateHangArm(RobotArm.Direction.CLOCKWISE, 1);
-            telemetry.addData("Hang Arm Case","Clock");
-        } else {
-            arm.rotateHangArm(RobotArm.Direction.BRAKE, 1);
-            telemetry.addData("Hang Arm Case","Brake");
+            telemetry.addData("Hang Arm Case", "Clock");
         }
         telemetry.addData("Hang Arm Mode",arm.hangArm.getMode());
 
-        if (keybind.poll("left_claw_down")) {
-            arm.setLeftClawPosition(0);
-        }else if (keybind.poll("left_claw_up")) {
-            arm.setLeftClawPosition(1);
-        }else if (keybind.poll("right_claw_down")) {
-            arm.setRightClawPosition(0);
-        }else if (keybind.poll("right_claw_up")) {
-            arm.setRightClawPosition(1);
-        }else if (keybind.poll("claw_open")) {
-            arm.setRightClawPosition(0.15);
-            arm.setLeftClawPosition(0.85);
+        if (keybind.poll("claw_open")) {
+            arm.setRightClawPosition(0.3);
+            arm.setLeftClawPosition(0.7);
         } else if (keybind.poll("claw_close")) {
             arm.setRightClawPosition(1);
             arm.setLeftClawPosition(0);

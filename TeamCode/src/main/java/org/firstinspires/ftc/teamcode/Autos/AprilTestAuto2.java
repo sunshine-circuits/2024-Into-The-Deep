@@ -20,6 +20,7 @@ public class AprilTestAuto2 extends LinearOpMode {
     public final boolean calibratedCamera=false;
     private AprilTagProcessor aprilTagProcessor;
     @Override
+
     public void runOpMode() throws InterruptedException {
         //640x480
         if(calibratedCamera){
