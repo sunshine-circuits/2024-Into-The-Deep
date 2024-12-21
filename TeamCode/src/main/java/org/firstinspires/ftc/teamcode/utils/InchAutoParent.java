@@ -188,10 +188,11 @@ public class InchAutoParent extends LinearOpMode {
         return 537.7*(Inches/((104*Math.PI)/25.4));
     }
     double myrot;
-    public void RotateDegrees(double angle, double pow, String telem){
-        double pulses = RotationsToPulses(angle-myrot);
+    public void RotateDegrees(double degrees, double pow, String telem){
+        double pulses = (537.7/360) * degrees;
         int pulsesInt = (int)pulses;
         driver(-pulsesInt,pulsesInt,-pulsesInt,pulsesInt,pow,telem);
+        //fr fl br bl
     }
     public double RotationsToPulses(double degrees){
         return degrees*(((590/360)*537.7)/90);
@@ -294,7 +295,8 @@ public class InchAutoParent extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void
+    runOpMode() throws InterruptedException {
 
     }
 }
