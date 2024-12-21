@@ -289,13 +289,12 @@ public class InchAutoParent extends LinearOpMode {
     }
     double myrot;
     public void RotateDegrees(double degrees, double pow, String telem){
-        double pulses = (537.7/360) * degrees;
+        double pulses = (Math.sqrt(2.0) * 83 * 537.7 * degrees)/(90 * 104);
         int pulsesInt = (int)pulses;
         driver(-pulsesInt,pulsesInt,-pulsesInt,pulsesInt,pow,telem);
-        //fr fl br bl
     }
     public double RotationsToPulses(double degrees){
-        return degrees*(((590/360)*537.7)/90);
+        return (537.7/360) * degrees;
     }
 
     public void SingleMotorDriver(DcMotor OpMotor, int dist, double pow, String telem){
