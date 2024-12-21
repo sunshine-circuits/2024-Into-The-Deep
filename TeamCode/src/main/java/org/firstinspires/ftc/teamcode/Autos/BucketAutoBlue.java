@@ -70,7 +70,7 @@ public class BucketAutoBlue extends InchAutoParent {
                 telemetry.addData("JointPosition: ",ArmJointMotor.getCurrentPosition());
                 telemetry.update();
             }
-            InchDrive(17,90,powerlevel/3, "Forward");
+            InchDrive(18,90,powerlevel/3, "Forward");
             InchDrive(2,180,powerlevel/3, "Left");
 
             //*
@@ -128,14 +128,14 @@ public class BucketAutoBlue extends InchAutoParent {
             ArmExtendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             InchDrive(6, 270,powerlevel,"Back");
-            InchDrive(56,0,powerlevel,"RightOnceMore");
-            InchDrive(26,270,powerlevel,"Back");
+            InchDrive(55,0,powerlevel,"RightOnceMore");
+            InchDrive(27,270,powerlevel,"Back");
             CloseClaws();
             hangArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            hangArm.setPower(-0.5);
-            TimeUnit.MILLISECONDS.sleep(1375);
-            hangArm.setPower(0);
+            hangArm.setPower(0.5);
+            TimeUnit.MILLISECONDS.sleep(1450);
 
+            hangArm.setPower(0);
 
             telemetry.addData("Moves","Done");
             telemetry.update();

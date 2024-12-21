@@ -19,6 +19,7 @@ public class ExampleTeleOp extends OpMode {
     private final double ARM_SPEED_LIMIT = 0.3;
     public boolean aprilTagDetected;
     public boolean Hanging=false;
+    public boolean HangRight=false;
 
     @Override
     public void init() {
@@ -34,6 +35,8 @@ public class ExampleTeleOp extends OpMode {
         keybind.addOrUpdate("claw_close", Keybind.Input.GAMEPAD_2_LEFT_BUMPER);
         keybind.addOrUpdate("disengage_hang", Keybind.Input.GAMEPAD_2_DPAD_DOWN);
         keybind.addOrUpdate("engage_hang", Keybind.Input.GAMEPAD_2_DPAD_UP);
+        keybind.addOrUpdate("hang_change_direction_right", Keybind.Input.GAMEPAD_2_DPAD_RIGHT);
+        keybind.addOrUpdate("hang_change_direction_left", Keybind.Input.GAMEPAD_2_DPAD_LEFT);
         keybind.addOrUpdate("arm_rotation_ccw", Keybind.Input.GAMEPAD_2_LEFT_TRIGGER);
         keybind.addOrUpdate("arm_rotation_cw", Keybind.Input.GAMEPAD_2_RIGHT_TRIGGER);
         keybind.addOrUpdate("arm_extend", Keybind.Input.GAMEPAD_2_A);
@@ -79,12 +82,24 @@ public class ExampleTeleOp extends OpMode {
         telemetry.addData("---------------------------","");
         telemetry.addData("Arm Joint Target Position",arm.armJoint.getTargetPosition());
         telemetry.addData("Arm Joint Current Position",arm.armJoint.getCurrentPosition());
+
+        //makes arm rotate away from robot
         if (keybind.pollValue("arm_rotation_ccw") > 0) {
-            arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT));
-        } else if (keybind.pollValue("arm_rotation_cw") > 0) {
-            arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT));
+            if(arm.armJoint.getCurrentPosition() > 800){
+                arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT*(2/4)));
+            }else{
+                arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT*(4/2)));
+            }
+        } else// makes arm rotate towards robot
+            if (keybind.pollValue("arm_rotation_cw") > 0) {
+                if(arm.armJoint.getCurrentPosition() > 800){
+                    arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT*(4/2)));
+                }else{
+                    arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT*(2/4)));
+                }
+               // arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT));
         } else {
-            arm.rotateArmManual(RobotArm.Direction.BRAKE, 1);
+            arm.rotateArmManual(RobotArm.Direction.BRAKE, 0.5);
         }
 
         telemetry.addData("----------------------------","");
@@ -95,6 +110,12 @@ public class ExampleTeleOp extends OpMode {
         }else if(keybind.poll("disengage_hang")){
             Hanging=false;
         }
+        if(keybind.poll("hang_change_direction_right")){
+            HangRight=true;
+        }else if(keybind.poll("hang_change_direction_left")){
+            HangRight=false;
+        }
+
         if(Hanging==false) {
             if (keybind.poll("hang_rotation_ccw")) {
                 arm.rotateHangArm(RobotArm.Direction.COUNTER_CLOCKWISE, 1);
@@ -107,20 +128,25 @@ public class ExampleTeleOp extends OpMode {
                 telemetry.addData("Hang Arm Case", "Brake");
             }
         }else{
-            arm.rotateHangArm(RobotArm.Direction.COUNTER_CLOCKWISE, 1);
-            telemetry.addData("Hang Arm Case", "Clock");
+            if(HangRight) {
+                arm.rotateHangArm(RobotArm.Direction.COUNTER_CLOCKWISE, 1);
+                telemetry.addData("Hang Arm Case", "Clock");
+            }else{
+                arm.rotateHangArm(RobotArm.Direction.CLOCKWISE, 1);
+                telemetry.addData("Hang Arm Case", "Clock");
+            }
         }
         telemetry.addData("Hang Arm Mode",arm.hangArm.getMode());
 
         if (keybind.poll("claw_open")) {
-            arm.setRightClawPosition(0.15);
-            arm.setLeftClawPosition(0.85);
+            arm.setRightClawPosition(0.57);
+            arm.setLeftClawPosition(0.43);
         } else if (keybind.poll("claw_close")) {
-            arm.setRightClawPosition(1);
-            arm.setLeftClawPosition(0);
+            arm.setRightClawPosition(0);
+            arm.setLeftClawPosition(1);
         } else {
-            arm.setRightClawPosition(0.55);
-            arm.setLeftClawPosition(0.45);
+            arm.setRightClawPosition(0.51);
+            arm.setLeftClawPosition(0.49);
         }
 
         if (keybind.pollValue("control_left_claw") != 0) {

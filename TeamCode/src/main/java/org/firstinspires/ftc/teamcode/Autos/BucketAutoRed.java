@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 @Autonomous(name="BucketZoneAutoRed")
 
 public class BucketAutoRed extends InchAutoParent {
-
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -70,7 +69,7 @@ public class BucketAutoRed extends InchAutoParent {
                 telemetry.addData("JointPosition: ",ArmJointMotor.getCurrentPosition());
                 telemetry.update();
             }
-            InchDrive(17,90,powerlevel/3, "Forward");
+            InchDrive(18,90,powerlevel/3, "Forward");
             InchDrive(2,180,powerlevel/3, "Left");
 
             //*
@@ -128,12 +127,13 @@ public class BucketAutoRed extends InchAutoParent {
             ArmExtendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             InchDrive(6, 270,powerlevel,"Back");
-            InchDrive(56,0,powerlevel,"RightOnceMore");
-            InchDrive(26,270,powerlevel,"Back");
+            InchDrive(55,0,powerlevel,"RightOnceMore");
+            InchDrive(27,270,powerlevel,"Back");
             CloseClaws();
             hangArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            hangArm.setPower(-0.5);
-            TimeUnit.MILLISECONDS.sleep(1200);
+            hangArm.setPower(0.5);
+            TimeUnit.MILLISECONDS.sleep(1400);
+
             hangArm.setPower(0);
 
 
@@ -141,7 +141,7 @@ public class BucketAutoRed extends InchAutoParent {
             telemetry.update();
             // RESET
 
-
         }
     }
+
 }
