@@ -16,8 +16,8 @@ public class RobotArm {
     public DcMotor armJoint;
     public DcMotor armExtend;
     public DcMotor hangArm;
-    private Servo rightClaw;
-    private Servo leftClaw;
+    public Servo rightClaw;
+    public Servo leftClaw;
     public Servo headlight;
     public TouchSensor JointTouchSensor;
     //This Double tracks the encoder position of the motor in the robot's linear actuator.
@@ -131,13 +131,14 @@ public class RobotArm {
     //robot.
    public void rotateArmManual(Direction direction, double power) {
 
-       if((armExtend.getCurrentPosition() >= 375)&&(armJoint.getCurrentPosition() >= 750)){
+       if((Math.abs(armExtend.getCurrentPosition())>= 375)&&(armJoint.getCurrentPosition() >= 800)){
            armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
-           armJoint.setTargetPosition(700);
+           armJoint.setTargetPosition(785);
            armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
            armJoint.setPower(1);
            armJointPositionNeedsSet = true;
-       } /* else if(armJoint.getCurrentPosition() >= 1300){
+
+       }/* else if(armJoint.getCurrentPosition() >= 1300){
            armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
            armJoint.setTargetPosition(1250);
            armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -152,7 +153,7 @@ public class RobotArm {
         }else {
             switch (direction) {
                 case COUNTER_CLOCKWISE:
-                    if ((armJoint.getCurrentPosition() < 800) || (armExtend.getCurrentPosition() <= 375)) {
+                    if ((armJoint.getCurrentPosition() < 770) || (Math.abs(armExtend.getCurrentPosition()) <= 375)) {
                         armJoint.setMode(defaultMotorMode);
                         armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
                         if (armJoint.getCurrentPosition() > 800) {
@@ -164,7 +165,7 @@ public class RobotArm {
                     armJointPositionNeedsSet = true;
                     break;
                 case CLOCKWISE:
-                    if ((armJoint.getCurrentPosition() > 635) || (armExtend.getCurrentPosition() <= 550)) {
+                    if ((armJoint.getCurrentPosition() > 635) || (Math.abs(armExtend.getCurrentPosition()) <= 550)) {
                         armJoint.setMode(defaultMotorMode);
                         armJoint.setDirection(DcMotorSimple.Direction.REVERSE);
                         if (armJoint.getCurrentPosition() < 635) {
@@ -210,13 +211,13 @@ public class RobotArm {
             armExtend.setTargetPosition((Math.abs(armExtend.getCurrentPosition())/armExtend.getCurrentPosition())*3025);
             armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             armExtend.setPower(power);
-        }else
+        } else /*
         if((armJoint.getCurrentPosition() > 800)&&(Math.abs(armExtend.getCurrentPosition())>=375)) {
             armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
             armExtend.setTargetPosition((Math.abs(armExtend.getCurrentPosition())/armExtend.getCurrentPosition())*365);
             armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             armExtend.setPower(1);
-        }else {
+        } else //*/{
             switch (direction) {
                 case DEPLOY:
 //            if(armExtendPositionRelativeToBasisInPulses>=InchesToPulses(7.5)){
@@ -233,7 +234,7 @@ public class RobotArm {
                     break;
                 case RETRACT:
                     if(Math.abs(armExtend.getCurrentPosition())<=3000) {
-                        if ((((armJoint.getCurrentPosition() < 635) || (armJoint.getCurrentPosition() > 800))&&(armExtend.getCurrentPosition() <= 350))||((armJoint.getCurrentPosition() > 635)&&(armJoint.getCurrentPosition() < 800))){
+                        if ((((armJoint.getCurrentPosition() < 635) || (armJoint.getCurrentPosition() > 800))&&(Math.abs(armExtend.getCurrentPosition()) <= 350))||((armJoint.getCurrentPosition() > 635)&&(armJoint.getCurrentPosition() < 800))){
                             armExtend.setMode(defaultMotorMode);
                             armExtend.setDirection(DcMotorSimple.Direction.REVERSE);
                             armExtend.setPower(power);

@@ -4,9 +4,11 @@ import android.util.Size;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.utils.InchAutoParent;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -34,6 +36,7 @@ public class ParkAutoBlue extends InchAutoParent {
         ArmExtendMotor = hardwareMap.get(DcMotor.class,"ArmExtendMotor");
         hangArm = hardwareMap.get(DcMotor.class,"hangArm");
         Headlight = hardwareMap.get(Servo.class, "Headlight");
+        myIMU = hardwareMap.get(IMU.class, "myIMU");
         telemetry.addData("Motors","Got");
         telemetry.update();
 
@@ -43,6 +46,8 @@ public class ParkAutoBlue extends InchAutoParent {
         ArmExtendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         ArmJointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         hangArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
 
         AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder().setDrawAxes(true).setDrawCubeProjection(true).setDrawTagID(true).setDrawTagOutline(true).setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11).setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()).build();
         VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
@@ -61,7 +66,16 @@ public class ParkAutoBlue extends InchAutoParent {
             // Moves right, goes forward, then turns left
             InchDrive(26,0,powerlevel, "Right");
             InchDrive(75,90,powerlevel, "Big Forward");
-            InchDrive(26.5,180,powerlevel, "left");
+            //InchDrive(26.5,180,powerlevel, "left");
+            myIMU.resetYaw();
+            driverInteruptable(-1000,1000,-1000,1000,1,"FalseRight");
+            while(!(Math.abs(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)-45)<1)){
+                telemetry.addData("turning",myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+                telemetry.update();
+                if(Math.abs(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)-45)<1){
+                    break;
+                }
+            }
 
             //attempted rotation drive code RotationDrive(0, 0, 45, 0.5, "doing rotation");
             //moves the arm up
@@ -73,7 +87,6 @@ public class ParkAutoBlue extends InchAutoParent {
                 telemetry.addData("ExtendPosition: ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("JointPosition: ",ArmJointMotor.getCurrentPosition());
                 telemetry.update();
-
             }
             ArmExtendMotor.setTargetPosition(-2500);
             ArmExtendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -86,7 +99,7 @@ public class ParkAutoBlue extends InchAutoParent {
 
             }
 
-            InchDrive(6,90,powerlevel, "Big Forward");
+            InchDrive(6,90,powerlevel, "Smol Forward");
             ArmJointMotor.setTargetPosition(775);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(0.4);

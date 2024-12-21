@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.utils.Keybind;
@@ -109,6 +110,9 @@ public class ExampleTeleOp extends OpMode {
             Hanging=true;
         }else if(keybind.poll("disengage_hang")){
             Hanging=false;
+
+            arm.armExtend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            arm.armExtend.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         if(keybind.poll("hang_change_direction_right")){
             HangRight=true;
@@ -138,12 +142,14 @@ public class ExampleTeleOp extends OpMode {
         }
         telemetry.addData("Hang Arm Mode",arm.hangArm.getMode());
 
+        telemetry.addData("LeftClawPos", arm.leftClaw.getPosition());
+        telemetry.addData("RightClawPos", arm.rightClaw.getPosition());
         if (keybind.poll("claw_open")) {
             arm.setRightClawPosition(0.57);
             arm.setLeftClawPosition(0.43);
         } else if (keybind.poll("claw_close")) {
-            arm.setRightClawPosition(0);
-            arm.setLeftClawPosition(1);
+            arm.setRightClawPosition(0.49);
+            arm.setLeftClawPosition(0.51);
         } else {
             arm.setRightClawPosition(0.51);
             arm.setLeftClawPosition(0.49);

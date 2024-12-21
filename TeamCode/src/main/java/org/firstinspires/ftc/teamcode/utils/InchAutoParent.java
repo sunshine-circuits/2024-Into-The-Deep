@@ -4,9 +4,12 @@ import static java.lang.Math.sin;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.robot.Robot;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class InchAutoParent extends LinearOpMode {
     protected DcMotor BLMotor;
@@ -19,6 +22,7 @@ public class InchAutoParent extends LinearOpMode {
     protected Servo LeftServo;
     protected Servo RightServo;
     protected Servo Headlight;
+    protected IMU myIMU;
     protected double powerlevel=0.7;
 
     //    @Override
@@ -86,6 +90,102 @@ public class InchAutoParent extends LinearOpMode {
             telemetry.addData(telem+" TargetPosBR ",BRtargetpos);
             telemetry.addData(telem+" TargetPosBL ",BLtargetpos);
             telemetry.update();
+        }
+
+        telemetry.addData("While "+telem,"Done");
+        telemetry.update();
+
+        FRMotor.setPower(0);
+        FLMotor.setPower(0);
+        BRMotor.setPower(0);
+        BLMotor.setPower(0);
+
+        telemetry.addData("Power","Zero");
+        telemetry.update();
+    }
+
+    public void OrientedDriver(int FR, int FL, int BR, int BL, double pow, String telem){
+        myIMU.resetYaw();
+        int FRtargetpos;
+        int FLtargetpos;
+        int BRtargetpos;
+        int BLtargetpos;
+
+        telemetry.addData("Variables "+telem,"Declared");
+        telemetry.update();
+
+        FRtargetpos=FRMotor.getCurrentPosition()-(FR);
+        FLtargetpos=FLMotor.getCurrentPosition()+(FL);
+        BRtargetpos=BRMotor.getCurrentPosition()-(BR);
+        BLtargetpos=BLMotor.getCurrentPosition()+(BL);
+
+        telemetry.addData("MotorData "+telem,"Snatched");
+        telemetry.update();
+
+        FRMotor.setTargetPosition(FRtargetpos);
+        FLMotor.setTargetPosition(FLtargetpos);
+        BRMotor.setTargetPosition(BRtargetpos);
+        BLMotor.setTargetPosition(BLtargetpos);
+
+        telemetry.addData("TargetPos "+telem,"Declared");
+        telemetry.addData("TargetPosFR ",FRtargetpos);
+        telemetry.addData("TargetPosFL ",FLtargetpos);
+        telemetry.addData("TargetPosBR ",BRtargetpos);
+        telemetry.addData("TargetPosBL ",BLtargetpos);
+        telemetry.update();
+
+        FRMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        FLMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BRMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BLMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        telemetry.addData("Running "+telem,"Happening");
+        telemetry.update();
+
+        FRMotor.setPower(pow);
+        FLMotor.setPower(pow);
+        BRMotor.setPower(pow);
+        BLMotor.setPower(pow);
+
+        telemetry.addData("Power "+telem,"Set");
+        telemetry.update();
+
+        telemetry.addData("While "+telem,"Started");
+        telemetry.update();
+
+        while (opModeIsActive()&&(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()))
+        {
+            telemetry.addData(telem+" CurrentPosFR",FRMotor.getCurrentPosition());
+            telemetry.addData(telem+" CurrentPosFL",FLMotor.getCurrentPosition());
+            telemetry.addData(telem+" CurrentPosBR",BRMotor.getCurrentPosition());
+            telemetry.addData(telem+" CurrentPosBL",BLMotor.getCurrentPosition());
+
+            telemetry.addData(telem+" TargetPosFR ",FRtargetpos);
+            telemetry.addData(telem+" TargetPosFL ",FLtargetpos);
+            telemetry.addData(telem+" TargetPosBR ",BRtargetpos);
+            telemetry.addData(telem+" TargetPosBL ",BLtargetpos);
+
+            telemetry.addData(telem+" Orientation",myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            telemetry.update();
+
+            if(Math.abs(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES))>2){
+                if(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)>0){
+                    FRMotor.setPower(pow*1.01);
+                    FLMotor.setPower(pow*0.99);
+                    BRMotor.setPower(pow*1.01);
+                    BLMotor.setPower(pow*0.99);
+                }else{
+                    FRMotor.setPower(pow*0.99);
+                    FLMotor.setPower(pow*1.01);
+                    BRMotor.setPower(pow*0.99);
+                    BLMotor.setPower(pow*1.01);
+                }
+            }else{
+                FRMotor.setPower(pow);
+                FLMotor.setPower(pow);
+                BRMotor.setPower(pow);
+                BLMotor.setPower(pow);
+            }
         }
 
         telemetry.addData("While "+telem,"Done");
