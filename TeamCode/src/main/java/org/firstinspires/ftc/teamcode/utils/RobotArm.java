@@ -30,8 +30,6 @@ public class RobotArm {
     boolean hangArmPositionNeedsSet=true;
     //this RunMode is the runmode motors are set to when they are first initialized.
     private RunMode defaultMotorMode;
-    boolean zeroPositionFound=false;
-    double BasisInPulses;
     public double PowerDecrease = 0.5;
 
     public enum Direction {
@@ -66,39 +64,8 @@ public class RobotArm {
         hangArm.setMode(defaultMotorMode);
     }
 
-
     //this double contains the number of pulses the encoder runs to move one rotation
     private final double PULSES_PER_ROTATION = 537.7;
-
-    //this method accepts a double of inches and will return the number of pulses armExtend needs to rotate to move that far.
-//    public double InchesToPulses(double inches){
-//        return (inches/0.5)*PULSES_PER_ROTATION;
-//    }
-
-    //this method is a void that swaps armExtend to DefaultMotorMode if it is busy.
-//    public void runBackgroundArmExtendProcesses(){
-//        //swaps armExtend to DefaultMotorMode if it is busy
-//        if(armExtend.isBusy()){
-//            armExtendInRunToPosMode=true;
-//        }else{
-//            if(armExtendInRunToPosMode){
-//                armExtend.setMode(defaultMotorMode);
-//            }
-//        }
-//        if(zeroPositionFound==false){
-//            BasisInPulses=armExtend.getCurrentPosition();
-//        }
-//        armExtendPositionRelativeToBasisInPulses=armExtend.getCurrentPosition()-BasisInPulses;
-//    }
-
-
-    //This method accepts a double of degrees and will rotate to that value as an absolute position.
-    //0 degrees is straight up and down. Counter clockwise is negative and clockwise is positive.
-    //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
-    //robot.
-    public void rotateArmTo(double degrees) {
-
-    }
 
     public void moveToOrigin() throws Exception {
         armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -107,22 +74,11 @@ public class RobotArm {
         while(armJoint.isBusy() && !JointTouchSensor.isPressed()) {
 
         }
-        //Same thing, but by increments.
-        //        int count = 0;
-        //        while (!JointTouchSensor.isPressed()){
-        //            armJoint.setTargetPosition(-10 * count);
-        //            armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //            armJoint.setPower(0.2);
-        //            while(armJoint.isBusy());
-        //            count++;
-        //        }
         if (!JointTouchSensor.isPressed()) {
             throw new Exception("Could not move to origin");
         }
         armJoint.setMode(RunMode.STOP_AND_RESET_ENCODER);
         armJoint.setMode(defaultMotorMode);
-
-
     }
 
     //This method accepts a direction and speed and will rotate to a max/min value.
@@ -138,13 +94,7 @@ public class RobotArm {
            armJoint.setPower(1);
            armJointPositionNeedsSet = true;
 
-       }/* else if(armJoint.getCurrentPosition() >= 1300){
-           armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
-           armJoint.setTargetPosition(1250);
-           armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-           armJoint.setPower(1);
-
-       } */else if((armJoint.getCurrentPosition() < 635)&&(Math.abs(armExtend.getCurrentPosition())>=550)) {
+       }else if((armJoint.getCurrentPosition() < 635)&&(Math.abs(armExtend.getCurrentPosition())>=550)) {
             armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
             armJoint.setTargetPosition(650);
             armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -189,22 +139,7 @@ public class RobotArm {
         }
     }
 
-    //This method accepts a double of inches and will extend/retract to a value as an absolute position.
-    //0 inches is fully retracted. X inches is fully extended. Ensure the arm will not attempt to
-    //travel beyond the length of the arm nor retract past 0. This should also ensure we can not
-    //extend the arm and collide with the robot.
-    public void extendArmTo(double inches){
-        double pulsesFromZero=(inches/0.5)*PULSES_PER_ROTATION;
-        double pulsesNeeded=pulsesFromZero-armExtendPositionRelativeToBasisInPulses;
-        armExtendPositionRelativeToBasisInPulses=armExtendPositionRelativeToBasisInPulses+pulsesNeeded;
-        armExtend.setTargetPosition((int) (armExtend.getCurrentPosition()+pulsesNeeded));
-        armExtend.setMode(RunMode.RUN_TO_POSITION);
-    }
-
-    //This method accepts a double of power and direction and will extend/retract to a max/min value.
-    //0 inches is fully retracted. X inches is fully extended. Ensure the arm will not attempt to
-    //travel beyond the length of the arm nor retract past 0. This should also ensure we can not
-    //extend the arm and collide with the robot.
+    //This method accepts a double that represents power and a Direction that represents it's current directio
     public void extendArmManual(Direction direction, double power) {
         if(Math.abs(armExtend.getCurrentPosition())>=3075){
             armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -264,6 +199,7 @@ public class RobotArm {
     //I have no idea why this doesn't do what I thought it would.
     //it's just supposed to rotate when power is applied then brake when it's not.
     //instead, it just keeps rotating and doesn't stop.
+    //to fix this, the BRAKE case simply Brakes instead of actively trying to keep itself in it's current position.
     public void rotateHangArm(Direction direction, double power) {
         switch (direction) {
             case COUNTER_CLOCKWISE:
@@ -278,29 +214,19 @@ public class RobotArm {
                 break;
             case BRAKE:
                 hangArm.setPower(0);
-                if (hangArmPositionNeedsSet) {
-                    hangArm.setTargetPosition(hangArm.getCurrentPosition());
-                    hangArmPositionNeedsSet = false;
-                }
-                hangArm.setMode(RunMode.RUN_TO_POSITION);
+                //if (hangArmPositionNeedsSet) {
+                //    hangArm.setTargetPosition(hangArm.getCurrentPosition());
+                //    hangArmPositionNeedsSet = false;
+                //}
+                //hangArm.setMode(RunMode.RUN_TO_POSITION);
                 break;
         }
-
     }
-    //this method, when called, reverses the motion of the arm
-//    public void resetExtender(){
-//        armExtend.setTargetPosition((int) (armExtend.getCurrentPosition()- InchesToPulses(8)));
-//        armExtend.setMode(RunMode.RUN_TO_POSITION);
-//        armExtendPositionRelativeToBasisInPulses=0;
-//    }
 
-    //This method accepts a double of degrees and will rotate to that value as an absolute position.
-    //0 degrees is straight up and down. Counter clockwise is negative and clockwise is positive.
-    //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
-    //robot.
+    //this method accepts a double from 0 to 1 and a Servo. it then rotates to that double's 'position' on the Servo
+    //the 'position' of a double the Servo can be understood as the fraction of the servo's maximum clockwise rotation that it's current clockwise rotation represents, where 0 is it's maximum counterclockwise rotation and 1 is it's maximum clockwise rotation
     private void setClawPosition(double position, Servo claw) {
         claw.setPosition(position);
-        //claw.getPosition();
     }
 
     public void setRightClawPosition(double position) {
@@ -310,7 +236,5 @@ public class RobotArm {
     public void setLeftClawPosition(double position) {
         setClawPosition(position, this.leftClaw);
     }
-
-    //using Headlight for Telemetry
 
 }

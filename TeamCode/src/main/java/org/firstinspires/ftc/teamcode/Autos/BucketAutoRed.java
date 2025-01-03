@@ -126,13 +126,13 @@ public class BucketAutoRed extends InchAutoParent {
             ArmJointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             ArmExtendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            InchDrive(6, 270,powerlevel,"Back");
+            InchDrive(7, 270,powerlevel,"Back");
             InchDrive(55,0,powerlevel,"RightOnceMore");
-            InchDrive(27,270,powerlevel,"Back");
+            InchDrive(26,270,powerlevel,"Back");
             CloseClaws();
             hangArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             hangArm.setPower(0.5);
-            TimeUnit.MILLISECONDS.sleep(1400);
+            TimeUnit.MILLISECONDS.sleep(1450);
 
             hangArm.setPower(0);
 

@@ -36,7 +36,8 @@ public class ExampleTeleOp extends OpMode {
         keybind.addOrUpdate("claw_close", Keybind.Input.GAMEPAD_2_LEFT_BUMPER);
         keybind.addOrUpdate("disengage_hang", Keybind.Input.GAMEPAD_2_DPAD_DOWN);
         keybind.addOrUpdate("engage_hang", Keybind.Input.GAMEPAD_2_DPAD_UP);
-        keybind.addOrUpdate("hang_change_direction_right", Keybind.Input.GAMEPAD_2_DPAD_RIGHT);
+        keybind.addOrUpdate("hang_change_direc" +
+                "tion_right", Keybind.Input.GAMEPAD_2_DPAD_RIGHT);
         keybind.addOrUpdate("hang_change_direction_left", Keybind.Input.GAMEPAD_2_DPAD_LEFT);
         keybind.addOrUpdate("arm_rotation_ccw", Keybind.Input.GAMEPAD_2_LEFT_TRIGGER);
         keybind.addOrUpdate("arm_rotation_cw", Keybind.Input.GAMEPAD_2_RIGHT_TRIGGER);
@@ -98,7 +99,6 @@ public class ExampleTeleOp extends OpMode {
                 }else{
                     arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT*(2/4)));
                 }
-               // arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT));
         } else {
             arm.rotateArmManual(RobotArm.Direction.BRAKE, 0.5);
         }

@@ -60,10 +60,10 @@ public class ParkAutoRed extends InchAutoParent {
             CloseClaws();
             // Moves right, goes forward, then turns left
             InchDrive(26,0,powerlevel, "Right");
-            InchDrive(75,90,powerlevel, "Big Forward");
-            InchDrive(26.5,180,powerlevel, "left");
+            InchDrive(64,90,powerlevel, "Big Forward");
+            InchDrive(26,180,powerlevel, "left");
 
-            //attempted rotation drive code RotationDrive(0, 0, 45, 0.5, "doing rotation");
+
             //moves the arm up
             ArmJointMotor.setTargetPosition(650);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -86,7 +86,7 @@ public class ParkAutoRed extends InchAutoParent {
 
             }
 
-            InchDrive(6,90,powerlevel, "Smol Forward");
+            InchDrive(4,90,powerlevel, "Smol Forward");
             ArmJointMotor.setTargetPosition(775);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(0.4);
@@ -138,8 +138,8 @@ public class ParkAutoRed extends InchAutoParent {
             Headlight.setPosition(0);
             ArmJointMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             ArmExtendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            InchDrive(6, 270,powerlevel,"Back");
-            InchDrive(55,0,powerlevel,"RightOnceMore");
+            InchDrive(4, 270,powerlevel,"Back");
+            InchDrive(64,0,powerlevel,"RightOnceMore");
             InchDrive(26,270,powerlevel,"Back");
             CloseClaws();
             hangArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
