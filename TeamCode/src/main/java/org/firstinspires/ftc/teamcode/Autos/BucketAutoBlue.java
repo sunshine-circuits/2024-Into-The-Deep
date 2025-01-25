@@ -128,7 +128,7 @@ public class BucketAutoBlue extends InchAutoParent {
             ArmExtendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             InchDrive(7, 270,powerlevel,"Back");
-            InchDrive(55,0,powerlevel,"RightOnceMore");
+            InchDrive(52,0,powerlevel,"RightOnceMore");
             InchDrive(26,270,powerlevel,"Back");
             CloseClaws();
             hangArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

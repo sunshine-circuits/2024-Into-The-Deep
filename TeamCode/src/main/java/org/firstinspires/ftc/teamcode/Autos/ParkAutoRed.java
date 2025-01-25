@@ -140,13 +140,17 @@ public class ParkAutoRed extends InchAutoParent {
             ArmExtendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             InchDrive(4, 270,powerlevel,"Back");
             InchDrive(64,0,powerlevel,"RightOnceMore");
+            driver(1850, -1850, 1850, -1850, 1, "TURN AROUND!");
             InchDrive(26,270,powerlevel,"Back");
             CloseClaws();
-            hangArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            hangArm.setPower(0.5);
-            TimeUnit.MILLISECONDS.sleep(1450);
-
-            hangArm.setPower(0);
+            int pulsepos= ArmJointMotor.getCurrentPosition()+850;
+            ArmJointMotor.setTargetPosition(pulsepos);
+            ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ArmJointMotor.setPower(1);
+            while((ArmJointMotor.getCurrentPosition()<pulsepos-25)||(ArmJointMotor.getCurrentPosition()>pulsepos+25)){
+                telemetry.addData("Status","Running...");
+                telemetry.update();
+            }
 
             telemetry.addData("Moves","Done");
             telemetry.update();

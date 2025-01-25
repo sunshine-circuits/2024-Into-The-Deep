@@ -384,8 +384,8 @@ public class InchAutoParent extends LinearOpMode {
         setClawPosition(position, this.LeftServo);
     }
     protected void CloseClaws() {
-        setRightClawPosition(0.49);
-        setLeftClawPosition(0.51);
+        setRightClawPosition(0.485);
+        setLeftClawPosition(0.515);
     }
     protected void OpenClaws() {
         setRightClawPosition(0.57);

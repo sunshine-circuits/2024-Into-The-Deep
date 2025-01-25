@@ -29,8 +29,8 @@ public class RobotArm {
     boolean armExtendPositionNeedsSet = true;
     boolean hangArmPositionNeedsSet=true;
     //this RunMode is the runmode motors are set to when they are first initialized.
-    private RunMode defaultMotorMode;
-    public double PowerDecrease = 0.5;
+    public RunMode defaultMotorMode;
+    public double PowerDecrease = 0.25;
 
     public enum Direction {
         DEPLOY,
@@ -85,9 +85,9 @@ public class RobotArm {
     //0 degrees is straight up and down. Counter clockwise is negative and clockwise is positive.
     //Ensure the arm will not attempt to travel beyond the acceptable range or collide with the
     //robot.
-   public void rotateArmManual(Direction direction, double power) {
+    public void rotateArmManual(Direction direction, double power) {
 
-       if((Math.abs(armExtend.getCurrentPosition())>= 375)&&(armJoint.getCurrentPosition() >= 800)){
+       if((Math.abs(armExtend.getCurrentPosition())>= 925)&&(armJoint.getCurrentPosition() >= 800)){
            armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
            armJoint.setTargetPosition(785);
            armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -99,18 +99,14 @@ public class RobotArm {
             armJoint.setTargetPosition(650);
             armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             armJoint.setPower(1);
-           armJointPositionNeedsSet = true;
-        }else {
+            armJointPositionNeedsSet = true;
+       }else {
             switch (direction) {
                 case COUNTER_CLOCKWISE:
-                    if ((armJoint.getCurrentPosition() < 770) || (Math.abs(armExtend.getCurrentPosition()) <= 375)) {
+                    if ((armJoint.getCurrentPosition() < 770) || (Math.abs(armExtend.getCurrentPosition()) <= 925)) {
                         armJoint.setMode(defaultMotorMode);
                         armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
-                        if (armJoint.getCurrentPosition() > 800) {
-                            armJoint.setPower(power/3);
-                        } else {
-                            armJoint.setPower(power);
-                        }
+                        armJoint.setPower(power);
                     }
                     armJointPositionNeedsSet = true;
                     break;
@@ -118,11 +114,7 @@ public class RobotArm {
                     if ((armJoint.getCurrentPosition() > 635) || (Math.abs(armExtend.getCurrentPosition()) <= 550)) {
                         armJoint.setMode(defaultMotorMode);
                         armJoint.setDirection(DcMotorSimple.Direction.REVERSE);
-                        if (armJoint.getCurrentPosition() < 635) {
-                            armJoint.setPower(power * PowerDecrease);
-                        } else {
-                            armJoint.setPower(power);
-                        }
+                        armJoint.setPower(power);
                     }
                     armJointPositionNeedsSet = true;
                     break;
@@ -132,8 +124,8 @@ public class RobotArm {
                     if (armJointPositionNeedsSet) {
                         armJoint.setTargetPosition(armJoint.getCurrentPosition());
                         armJointPositionNeedsSet = false;
+                        armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     }
-                    armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     break;
             }
         }
@@ -169,7 +161,7 @@ public class RobotArm {
                     break;
                 case RETRACT:
                     if(Math.abs(armExtend.getCurrentPosition())<=3000) {
-                        if ((((armJoint.getCurrentPosition() < 635) || (armJoint.getCurrentPosition() > 800))&&(Math.abs(armExtend.getCurrentPosition()) <= 350))||((armJoint.getCurrentPosition() > 635)&&(armJoint.getCurrentPosition() < 800))){
+                        if ((((armJoint.getCurrentPosition() < 635) || (armJoint.getCurrentPosition() > 800))&&(Math.abs(armExtend.getCurrentPosition()) <= 900))||((armJoint.getCurrentPosition() > 635)&&(armJoint.getCurrentPosition() < 800))){
                             armExtend.setMode(defaultMotorMode);
                             armExtend.setDirection(DcMotorSimple.Direction.REVERSE);
                             armExtend.setPower(power);
@@ -213,12 +205,12 @@ public class RobotArm {
                 hangArmPositionNeedsSet = true;
                 break;
             case BRAKE:
-                hangArm.setPower(0);
-                //if (hangArmPositionNeedsSet) {
-                //    hangArm.setTargetPosition(hangArm.getCurrentPosition());
-                //    hangArmPositionNeedsSet = false;
-                //}
-                //hangArm.setMode(RunMode.RUN_TO_POSITION);
+                hangArm.setPower(0.25);
+                if (hangArmPositionNeedsSet) {
+                    hangArm.setTargetPosition(hangArm.getCurrentPosition());
+                    hangArmPositionNeedsSet = false;
+                }
+                hangArm.setMode(RunMode.RUN_TO_POSITION);
                 break;
         }
     }

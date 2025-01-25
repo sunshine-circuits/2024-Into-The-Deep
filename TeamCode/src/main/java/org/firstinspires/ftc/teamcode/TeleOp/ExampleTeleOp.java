@@ -11,16 +11,19 @@ import org.firstinspires.ftc.teamcode.utils.RobotArm;
 import org.firstinspires.ftc.teamcode.utils.RobotConfig;
 import org.firstinspires.ftc.teamcode.utils.*;
 
-@TeleOp(name="ExampleTeleOp.java")
+@TeleOp(name="ThisIsTheCorrectTeleOp")
 public class ExampleTeleOp extends OpMode {
     private Driver driver;
     private RobotArm arm;
     private Keybind keybind;
     private boolean speedDebounce = false;
-    private final double ARM_SPEED_LIMIT = 0.3;
+    private final double ARM_SPEED_LIMIT = 0.25;
     public boolean aprilTagDetected;
     public boolean Hanging=false;
     public boolean HangRight=false;
+    public boolean ArmParallel;
+    public boolean resetcheck=false;
+
 
     @Override
     public void init() {
@@ -72,9 +75,9 @@ public class ExampleTeleOp extends OpMode {
         telemetry.addData("Arm Extend Target Position",arm.armExtend.getTargetPosition());
         telemetry.addData("Arm Extend Current Position",arm.armExtend.getCurrentPosition());
         if (keybind.poll("arm_extend")) {
-            arm.extendArmManual(RobotArm.Direction.DEPLOY, 0.5);
+            arm.extendArmManual(RobotArm.Direction.DEPLOY, 0.7);
         } else if (keybind.poll("arm_retract")) {
-            arm.extendArmManual(RobotArm.Direction.RETRACT, 0.5);
+            arm.extendArmManual(RobotArm.Direction.RETRACT, 0.7);
         } else {
             arm.extendArmManual(RobotArm.Direction.BRAKE, 1);
         }
@@ -87,17 +90,29 @@ public class ExampleTeleOp extends OpMode {
 
         //makes arm rotate away from robot
         if (keybind.pollValue("arm_rotation_ccw") > 0) {
-            if(arm.armJoint.getCurrentPosition() > 800){
-                arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT*(2/4)));
-            }else{
-                arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT*(4/2)));
+            if(arm.armJoint.getCurrentPosition() > 1100){
+                arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT*(1/6)));
+                if (!ArmParallel) {
+                    ArmParallel = true;
+                }
+            }else if(arm.armJoint.getCurrentPosition() > 800){
+                arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT*(2/6)));
+                if (ArmParallel) {
+                    ArmParallel = false;
+                }
+            }else {
+                arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT));
+                if (ArmParallel) {
+                    ArmParallel = false;
+                }
+
             }
         } else// makes arm rotate towards robot
             if (keybind.pollValue("arm_rotation_cw") > 0) {
                 if(arm.armJoint.getCurrentPosition() > 800){
-                    arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT*(4/2)));
+                    arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT));
                 }else{
-                    arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT*(2/4)));
+                    arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT*(2/6)));
                 }
         } else {
             arm.rotateArmManual(RobotArm.Direction.BRAKE, 0.5);
@@ -122,10 +137,10 @@ public class ExampleTeleOp extends OpMode {
 
         if(Hanging==false) {
             if (keybind.poll("hang_rotation_ccw")) {
-                arm.rotateHangArm(RobotArm.Direction.COUNTER_CLOCKWISE, 1);
+                arm.rotateHangArm(RobotArm.Direction.COUNTER_CLOCKWISE, 0.375);
                 telemetry.addData("Hang Arm Case", "CounterClock");
             } else if (keybind.poll("hang_rotation_cw")) {
-                arm.rotateHangArm(RobotArm.Direction.CLOCKWISE, 1);
+                arm.rotateHangArm(RobotArm.Direction.CLOCKWISE, 0.375);
                 telemetry.addData("Hang Arm Case", "Clock");
             } else {
                 arm.rotateHangArm(RobotArm.Direction.BRAKE, 1);
@@ -151,8 +166,8 @@ public class ExampleTeleOp extends OpMode {
             arm.setRightClawPosition(0.49);
             arm.setLeftClawPosition(0.51);
         } else {
-            arm.setRightClawPosition(0.51);
-            arm.setLeftClawPosition(0.49);
+            arm.setRightClawPosition(0.52);
+            arm.setLeftClawPosition(0.48);
         }
 
         if (keybind.pollValue("control_left_claw") != 0) {
@@ -175,6 +190,23 @@ public class ExampleTeleOp extends OpMode {
             speedDebounce = true;
         } else {
             speedDebounce = false;
+        }
+
+        telemetry.addData("Encoder Reset?", resetcheck);
+        if (arm.JointTouchSensor.isPressed()) {
+            if(resetcheck=false) {
+                arm.armJoint.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                arm.armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                arm.armExtend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                arm.armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                resetcheck=true;
+            }else{
+                if(arm.JointTouchSensor.isPressed()==false){
+                    resetcheck=false;
+                }
+            }
+        }else{
+            resetcheck=false;
         }
     }
 }
