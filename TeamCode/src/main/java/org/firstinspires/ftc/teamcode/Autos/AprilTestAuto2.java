@@ -25,6 +25,7 @@ public class AprilTestAuto2 extends LinearOpMode {
         //640x480
         if(calibratedCamera){
             aprilTagProcessor = AprilTagProcessor.easyCreateWithDefaults();
+
         }else{
             aprilTagProcessor = new AprilTagProcessor.Builder().setLensIntrinsics(fx,fy,cx,cy).build();
         }

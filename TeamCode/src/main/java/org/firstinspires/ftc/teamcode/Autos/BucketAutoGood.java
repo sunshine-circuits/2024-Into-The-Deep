@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Autos;
 
 import android.util.Size;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -19,9 +18,9 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.concurrent.TimeUnit;
 
-@Autonomous(name="BucketZoneAutoRed")
+@Autonomous(name="BucketZoneAutoGOOD")
 
-public class BucketAutoRed extends InchAutoParent {
+public class BucketAutoGood extends InchAutoParent {
     @Override
     public void runOpMode() throws InterruptedException
     {
@@ -61,14 +60,16 @@ public class BucketAutoRed extends InchAutoParent {
         if (opModeIsActive()) {
             myIMU.resetYaw();
             CloseClaws();
-            ArmJointMotor.setTargetPosition(650);
+
+            ArmJointMotor.setTargetPosition(600);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            ArmJointMotor.setPower(1);
+            ArmJointMotor.setPower(0.45);
             ArmExtendMotor.setTargetPosition(-2500);
             ArmExtendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmExtendMotor.setDirection(DcMotor.Direction.FORWARD);
             ArmExtendMotor.setPower(1);
-            while((ArmExtendMotor.getCurrentPosition()>-2475)||(ArmJointMotor.getCurrentPosition()<650)){
+
+            while((ArmExtendMotor.getCurrentPosition()>-2475)||(ArmJointMotor.getCurrentPosition()<550)){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -78,12 +79,8 @@ public class BucketAutoRed extends InchAutoParent {
                 telemetry.update();
             }
             InchDrive(18,90,powerlevel*0.75, "Forward");
-
-            //*
-            ArmJointMotor.setTargetPosition(785);
-            ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            ArmJointMotor.setPower(0.5);
-            while(ArmJointMotor.getCurrentPosition()<760){
+            ArmJointMotor.setTargetPosition(790);
+            while((ArmJointMotor.getCurrentPosition()<765)){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -92,10 +89,11 @@ public class BucketAutoRed extends InchAutoParent {
                 telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
                 telemetry.update();
             }
-            ArmJointMotor.setPower(0.3);
-            //*/
-            TimeUnit.MILLISECONDS.sleep(750);
+            ArmJointMotor.setTargetPosition(810);
+            ArmJointMotor.setPower(0.25);
+            TimeUnit.MILLISECONDS.sleep(800);
             OpenClaws();
+            TimeUnit.MILLISECONDS.sleep(150);
             ArmJointMotor.setTargetPosition(500);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(1);
@@ -111,9 +109,24 @@ public class BucketAutoRed extends InchAutoParent {
             ArmJointMotor.setPower(0.5);
             ArmExtendMotor.setPower(1);
             ArmExtendMotor.setTargetPosition(100);
-            InchDrive(17.5,0,powerlevel*0.75, "right");
-            while(Math.abs(ArmExtendMotor.getCurrentPosition())>125){
-                telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
+            InchDrive(22.5,0,powerlevel*0.75, "right");
+            driverInteruptable(100,-100,-100,100,powerlevel, "Interuptable left");
+            Headlight.setPosition(1);
+            outerloop:
+            while(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()) {
+                if (tagProcessor.getDetections().size() > 0) {
+                    for (int i = 0; i < tagProcessor.getDetections().size(); i++) {
+                        AprilTagDetection tag = tagProcessor.getDetections().get(i);
+                        if ((tag.id == 16)||(tag.id == 13)) {
+                            break outerloop;
+                        }
+                    }
+                }
+            }
+            Headlight.setPosition(0);
+            //driver(0,0,0,0,powerlevel, "Stopping");
+            while(Math.abs(ArmExtendMotor.getCurrentPosition())>150){
+                telemetry.addData("ExtendPosition ",Math.abs(ArmExtendMotor.getCurrentPosition()));
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
                 telemetry.addData("JointPosition ",ArmJointMotor.getCurrentPosition());
@@ -122,21 +135,20 @@ public class BucketAutoRed extends InchAutoParent {
                 telemetry.update();
             }
             //turn to the right to try and pick up second sample
-
             int intcyc=0;
-            driverInteruptable(1000, -1000, 1000, -1000, 0.5, "TURN");
+            driverInteruptable(1200, -1200, 1200, -1200, 0.5, "TURN");
             while(5<=(Math.abs(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)+87))){
                 intcyc++;
                 telemetry.addData("Current Rotation",myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
                 telemetry.addData("Checking for",intcyc+" Cycles.");
                 telemetry.update();
             }
-            InchDrive(6,0,powerlevel*0.75, "right");
+            InchDrive(10,0,powerlevel*0.75, "right");
             //pick it up
-            ArmJointMotor.setTargetPosition(1320);
+            ArmJointMotor.setTargetPosition(1375);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(0.7);
-            while(ArmJointMotor.getCurrentPosition()<1200){
+            while(ArmJointMotor.getCurrentPosition()<1000){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -145,8 +157,8 @@ public class BucketAutoRed extends InchAutoParent {
                 telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
                 telemetry.update();
             }
-            ArmJointMotor.setPower(0.3);
-            while(ArmJointMotor.getCurrentPosition()<1295){
+            ArmJointMotor.setPower(0.35);
+            while(ArmJointMotor.getCurrentPosition()<1350){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -157,7 +169,7 @@ public class BucketAutoRed extends InchAutoParent {
             }
             TimeUnit.MILLISECONDS.sleep(500);
             CloseClaws();
-            TimeUnit.MILLISECONDS.sleep(500);
+            TimeUnit.MILLISECONDS.sleep(400);
             ArmJointMotor.setTargetPosition(550);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(1);
@@ -165,8 +177,8 @@ public class BucketAutoRed extends InchAutoParent {
             ArmExtendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmExtendMotor.setDirection(DcMotor.Direction.FORWARD);
             ArmExtendMotor.setPower(1);
-            InchDrive(6,180,powerlevel*0.75, "right");
-            while((ArmExtendMotor.getCurrentPosition()>-2475)||(ArmJointMotor.getCurrentPosition()>575)){
+            InchDrive(9,180,powerlevel*0.75, "left");
+            while((ArmExtendMotor.getCurrentPosition()>-2475)||(ArmJointMotor.getCurrentPosition()>600)){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -176,38 +188,14 @@ public class BucketAutoRed extends InchAutoParent {
                 telemetry.update();
             }
             //turn back to face towards the bucket
-            driverInteruptable(-1000, 1000, -1000, 1000, 0.5, "Turn Around.");
-            while(5<=(Math.abs(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)-50))){
+            driverInteruptable(-1700, 1700, -1700, 1700, 0.5, "Turn Around.");
+            while(5<=(Math.abs(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)-45))){
                 telemetry.addData("Current Rotation.",myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
                 telemetry.update();
             }
-            driver(0,0,0,0,1,"Stopping.");
+            InchDrive(2,180,powerlevel,"left");
+            InchDrive(11,90,powerlevel,"forward");
 
-            //left move just before we pick things up
-            //driver(537,-537,-537,537,powerlevel, "Interuptable left");
-            /*
-            Headlight.setPosition(1);
-            outerloop:
-            while(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()) {
-                if (tagProcessor.getDetections().size() > 0) {
-                    for (int i = 0; i < tagProcessor.getDetections().size(); i++) {
-                        AprilTagDetection tag = tagProcessor.getDetections().get(i);
-                        if (tag.id == 16) {
-                            break outerloop;
-                        }
-                    }
-                }
-            }
-            */
-            Headlight.setPosition(0);
-            //driver(0,0,0,0,powerlevel, "Stopping");
-            //*/
-            //*
-            //InchDrive(3.25,180,powerlevel*0.75, "left");
-            InchDrive(16.75,180,powerlevel*0.75, "left");
-            InchDrive(1,90,powerlevel, "Forward");
-
-            //*
             ArmJointMotor.setTargetPosition(775);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(0.4);
@@ -220,7 +208,6 @@ public class BucketAutoRed extends InchAutoParent {
                 telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
                 telemetry.update();
             }
-            //*/
             //drop the second
             TimeUnit.MILLISECONDS.sleep(750);
             OpenClaws();
@@ -236,14 +223,11 @@ public class BucketAutoRed extends InchAutoParent {
                 telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
                 telemetry.update();
             }
-
-            InchDrive(5, 270,powerlevel,"Back");
-
             ArmJointMotor.setPower(0.5);
             ArmExtendMotor.setPower(1);
-            ArmExtendMotor.setTargetPosition(-1);
-            InchDrive(57,0,powerlevel,"RightOnceMore");
-            while(Math.abs(ArmExtendMotor.getCurrentPosition())>50){
+            ArmExtendMotor.setTargetPosition(0);
+            InchDrive(11, 270,powerlevel,"Back");
+            while(Math.abs(ArmExtendMotor.getCurrentPosition())>75){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -252,14 +236,17 @@ public class BucketAutoRed extends InchAutoParent {
                 telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
                 telemetry.update();
             }
-            driverInteruptable(1900, -1900, 1900, -1900, 0.75, "TURN");
             ArmJointMotor.setTargetPosition(50);
-            while(7<=(Math.abs(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)+180))){
+            driverInteruptable(-1800, 1800, -1800, 1800, 0.8, "TURN");
+            while(10<=(Math.abs(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)-170))){
                 telemetry.addData("Current Rotation",myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
                 telemetry.update();
-
+                if ((FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy())==false){
+                    break;
+                }
             }
-            InchDrive(26,90,powerlevel,"Back");
+            InchDrive(44,180,powerlevel,"Left");
+            InchDrive(32,90,powerlevel*1.01,"Back");
             CloseClaws();
             int pulsepos= ArmJointMotor.getCurrentPosition()+900;
             ArmJointMotor.setTargetPosition(pulsepos);
@@ -274,6 +261,8 @@ public class BucketAutoRed extends InchAutoParent {
             telemetry.addData("Moves","Done");
             telemetry.update();
             // RESET
+
+            //*/
 
         }
     }

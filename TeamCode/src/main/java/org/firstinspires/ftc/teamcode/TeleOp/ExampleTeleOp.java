@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.utils.Keybind;
 import org.firstinspires.ftc.teamcode.utils.RobotArm;
 import org.firstinspires.ftc.teamcode.utils.RobotConfig;
@@ -17,12 +16,12 @@ public class ExampleTeleOp extends OpMode {
     private RobotArm arm;
     private Keybind keybind;
     private boolean speedDebounce = false;
-    private final double ARM_SPEED_LIMIT = 0.25;
+    private final double ARM_SPEED_LIMIT = 0.20;
     public boolean aprilTagDetected;
-    public boolean Hanging=false;
-    public boolean HangRight=false;
     public boolean ArmParallel;
-    public boolean resetcheck=false;
+    public boolean ArmEncoderResetCheck=false;
+    public boolean ExtendEncoderResetCheck=false;
+    public boolean upMacroOn=false;
 
 
     @Override
@@ -37,21 +36,16 @@ public class ExampleTeleOp extends OpMode {
         keybind.addOrUpdate("rotate", Keybind.Input.GAMEPAD_1_RIGHT_STICK_X);
         keybind.addOrUpdate("claw_open", Keybind.Input.GAMEPAD_2_RIGHT_BUMPER);
         keybind.addOrUpdate("claw_close", Keybind.Input.GAMEPAD_2_LEFT_BUMPER);
-        keybind.addOrUpdate("disengage_hang", Keybind.Input.GAMEPAD_2_DPAD_DOWN);
-        keybind.addOrUpdate("engage_hang", Keybind.Input.GAMEPAD_2_DPAD_UP);
-        keybind.addOrUpdate("hang_change_direc" +
-                "tion_right", Keybind.Input.GAMEPAD_2_DPAD_RIGHT);
-        keybind.addOrUpdate("hang_change_direction_left", Keybind.Input.GAMEPAD_2_DPAD_LEFT);
         keybind.addOrUpdate("arm_rotation_ccw", Keybind.Input.GAMEPAD_2_LEFT_TRIGGER);
         keybind.addOrUpdate("arm_rotation_cw", Keybind.Input.GAMEPAD_2_RIGHT_TRIGGER);
         keybind.addOrUpdate("arm_extend", Keybind.Input.GAMEPAD_2_A);
         keybind.addOrUpdate("arm_retract", Keybind.Input.GAMEPAD_2_B);
-        keybind.addOrUpdate("hang_rotation_ccw", Keybind.Input.GAMEPAD_2_X);
-        keybind.addOrUpdate("hang_rotation_cw", Keybind.Input.GAMEPAD_2_Y);
+        keybind.addOrUpdate("upmacro", Keybind.Input.GAMEPAD_2_Y);
         keybind.addOrUpdate("control_left_claw", Keybind.Input.GAMEPAD_2_LEFT_STICK_X);
         keybind.addOrUpdate("control_right_claw", Keybind.Input.GAMEPAD_2_RIGHT_STICK_X);
         keybind.addOrUpdate("increase_speed", Keybind.Input.GAMEPAD_1_RIGHT_BUMPER);
         keybind.addOrUpdate("decrease_speed", Keybind.Input.GAMEPAD_1_LEFT_BUMPER);
+        keybind.addOrUpdate("Reset",Keybind.Input.GAMEPAD_2_X);
 
         try {
             arm.moveToOrigin();
@@ -67,6 +61,12 @@ public class ExampleTeleOp extends OpMode {
         arm.headlight.scaleRange(0,1);
         arm.headlight.setPosition(0.001);
 
+        if(keybind.poll("upmacro")){
+            arm.ArmUpMacro();
+            upMacroOn=true;
+        }
+        telemetry.addData("Up Macro Active",upMacroOn);
+
         driver.drive(keybind.pollValue("drive_x"), keybind.pollValue("drive_y"), keybind.pollValue("rotate"));
 
         telemetry.addData("Current Speed: ", driver.getSpeedMultiplier());
@@ -76,10 +76,14 @@ public class ExampleTeleOp extends OpMode {
         telemetry.addData("Arm Extend Current Position",arm.armExtend.getCurrentPosition());
         if (keybind.poll("arm_extend")) {
             arm.extendArmManual(RobotArm.Direction.DEPLOY, 0.7);
+            upMacroOn=false;
         } else if (keybind.poll("arm_retract")) {
             arm.extendArmManual(RobotArm.Direction.RETRACT, 0.7);
+            upMacroOn=false;
         } else {
-            arm.extendArmManual(RobotArm.Direction.BRAKE, 1);
+            if(upMacroOn==false) {
+                arm.extendArmManual(RobotArm.Direction.BRAKE, 1);
+            }
         }
         telemetry.addData("--------------------------","");
         telemetry.addData("Arm Limit Set?",arm.jointLimitSet);
@@ -90,11 +94,13 @@ public class ExampleTeleOp extends OpMode {
 
         //makes arm rotate away from robot
         if (keybind.pollValue("arm_rotation_ccw") > 0) {
+            upMacroOn=false;
             if(arm.armJoint.getCurrentPosition() > 1100){
                 arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT*(1/6)));
                 if (!ArmParallel) {
                     ArmParallel = true;
                 }
+
             }else if(arm.armJoint.getCurrentPosition() > 800){
                 arm.rotateArmManual(RobotArm.Direction.COUNTER_CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_ccw"), ARM_SPEED_LIMIT*(2/6)));
                 if (ArmParallel) {
@@ -109,53 +115,19 @@ public class ExampleTeleOp extends OpMode {
             }
         } else// makes arm rotate towards robot
             if (keybind.pollValue("arm_rotation_cw") > 0) {
+                upMacroOn=false;
                 if(arm.armJoint.getCurrentPosition() > 800){
                     arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT));
                 }else{
                     arm.rotateArmManual(RobotArm.Direction.CLOCKWISE, Math.max(keybind.pollValue("arm_rotation_cw"), ARM_SPEED_LIMIT*(2/6)));
                 }
-        } else {
-            arm.rotateArmManual(RobotArm.Direction.BRAKE, 0.5);
+            } else {
+                if(upMacroOn==false){
+                    arm.rotateArmManual(RobotArm.Direction.BRAKE, 0.5);
+                }
         }
 
         telemetry.addData("----------------------------","");
-        telemetry.addData("Hang Arm Target Position",arm.hangArm.getTargetPosition());
-        telemetry.addData("Hang Arm Current Position",arm.hangArm.getCurrentPosition());
-        if(keybind.poll("engage_hang")){
-            Hanging=true;
-        }else if(keybind.poll("disengage_hang")){
-            Hanging=false;
-
-            arm.armExtend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            arm.armExtend.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-        if(keybind.poll("hang_change_direction_right")){
-            HangRight=true;
-        }else if(keybind.poll("hang_change_direction_left")){
-            HangRight=false;
-        }
-
-        if(Hanging==false) {
-            if (keybind.poll("hang_rotation_ccw")) {
-                arm.rotateHangArm(RobotArm.Direction.COUNTER_CLOCKWISE, 0.375);
-                telemetry.addData("Hang Arm Case", "CounterClock");
-            } else if (keybind.poll("hang_rotation_cw")) {
-                arm.rotateHangArm(RobotArm.Direction.CLOCKWISE, 0.375);
-                telemetry.addData("Hang Arm Case", "Clock");
-            } else {
-                arm.rotateHangArm(RobotArm.Direction.BRAKE, 1);
-                telemetry.addData("Hang Arm Case", "Brake");
-            }
-        }else{
-            if(HangRight) {
-                arm.rotateHangArm(RobotArm.Direction.COUNTER_CLOCKWISE, 1);
-                telemetry.addData("Hang Arm Case", "Clock");
-            }else{
-                arm.rotateHangArm(RobotArm.Direction.CLOCKWISE, 1);
-                telemetry.addData("Hang Arm Case", "Clock");
-            }
-        }
-        telemetry.addData("Hang Arm Mode",arm.hangArm.getMode());
 
         telemetry.addData("LeftClawPos", arm.leftClaw.getPosition());
         telemetry.addData("RightClawPos", arm.rightClaw.getPosition());
@@ -192,21 +164,35 @@ public class ExampleTeleOp extends OpMode {
             speedDebounce = false;
         }
 
-        telemetry.addData("Encoder Reset?", resetcheck);
-        if (arm.JointTouchSensor.isPressed()) {
-            if(resetcheck=false) {
+        telemetry.addData("Arm Reset?", ArmEncoderResetCheck);
+        if ((arm.JointTouchSensor.isPressed())){
+            if(ArmEncoderResetCheck =false) {
                 arm.armJoint.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 arm.armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                arm.armExtend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                arm.armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                resetcheck=true;
+                ArmEncoderResetCheck =true;
             }else{
-                if(arm.JointTouchSensor.isPressed()==false){
-                    resetcheck=false;
+                if((arm.JointTouchSensor.isPressed())==false){
+                    ArmEncoderResetCheck =false;
                 }
             }
         }else{
-            resetcheck=false;
+            ArmEncoderResetCheck =false;
         }
+        telemetry.addData("Extend Reset?", ExtendEncoderResetCheck);
+        telemetry.addData("What the duck?", keybind.poll("Reset"));
+        if ((keybind.poll("Reset"))){
+            if(ExtendEncoderResetCheck==false) {
+                arm.armExtend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                arm.armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                ExtendEncoderResetCheck=true;
+            }else{
+                if((keybind.poll("Reset"))==false){
+                    ExtendEncoderResetCheck=false;
+                }
+            }
+        }else{
+            ExtendEncoderResetCheck=false;
+        }
+
     }
 }

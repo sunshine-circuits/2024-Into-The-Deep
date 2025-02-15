@@ -102,6 +102,7 @@ public class InchAutoParent extends LinearOpMode {
 
         telemetry.addData("Power","Zero");
         telemetry.update();
+
     }
 
     public void OrientedDriver(int FR, int FL, int BR, int BL, double pow, String telem){
