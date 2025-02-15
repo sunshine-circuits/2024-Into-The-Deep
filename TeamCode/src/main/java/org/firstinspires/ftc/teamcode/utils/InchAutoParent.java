@@ -257,6 +257,14 @@ public class InchAutoParent extends LinearOpMode {
         driver((int)(pulsesInY - pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY - pulsesInX), pow, telem);
         //FR, FL, BR, BL
     }
+    public void InterruptableInchDrive(double distance, double angle, double pow, String telem){
+        double pulses = InchesToPulses(distance);
+        double diameterOfWheels = 104.0 / 25.4;
+        double pulsesInX = ((Math.cos((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
+        double pulsesInY = ((Math.sin((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
+        driverInteruptable((int)(pulsesInY - pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY - pulsesInX), pow, telem);
+        //FR, FL, BR, BL
+    }
     public void DistanceDrive(double changex, double changey, double pow, String telem){
         //changex is the change in x(inches)
         //changey is the change in y(inches)

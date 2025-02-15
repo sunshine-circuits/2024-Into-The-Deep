@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.utils.InchAutoParent;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -68,24 +69,24 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
             ArmExtendMotor.setDirection(DcMotor.Direction.FORWARD);
             ArmExtendMotor.setPower(1);
 
-            while((ArmExtendMotor.getCurrentPosition()>-2475)||(ArmJointMotor.getCurrentPosition()<550)){
-                telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
-                telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
-                telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
-                telemetry.addData("JointPosition ",ArmJointMotor.getCurrentPosition());
-                telemetry.addData("JointMode ",ArmJointMotor.getMode());
-                telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
+            while ((ArmExtendMotor.getCurrentPosition() > -2475) || (ArmJointMotor.getCurrentPosition() < 550)) {
+                telemetry.addData("ExtendPosition ", ArmExtendMotor.getCurrentPosition());
+                telemetry.addData("ExtendMode ", ArmExtendMotor.getMode());
+                telemetry.addData("ExtendTarg ", ArmExtendMotor.getTargetPosition());
+                telemetry.addData("JointPosition ", ArmJointMotor.getCurrentPosition());
+                telemetry.addData("JointMode ", ArmJointMotor.getMode());
+                telemetry.addData("JointTarg ", ArmJointMotor.getTargetPosition());
                 telemetry.update();
             }
-            InchDrive(18,90,powerlevel*0.75, "Forward");
+            InchDrive(18, 90, powerlevel * 0.75, "Forward");
             ArmJointMotor.setTargetPosition(790);
-            while((ArmJointMotor.getCurrentPosition()<765)){
-                telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
-                telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
-                telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
-                telemetry.addData("JointPosition ",ArmJointMotor.getCurrentPosition());
-                telemetry.addData("JointMode ",ArmJointMotor.getMode());
-                telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
+            while ((ArmJointMotor.getCurrentPosition() < 765)) {
+                telemetry.addData("ExtendPosition ", ArmExtendMotor.getCurrentPosition());
+                telemetry.addData("ExtendMode ", ArmExtendMotor.getMode());
+                telemetry.addData("ExtendTarg ", ArmExtendMotor.getTargetPosition());
+                telemetry.addData("JointPosition ", ArmJointMotor.getCurrentPosition());
+                telemetry.addData("JointMode ", ArmJointMotor.getMode());
+                telemetry.addData("JointTarg ", ArmJointMotor.getTargetPosition());
                 telemetry.update();
             }
             ArmJointMotor.setTargetPosition(1215);
@@ -96,7 +97,88 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
             ArmJointMotor.setTargetPosition(750);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(1);
-            while(ArmJointMotor.getCurrentPosition()>825){
+            while (ArmJointMotor.getCurrentPosition() > 825) {
+                telemetry.addData("ExtendPosition ", ArmExtendMotor.getCurrentPosition());
+                telemetry.addData("ExtendMode ", ArmExtendMotor.getMode());
+                telemetry.addData("ExtendTarg ", ArmExtendMotor.getTargetPosition());
+                telemetry.addData("JointPosition ", ArmJointMotor.getCurrentPosition());
+                telemetry.addData("JointMode ", ArmJointMotor.getMode());
+                telemetry.addData("JointTarg ", ArmJointMotor.getTargetPosition());
+                telemetry.update();
+            }
+            ArmJointMotor.setPower(0.5);
+            ArmExtendMotor.setPower(1);
+            ArmExtendMotor.setTargetPosition(100);
+            InchDrive(5, 270, powerlevel * 0.75, "back");
+            InterruptableInchDrive(22.5, 0, powerlevel * 0.75, "right");
+            Headlight.setPosition(1);
+            outerloop:
+            while (FRMotor.isBusy() || FLMotor.isBusy() || BRMotor.isBusy() || BLMotor.isBusy()) {
+                if (tagProcessor.getDetections().size() > 0) {
+                    for (int i = 0; i < tagProcessor.getDetections().size(); i++) {
+                        AprilTagDetection tag = tagProcessor.getDetections().get(i);
+                        if (tag.metadata != null) {
+                            telemetry.addLine(String.format("\n==== (ID %d) %s", tag.id, tag.metadata.name));
+                            telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f (inch)", tag.ftcPose.x, tag.ftcPose.y, tag.ftcPose.z));
+                            telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f (deg)", tag.ftcPose.pitch, tag.ftcPose.roll, tag.ftcPose.yaw));
+                            telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f (inch, deg, deg)", tag.ftcPose.range, tag.ftcPose.bearing, tag.ftcPose.elevation));
+                        } else {
+                            telemetry.addLine(String.format("\n==== (ID %d) Unknown", tag.id));
+                            telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", tag.center.x, tag.center.y));
+                        }
+                        telemetry.update();
+                        if ((tag.id == 16) || (tag.id == 13)) {
+                            break outerloop;
+                        }
+                    }
+                }
+            }
+            Headlight.setPosition(0);
+            driver(0, 0, 0, 0, 1, "Stopping");
+            for (int i = 0; i < tagProcessor.getDetections().size(); i++) {
+                AprilTagDetection tag = tagProcessor.getDetections().get(i);
+                if (tag.metadata != null) {
+                    telemetry.addLine(String.format("\n==== (ID %d) %s", tag.id, tag.metadata.name));
+                    telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f (inch)", tag.ftcPose.x, tag.ftcPose.y, tag.ftcPose.z));
+                    telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f (deg)", tag.ftcPose.pitch, tag.ftcPose.roll, tag.ftcPose.yaw));
+                    telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f (inch, deg, deg)", tag.ftcPose.range, tag.ftcPose.bearing, tag.ftcPose.elevation));
+                } else {
+                    telemetry.addLine(String.format("\n==== (ID %d) Unknown", tag.id));
+                    telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", tag.center.x, tag.center.y));
+                }
+                telemetry.addData("IMU Yaw", myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+                telemetry.addData("IMU Pitch", myIMU.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES));
+                telemetry.addData("IMU Roll", myIMU.getRobotYawPitchRollAngles().getRoll(AngleUnit.DEGREES));
+                telemetry.update();
+            }
+
+
+            while(Math.abs(ArmExtendMotor.getCurrentPosition())>150){
+                /*
+                telemetry.addData("ExtendPosition ",Math.abs(ArmExtendMotor.getCurrentPosition()));
+                telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
+                telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
+                telemetry.addData("JointPosition ",ArmJointMotor.getCurrentPosition());
+                telemetry.addData("JointMode ",ArmJointMotor.getMode());
+                telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
+                telemetry.update();
+                */
+            }
+            //turn to the right to try and pick up second sample
+            int intcyc=0;
+            driverInteruptable(1300, -1300, 1300, -1300, 0.5, "TURN");
+            while(5<=(Math.abs(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)+87))){
+                intcyc++;
+                telemetry.addData("Current Rotation",myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+                telemetry.addData("Checking for",intcyc+" Cycles.");
+                telemetry.update();
+            }
+            driver(0, 0, 0, 0, 1, "Stopping");
+
+            ArmJointMotor.setTargetPosition(2063);
+            ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ArmJointMotor.setPower(0.7);
+            while(ArmJointMotor.getCurrentPosition()<1500){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -105,26 +187,37 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
                 telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
                 telemetry.update();
             }
-            ArmJointMotor.setPower(0.5);
-            ArmExtendMotor.setPower(1);
-            ArmExtendMotor.setTargetPosition(100);
-            InchDrive(22.5,0,powerlevel*0.75, "right");
-            driverInteruptable(100,-100,-100,100,powerlevel, "Interuptable left");
-            Headlight.setPosition(1);
-            outerloop:
-            while(FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()) {
-                if (tagProcessor.getDetections().size() > 0) {
-                    for (int i = 0; i < tagProcessor.getDetections().size(); i++) {
-                        AprilTagDetection tag = tagProcessor.getDetections().get(i);
-                        if ((tag.id == 16)||(tag.id == 13)) {
-                            break outerloop;
-                        }
-                    }
-                }
+            ArmJointMotor.setPower(0.35);
+            while(ArmJointMotor.getCurrentPosition()<2038){
+                telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
+                telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
+                telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
+                telemetry.addData("JointPosition ",ArmJointMotor.getCurrentPosition());
+                telemetry.addData("JointMode ",ArmJointMotor.getMode());
+                telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
+                telemetry.update();
             }
-            Headlight.setPosition(0);
-            //driver(0,0,0,0,powerlevel, "Stopping");
-
+            TimeUnit.MILLISECONDS.sleep(500);
+            CloseClaws();
+            TimeUnit.MILLISECONDS.sleep(400);
+            ArmJointMotor.setTargetPosition(825);
+            ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ArmJointMotor.setPower(1);
+            ArmExtendMotor.setTargetPosition(-2500);
+            ArmExtendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ArmExtendMotor.setDirection(DcMotor.Direction.FORWARD);
+            ArmExtendMotor.setPower(1);
+            InchDrive(9,180,powerlevel*0.75, "left");
+            while((ArmExtendMotor.getCurrentPosition()>-2475)||(ArmJointMotor.getCurrentPosition()>600)){
+                telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
+                telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
+                telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
+                telemetry.addData("JointPosition ",ArmJointMotor.getCurrentPosition());
+                telemetry.addData("JointMode ",ArmJointMotor.getMode());
+                telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
+                telemetry.update();
+            }
+            
 
         }
     }

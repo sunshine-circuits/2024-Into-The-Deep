@@ -109,6 +109,7 @@ public class BucketAutoGood extends InchAutoParent {
             ArmJointMotor.setPower(0.5);
             ArmExtendMotor.setPower(1);
             ArmExtendMotor.setTargetPosition(100);
+            InchDrive(10,270,powerlevel*0.75, "back");
             InchDrive(22.5,0,powerlevel*0.75, "right");
             driverInteruptable(100,-100,-100,100,powerlevel, "Interuptable left");
             Headlight.setPosition(1);
@@ -143,12 +144,12 @@ public class BucketAutoGood extends InchAutoParent {
                 telemetry.addData("Checking for",intcyc+" Cycles.");
                 telemetry.update();
             }
-            InchDrive(10,0,powerlevel*0.75, "right");
+
             //pick it up
             ArmJointMotor.setTargetPosition(2063);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(0.7);
-            while(ArmJointMotor.getCurrentPosition()<1000){
+            while(ArmJointMotor.getCurrentPosition()<1500){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
