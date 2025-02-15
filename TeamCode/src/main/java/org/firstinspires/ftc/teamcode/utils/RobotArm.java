@@ -64,7 +64,7 @@ public class RobotArm {
 
     public void moveToOrigin() throws Exception {
         armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        armJoint.setTargetPosition(-2000);
+        armJoint.setTargetPosition(-3000);
         armJoint.setPower(0.2);
         while(armJoint.isBusy() && !JointTouchSensor.isPressed()) {
 
@@ -82,23 +82,23 @@ public class RobotArm {
     //robot.
     public void rotateArmManual(Direction direction, double power) {
 
-       if((Math.abs(armExtend.getCurrentPosition())>= 925)&&(armJoint.getCurrentPosition() >= 800)){
+       if((Math.abs(armExtend.getCurrentPosition())>= 925)&&(armJoint.getCurrentPosition() >= 1200)){
            armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
-           armJoint.setTargetPosition(785);
+           armJoint.setTargetPosition(1185);
            armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
            armJoint.setPower(1);
            armJointPositionNeedsSet = true;
 
-       }else if((armJoint.getCurrentPosition() < 635)&&(Math.abs(armExtend.getCurrentPosition())>=550)) {
+       }else if((armJoint.getCurrentPosition() < 950)&&(Math.abs(armExtend.getCurrentPosition())>=550)) {
             armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
-            armJoint.setTargetPosition(650);
+            armJoint.setTargetPosition(975);
             armJoint.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             armJoint.setPower(1);
             armJointPositionNeedsSet = true;
        }else {
             switch (direction) {
                 case COUNTER_CLOCKWISE:
-                    if ((armJoint.getCurrentPosition() < 770) || (Math.abs(armExtend.getCurrentPosition()) <= 925)) {
+                    if ((armJoint.getCurrentPosition() < 1155) || (Math.abs(armExtend.getCurrentPosition()) <= 925)) {
                         armJoint.setMode(defaultMotorMode);
                         armJoint.setDirection(DcMotorSimple.Direction.FORWARD);
                         armJoint.setPower(power);
@@ -106,7 +106,7 @@ public class RobotArm {
                     armJointPositionNeedsSet = true;
                     break;
                 case CLOCKWISE:
-                    if ((armJoint.getCurrentPosition() > 635) || (Math.abs(armExtend.getCurrentPosition()) <= 550)) {
+                    if ((armJoint.getCurrentPosition() > 950) || (Math.abs(armExtend.getCurrentPosition()) <= 550)) {
                         armJoint.setMode(defaultMotorMode);
                         armJoint.setDirection(DcMotorSimple.Direction.REVERSE);
                         armJoint.setPower(power);
@@ -143,7 +143,7 @@ public class RobotArm {
                     break;
                 case RETRACT:
                     if(Math.abs(armExtend.getCurrentPosition())<=3000) {
-                        if ((((armJoint.getCurrentPosition() < 635) || (armJoint.getCurrentPosition() > 800))&&(Math.abs(armExtend.getCurrentPosition()) <= 900))||((armJoint.getCurrentPosition() > 635)&&(armJoint.getCurrentPosition() < 800))){
+                        if ((((armJoint.getCurrentPosition() < 950) || (armJoint.getCurrentPosition() > 1200))&&(Math.abs(armExtend.getCurrentPosition()) <= 900))||((armJoint.getCurrentPosition() > 950)&&(armJoint.getCurrentPosition() < 1200))){
                             armExtend.setMode(defaultMotorMode);
                             armExtend.setDirection(DcMotorSimple.Direction.REVERSE);
                             armExtend.setPower(power);
@@ -184,7 +184,7 @@ public class RobotArm {
     }
 
     public void ArmUpMacro(){
-        armJoint.setTargetPosition(725);
+        armJoint.setTargetPosition(1085);
         armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
         armExtend.setTargetPosition(-3025);
         armJoint.setMode(RunMode.RUN_TO_POSITION);

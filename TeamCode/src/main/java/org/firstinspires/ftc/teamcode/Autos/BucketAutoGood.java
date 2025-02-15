@@ -61,7 +61,7 @@ public class BucketAutoGood extends InchAutoParent {
             myIMU.resetYaw();
             CloseClaws();
 
-            ArmJointMotor.setTargetPosition(600);
+            ArmJointMotor.setTargetPosition(900);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(0.45);
             ArmExtendMotor.setTargetPosition(-2500);
@@ -69,7 +69,7 @@ public class BucketAutoGood extends InchAutoParent {
             ArmExtendMotor.setDirection(DcMotor.Direction.FORWARD);
             ArmExtendMotor.setPower(1);
 
-            while((ArmExtendMotor.getCurrentPosition()>-2475)||(ArmJointMotor.getCurrentPosition()<550)){
+            while((ArmExtendMotor.getCurrentPosition()>-2475)||(ArmJointMotor.getCurrentPosition()<850)){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -79,8 +79,8 @@ public class BucketAutoGood extends InchAutoParent {
                 telemetry.update();
             }
             InchDrive(18,90,powerlevel*0.75, "Forward");
-            ArmJointMotor.setTargetPosition(790);
-            while((ArmJointMotor.getCurrentPosition()<765)){
+            ArmJointMotor.setTargetPosition(1185);
+            while((ArmJointMotor.getCurrentPosition()<1160)){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -89,15 +89,15 @@ public class BucketAutoGood extends InchAutoParent {
                 telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
                 telemetry.update();
             }
-            ArmJointMotor.setTargetPosition(810);
+            ArmJointMotor.setTargetPosition(1215);
             ArmJointMotor.setPower(0.25);
             TimeUnit.MILLISECONDS.sleep(800);
             OpenClaws();
             TimeUnit.MILLISECONDS.sleep(150);
-            ArmJointMotor.setTargetPosition(500);
+            ArmJointMotor.setTargetPosition(750);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(1);
-            while(ArmJointMotor.getCurrentPosition()>550){
+            while(ArmJointMotor.getCurrentPosition()>825){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -145,7 +145,7 @@ public class BucketAutoGood extends InchAutoParent {
             }
             InchDrive(10,0,powerlevel*0.75, "right");
             //pick it up
-            ArmJointMotor.setTargetPosition(1375);
+            ArmJointMotor.setTargetPosition(2063);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(0.7);
             while(ArmJointMotor.getCurrentPosition()<1000){
@@ -158,7 +158,7 @@ public class BucketAutoGood extends InchAutoParent {
                 telemetry.update();
             }
             ArmJointMotor.setPower(0.35);
-            while(ArmJointMotor.getCurrentPosition()<1350){
+            while(ArmJointMotor.getCurrentPosition()<2038){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -170,7 +170,7 @@ public class BucketAutoGood extends InchAutoParent {
             TimeUnit.MILLISECONDS.sleep(500);
             CloseClaws();
             TimeUnit.MILLISECONDS.sleep(400);
-            ArmJointMotor.setTargetPosition(550);
+            ArmJointMotor.setTargetPosition(825);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(1);
             ArmExtendMotor.setTargetPosition(-2500);
@@ -196,10 +196,10 @@ public class BucketAutoGood extends InchAutoParent {
             InchDrive(2,180,powerlevel,"left");
             InchDrive(11,90,powerlevel,"forward");
 
-            ArmJointMotor.setTargetPosition(775);
+            ArmJointMotor.setTargetPosition(1163);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(0.4);
-            while(ArmJointMotor.getCurrentPosition()<750){
+            while(ArmJointMotor.getCurrentPosition()<1138){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -211,10 +211,10 @@ public class BucketAutoGood extends InchAutoParent {
             //drop the second
             TimeUnit.MILLISECONDS.sleep(750);
             OpenClaws();
-            ArmJointMotor.setTargetPosition(500);
+            ArmJointMotor.setTargetPosition(750);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(1);
-            while(ArmJointMotor.getCurrentPosition()>550){
+            while(ArmJointMotor.getCurrentPosition()>725){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -236,7 +236,7 @@ public class BucketAutoGood extends InchAutoParent {
                 telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
                 telemetry.update();
             }
-            ArmJointMotor.setTargetPosition(50);
+            ArmJointMotor.setTargetPosition(75);
             driverInteruptable(-1800, 1800, -1800, 1800, 0.8, "TURN");
             while(10<=(Math.abs(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)-170))){
                 telemetry.addData("Current Rotation",myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
@@ -248,7 +248,7 @@ public class BucketAutoGood extends InchAutoParent {
             InchDrive(44,180,powerlevel,"Left");
             InchDrive(32,90,powerlevel*1.01,"Back");
             CloseClaws();
-            int pulsepos= ArmJointMotor.getCurrentPosition()+900;
+            int pulsepos= ArmJointMotor.getCurrentPosition()+1350;
             ArmJointMotor.setTargetPosition(pulsepos);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(1);
