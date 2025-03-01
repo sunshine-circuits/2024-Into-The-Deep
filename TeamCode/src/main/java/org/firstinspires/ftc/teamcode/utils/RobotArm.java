@@ -186,36 +186,12 @@ public class RobotArm {
                 hangArmPositionNeedsSet = true;
                 break;
             case BRAKE:
+                hangArm.setPower(power);
                 if (hangArmPositionNeedsSet) {
-                    hangArmPositionTarget=(hangArm.getCurrentPosition());
+                    hangArm.setTargetPosition(hangArm.getCurrentPosition());
                     hangArmPositionNeedsSet = false;
                 }
-                hangArm.setMode(defaultMotorMode);
-                if(hangArmPositionTarget>hangArm.getCurrentPosition()){
-                    if((hangArmPositionTarget-hangArm.getCurrentPosition())<5) {
-                        hangArm.setPower(0);
-                    }else if((hangArmPositionTarget-hangArm.getCurrentPosition())<50) {
-                        hangArm.setPower(-power*0.125);
-                    }else if((hangArmPositionTarget-hangArm.getCurrentPosition())<200) {
-                        hangArm.setPower(-power*0.5);
-                    }else{
-                        hangArm.setPower(-power);
-                    }
-                }else if(hangArmPositionTarget<hangArm.getCurrentPosition()) {
-                    if((hangArm.getCurrentPosition()-hangArmPositionTarget)<5) {
-                        hangArm.setPower(0);
-                    }else if((hangArm.getCurrentPosition()-hangArmPositionTarget)<50) {
-                        hangArm.setPower(power*0.125);
-                    }else if((hangArm.getCurrentPosition()-hangArmPositionTarget)<200) {
-                        hangArm.setPower(power*0.5);
-                    }else{
-                        hangArm.setPower(power);
-                    }
-                }else{
-                    hangArm.setPower(0);
-                }
-
-                //hangArm.setMode(RunMode.RUN_TO_POSITION);
+                hangArm.setMode(RunMode.RUN_TO_POSITION);
                 break;
         }
     }
