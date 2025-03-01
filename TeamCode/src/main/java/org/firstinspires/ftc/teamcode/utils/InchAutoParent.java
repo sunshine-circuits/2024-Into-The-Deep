@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils;
 
+
 import static java.lang.Math.sin;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,7 +10,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.robot.Robot;
 
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 public class InchAutoParent extends LinearOpMode {
     protected DcMotor BLMotor;
@@ -248,6 +253,14 @@ public class InchAutoParent extends LinearOpMode {
 
         telemetry.addData("Disuptable "+telem,"Started");
         telemetry.update();
+        /*
+        Ignore me, this is Ishaan not knowing what the heck this does, so I simplified it.
+        The function sets the target position of all the motors
+        The function then sets the power of all the motors, which in turn makes the motors start running until it hits the target position
+        The function immediately says bye bye so that the motors are still running.
+
+        Yeah I am pretty bad at explaining this stuff.
+         */
     }
     public void InchDrive(double distance, double angle, double pow, String telem){
         double pulses = InchesToPulses(distance);
@@ -265,6 +278,53 @@ public class InchAutoParent extends LinearOpMode {
         driverInteruptable((int)(pulsesInY - pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY - pulsesInX), pow, telem);
         //FR, FL, BR, BL
     }
+    public void InchDriveAprilTags(double distance, double angle, double pow, String telem)
+    {
+        double pulses = InchesToPulses(distance);
+        double diameterOfWheels = 104.0 / 25.4;
+        double pulsesInX = ((Math.cos((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
+        double pulsesInY = ((Math.sin((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
+        driverInteruptable((int)(pulsesInY - pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY - pulsesInX), pow, telem);
+    }
+    /* TODO: If you are Ishaan this is exactly where you put some april tag detection thingies.*/
+    /*
+    Here are my april tag video notes:
+    Quickstart:
+        The two main classes of the april tag stuff are the AprilTagProcessor (which processes images and finds the AprilTags and relevant data.) and the Vision Portal (which feeds the images into the AprilTagProcessor)
+        tagprocessor.getdetections.size() returns the number of AprilTags that the processor detects
+        tagprocessor.getdetections.get(0) sets the current used april tag to the first april tag that the robot detects.
+        tag.ftcPose.x gets the x position of the tag relative tot he bot.
+        you can also get the roll, the pitch, the yaw, the bearing, and the elevation wtih tag.ftcPose
+
+     */
+    public void DriveToCoordinate(double x, double y, double pow, String telem)
+    {
+        double startx = 0;
+        double starty = 0;
+        //record the current x, and the current y as startx and starty
+        DistanceDriveInterruptable(x - startx, y - starty, pow, telem);
+    }
+    public Coordinate getAprilTagPos(AprilTagProcessor tagProcessor, VisionPortal portal) {
+        //this uses the corrdinate system that Josh gave to us. The blue observation zone is (0, 0) and it goes all the way up.
+        //yeah
+        AprilTagDetection tag = null;
+        if (tagProcessor.getDetections().size() > 0)
+        {
+            tag = tagProcessor.getDetections().get(0);
+            double xdistancefromtag = tag.ftcPose.x;
+            double ydistancefromtag = tag.ftcPose.y;
+            double yawfromtag = tag.ftcPose.yaw;
+            Coordinate distcoord = null;
+            distcoord.xPosition = Math.acos(Math.toRadians(yawfromtag)) * xdistancefromtag + Math.asin(Math.toRadians(yawfromtag)) * ydistancefromtag;
+            distcoord.yPosition = Math.asin(Math.toRadians(yawfromtag)) * xdistancefromtag + Math.acos(Math.toRadians(yawfromtag)) * ydistancefromtag;
+            return distcoord;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public void DistanceDrive(double changex, double changey, double pow, String telem){
         //changex is the change in x(inches)
         //changey is the change in y(inches)
@@ -272,6 +332,12 @@ public class InchAutoParent extends LinearOpMode {
         int flbrmovement = (int)(((changey + changex) / circumferenceOfWheels) * 537.7);
         int frblmovement = (int)(((changey - changex) / circumferenceOfWheels) * 537.7);
         driver((int)(frblmovement), (int)(flbrmovement), (int)(flbrmovement), (int)(frblmovement), pow, telem);
+    }
+    public void DistanceDriveInterruptable(double changex, double changey, double pow, String telem){
+        double circumferenceOfWheels = (104.0 / 25.4) * Math.PI;
+        int flbrmovement = (int)(((changey + changex) / circumferenceOfWheels) * 537.7);
+        int frblmovement = (int)(((changey - changex) / circumferenceOfWheels) * 537.7);
+        driverInteruptable((int)(frblmovement), (int)(flbrmovement), (int)(flbrmovement), (int)(frblmovement), pow, telem);
     }
     public void DriveIrrespectiveOfAngle(double RobotAngle, double changex, double changey, double pow, String telem){
         //this drives irrespective of the robot angle with respect to the field

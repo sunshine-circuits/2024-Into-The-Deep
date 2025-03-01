@@ -10,6 +10,8 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.teamcode.utils.InchAutoParent;
+import org.firstinspires.ftc.teamcode.utils.Coordinate;
 
 @TeleOp
 public class AprilTestTeleOp extends LinearOpMode {
@@ -18,6 +20,7 @@ public class AprilTestTeleOp extends LinearOpMode {
     public void runOpMode() throws InterruptedException{
         AprilTagProcessor tagProcessor = new AprilTagProcessor.Builder().setDrawAxes(true).setDrawCubeProjection(true).setDrawTagID(true).setDrawTagOutline(true).setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11).setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()).build();
         VisionPortal visionPortal= new VisionPortal.Builder().addProcessor(tagProcessor).setCamera(hardwareMap.get(WebcamName.class, "Webcam")).setCameraResolution(new Size(640,480)).build();
+
         waitForStart();
         while (!isStopRequested()&&opModeIsActive()){
             if(tagProcessor.getDetections().size()>0){
@@ -30,6 +33,7 @@ public class AprilTestTeleOp extends LinearOpMode {
                         telemetry.addData(i + " roll", tag.ftcPose.roll);
                         telemetry.addData(i + " pitch", tag.ftcPose.pitch);
                         telemetry.addData(i + " yaw", tag.ftcPose.yaw);
+//                        telemetry.addData();
                     } catch (Exception e) {
                         telemetry.addData(i + " x", "NULL");
                         telemetry.addData(i + " y", "NULL");
