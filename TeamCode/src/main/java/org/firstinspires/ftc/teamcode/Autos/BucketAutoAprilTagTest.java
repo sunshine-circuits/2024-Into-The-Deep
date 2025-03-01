@@ -18,7 +18,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.concurrent.TimeUnit;
 
-@Autonomous(name="AutoAprilTagTest")
+@Autonomous(name="BucketAutoAprilTagTest")
 
 public class BucketAutoAprilTagTest extends InchAutoParent {
     @Override
@@ -54,7 +54,7 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
         myIMU = hardwareMap.get(IMU.class,"imu");
 
         waitForStart();
-        IMU.Parameters myIMUParameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT,RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
+        IMU.Parameters myIMUParameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT,RevHubOrientationOnRobot.UsbFacingDirection.UP));
         myIMU.initialize(myIMUParameters);
 
         if (opModeIsActive()) {
@@ -63,7 +63,7 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
 
             ArmJointMotor.setTargetPosition(900);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            ArmJointMotor.setPower(0.45);
+            ArmJointMotor.setPower(0.5);
             ArmExtendMotor.setTargetPosition(-2500);
             ArmExtendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmExtendMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -78,9 +78,10 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
                 telemetry.addData("JointTarg ", ArmJointMotor.getTargetPosition());
                 telemetry.update();
             }
-            InchDrive(18, 90, powerlevel * 0.75, "Forward");
+            DistanceDrive(4,18,powerlevel*0.75,"Forward 18 Right 4");
+            //InchDrive(18.4390889146,90-12.5288077092,powerlevel*0.75, "Forward 18 Right 4");
             ArmJointMotor.setTargetPosition(790);
-            while ((ArmJointMotor.getCurrentPosition() < 765)) {
+            while ((ArmJointMotor.getCurrentPosition() < 750)) {
                 telemetry.addData("ExtendPosition ", ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ", ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ", ArmExtendMotor.getTargetPosition());
@@ -106,11 +107,10 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
                 telemetry.addData("JointTarg ", ArmJointMotor.getTargetPosition());
                 telemetry.update();
             }
-            ArmJointMotor.setPower(0.5);
             ArmExtendMotor.setPower(1);
             ArmExtendMotor.setTargetPosition(100);
-            InchDrive(5, 270, powerlevel * 0.75, "back");
-            InterruptableInchDrive(22.5, 0, powerlevel * 0.75, "right");
+            InchDrive(7, 270, powerlevel, "back");
+            InterruptableInchDrive(16.5, 0, powerlevel * 0.7, "right");
             Headlight.setPosition(1);
             outerloop:
             while (FRMotor.isBusy() || FLMotor.isBusy() || BRMotor.isBusy() || BLMotor.isBusy()) {
@@ -133,11 +133,47 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
                     }
                 }
             }
-            Headlight.setPosition(0);
             driver(0, 0, 0, 0, 1, "Stopping");
+            Headlight.setPosition(0);
+
+            /*
+            telemetry.addData("IMU Yaw", myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            telemetry.update();
+            TimeUnit.SECONDS.sleep(5);
+            // Whoever sees this, I made this code on 2/18, on a tuesday. This is what this code is doing.
+            //This is test code to see if the IMU will adjust before detecting the Apriltags and putting it into a variable.
+            //The code right below it is commented out because I wanted to make the movement more visible, to see if it would work.
+            //1 is turn right, 2 is turn left, 3 is not turn
+
+            int IMUTurnVariable = 3;
+            if (myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)<-5) {
+                driver(500, -500, 500, -500, 0.5, "TurnLeft");
+                IMUTurnVariable = 1;
+            } else if (myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)>1) {
+                driver(-500, 500, -500, 500, 0.5, "TurnRight");
+                IMUTurnVariable = 2;
+            }
+            if (IMUTurnVariable == 1) {
+                while (myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)<-1) {
+                    telemetry.addData("IMU Yaw", myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+                    telemetry.update();
+                }
+            } else if (IMUTurnVariable == 2) {
+                while (myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)>1) {
+                    telemetry.addData("IMU Yaw", myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+                    telemetry.update();
+                }
+            }
+            driver(0, 0, 0, 0, 0.5, "Stopping");
+            //*/
+            double xAprilTag=-3.141592659;
+            double yAprilTag=-3.141592659;
+            // ARPIL TAG STUFF
             for (int i = 0; i < tagProcessor.getDetections().size(); i++) {
                 AprilTagDetection tag = tagProcessor.getDetections().get(i);
                 if (tag.metadata != null) {
+                    xAprilTag = tag.ftcPose.x;
+                    yAprilTag = tag.ftcPose.y;
                     telemetry.addLine(String.format("\n==== (ID %d) %s", tag.id, tag.metadata.name));
                     telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f (inch)", tag.ftcPose.x, tag.ftcPose.y, tag.ftcPose.z));
                     telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f (deg)", tag.ftcPose.pitch, tag.ftcPose.roll, tag.ftcPose.yaw));
@@ -152,8 +188,7 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
                 telemetry.update();
             }
 
-
-            while(Math.abs(ArmExtendMotor.getCurrentPosition())>150){
+            while(Math.abs(ArmExtendMotor.getCurrentPosition())>175){
                 /*
                 telemetry.addData("ExtendPosition ",Math.abs(ArmExtendMotor.getCurrentPosition()));
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
@@ -166,18 +201,23 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
             }
             //turn to the right to try and pick up second sample
             int intcyc=0;
-            driverInteruptable(1300, -1300, 1300, -1300, 0.5, "TURN");
-            while(5<=(Math.abs(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)+87))){
+            driverInteruptable(13000, -13000, 13000, -13000, 0.5, "TURN");
+            while(2<=(Math.abs(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)+88))){
+                /*
                 intcyc++;
                 telemetry.addData("Current Rotation",myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
                 telemetry.addData("Checking for",intcyc+" Cycles.");
                 telemetry.update();
+                */
             }
             driver(0, 0, 0, 0, 1, "Stopping");
-
-            ArmJointMotor.setTargetPosition(2063);
+            telemetry.addData("XAprilTag", xAprilTag);
+            telemetry.addData("YAprilTag", yAprilTag);
+            telemetry.update();
+            InchDrive(xAprilTag+0.75,90,powerlevel*0.8, "move backwards");
+            ArmJointMotor.setTargetPosition(2080);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            ArmJointMotor.setPower(0.7);
+            ArmJointMotor.setPower(0.75);
             while(ArmJointMotor.getCurrentPosition()<1500){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
@@ -188,7 +228,7 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
                 telemetry.update();
             }
             ArmJointMotor.setPower(0.35);
-            while(ArmJointMotor.getCurrentPosition()<2038){
+            while(ArmJointMotor.getCurrentPosition()<2055){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -202,13 +242,12 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
             TimeUnit.MILLISECONDS.sleep(400);
             ArmJointMotor.setTargetPosition(825);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            ArmJointMotor.setPower(1);
-            ArmExtendMotor.setTargetPosition(-2500);
+            ArmJointMotor.setPower(1);ArmExtendMotor.setTargetPosition(-2500);
             ArmExtendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmExtendMotor.setDirection(DcMotor.Direction.FORWARD);
             ArmExtendMotor.setPower(1);
-            InchDrive(9,180,powerlevel*0.75, "left");
-            while((ArmExtendMotor.getCurrentPosition()>-2475)||(ArmJointMotor.getCurrentPosition()>600)){
+            InchDrive(9,180,powerlevel, "left");
+            while((ArmExtendMotor.getCurrentPosition()>-2475)||(ArmJointMotor.getCurrentPosition()<775)){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
                 telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
                 telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
@@ -217,8 +256,66 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
                 telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
                 telemetry.update();
             }
-            
-
+            //turn back to face towards the bucket
+            driverInteruptable(-1700, 1700, -1700, 1700, 0.5, "Turn Around.");
+            while(4<=(Math.abs(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)-45))){
+                telemetry.addData("Current Rotation.",myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+                telemetry.update();
+            }
+            DistanceDrive(7,7,powerlevel,"GETTHEBUCKET");
+            ArmJointMotor.setTargetPosition(1150);
+            ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ArmJointMotor.setPower(0.7);
+            while(ArmJointMotor.getCurrentPosition()<1125){
+                telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
+                telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
+                telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
+                telemetry.addData("JointPosition ",ArmJointMotor.getCurrentPosition());
+                telemetry.addData("JointMode ",ArmJointMotor.getMode());
+                telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
+                telemetry.update();
+            }
+            //drop the second
+            TimeUnit.MILLISECONDS.sleep(750);
+            OpenClaws();
+            ArmJointMotor.setTargetPosition(750);
+            ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ArmJointMotor.setPower(1);
+            while(ArmJointMotor.getCurrentPosition()>725){
+                telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
+                telemetry.addData("ExtendMode ",ArmExtendMotor.getMode());
+                telemetry.addData("ExtendTarg ",ArmExtendMotor.getTargetPosition());
+                telemetry.addData("JointPosition ",ArmJointMotor.getCurrentPosition());
+                telemetry.addData("JointMode ",ArmJointMotor.getMode());
+                telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
+                telemetry.update();
+            }
+            ArmJointMotor.setPower(1);
+            ArmExtendMotor.setPower(1);
+            ArmExtendMotor.setTargetPosition(0);
+            InchDrive(11, 270,powerlevel,"Back");
+            ArmJointMotor.setTargetPosition(75);
+            driverInteruptable(-1800, 1800, -1800, 1800, 0.8, "TURN");
+            while(10<=(Math.abs(myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)-175))){
+                telemetry.addData("Current Rotation",myIMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+                telemetry.update();
+                if ((FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy())==false){
+                    break;
+                }
+            }
+            CloseClaws();
+            InchDrive(40,180,1,"Left");
+            InchDrive(32,90,1,"Back");
+            int pulsepos= ArmJointMotor.getCurrentPosition()+1350;
+            ArmJointMotor.setTargetPosition(pulsepos);
+            ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            ArmJointMotor.setPower(1);
+            while((ArmJointMotor.getCurrentPosition()<pulsepos-30)||(ArmJointMotor.getCurrentPosition()>pulsepos+30)){
+                telemetry.addData("Status","Running...");
+                telemetry.update();
+            }
+            telemetry.addData("Moves","Done");
+            telemetry.update();
         }
     }
 

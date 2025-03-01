@@ -110,6 +110,88 @@ public class InchAutoParent extends LinearOpMode {
 
     }
 
+    public void sloppydriver(int FR, int FL, int BR, int BL, double pow, String telem){
+        int FRtargetpos;
+        int FLtargetpos;
+        int BRtargetpos;
+        int BLtargetpos;
+
+        telemetry.addData("Variables "+telem,"Declared");
+        telemetry.update();
+
+        FRtargetpos=FRMotor.getCurrentPosition()-(FR);
+        FLtargetpos=FLMotor.getCurrentPosition()+(FL);
+        BRtargetpos=BRMotor.getCurrentPosition()-(BR);
+        BLtargetpos=BLMotor.getCurrentPosition()+(BL);
+
+        telemetry.addData("MotorData "+telem,"Snatched");
+        telemetry.update();
+
+        FRMotor.setTargetPosition(FRtargetpos);
+        FLMotor.setTargetPosition(FLtargetpos);
+        BRMotor.setTargetPosition(BRtargetpos);
+        BLMotor.setTargetPosition(BLtargetpos);
+
+        telemetry.addData("TargetPos "+telem,"Declared");
+        telemetry.addData("TargetPosFR ",FRtargetpos);
+        telemetry.addData("TargetPosFL ",FLtargetpos);
+        telemetry.addData("TargetPosBR ",BRtargetpos);
+        telemetry.addData("TargetPosBL ",BLtargetpos);
+        telemetry.update();
+
+        FRMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        FLMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BRMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BLMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        telemetry.addData("Running "+telem,"Happening");
+        telemetry.update();
+
+        FRMotor.setPower(pow);
+        FLMotor.setPower(pow);
+        BRMotor.setPower(pow);
+        BLMotor.setPower(pow);
+
+        telemetry.addData("Power "+telem,"Set");
+        telemetry.update();
+
+        telemetry.addData("While "+telem,"Started");
+        telemetry.update();
+
+        while (opModeIsActive()&&
+                (
+                        FRMotor.isBusy()||FLMotor.isBusy()||BRMotor.isBusy()||BLMotor.isBusy()
+                )
+        )
+        {
+            telemetry.addData(telem+" CurrentPosFR",FRMotor.getCurrentPosition());
+            telemetry.addData(telem+" CurrentPosFL",FLMotor.getCurrentPosition());
+            telemetry.addData(telem+" CurrentPosBR",BRMotor.getCurrentPosition());
+            telemetry.addData(telem+" CurrentPosBL",BLMotor.getCurrentPosition());
+
+            telemetry.addData(telem+" TargetPosFR ",FRtargetpos);
+            telemetry.addData(telem+" TargetPosFL ",FLtargetpos);
+            telemetry.addData(telem+" TargetPosBR ",BRtargetpos);
+            telemetry.addData(telem+" TargetPosBL ",BLtargetpos);
+            telemetry.update();
+            if((10<=Math.abs(FRMotor.getCurrentPosition()-FRtargetpos))&&(10<=Math.abs(FLMotor.getCurrentPosition()-FLtargetpos))&&(10<=Math.abs(BRMotor.getCurrentPosition()-BRtargetpos))&&(10<=Math.abs(BLMotor.getCurrentPosition()-BLtargetpos))){
+
+            }
+        }
+
+        telemetry.addData("While "+telem,"Done");
+        telemetry.update();
+
+        FRMotor.setPower(0);
+        FLMotor.setPower(0);
+        BRMotor.setPower(0);
+        BLMotor.setPower(0);
+
+        telemetry.addData("Power","Zero");
+        telemetry.update();
+
+    }
+
     public void OrientedDriver(int FR, int FL, int BR, int BL, double pow, String telem){
         myIMU.resetYaw();
         int FRtargetpos;
@@ -459,12 +541,12 @@ public class InchAutoParent extends LinearOpMode {
         setClawPosition(position, this.LeftServo);
     }
     protected void CloseClaws() {
-        setRightClawPosition(0.485);
-        setLeftClawPosition(0.515);
+        setRightClawPosition(0.56);
+        setLeftClawPosition(0.44);
     }
     protected void OpenClaws() {
-        setRightClawPosition(0.57);
-        setLeftClawPosition(0.43);
+        setRightClawPosition(0.49);
+        setLeftClawPosition(0.51);
     }
 
     @Override

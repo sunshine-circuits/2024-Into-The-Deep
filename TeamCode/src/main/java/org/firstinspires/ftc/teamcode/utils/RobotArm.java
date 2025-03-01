@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class RobotArm {
     public DcMotor armJoint;
     public DcMotor armExtend;
+    public DcMotor hangArm;
     public Servo rightClaw;
     public Servo leftClaw;
     public Servo headlight;
@@ -27,7 +28,6 @@ public class RobotArm {
     boolean armJointPositionNeedsSet=true;
     boolean armExtendPositionNeedsSet = true;
     boolean hangArmPositionNeedsSet=true;
-    //this RunMode is the runmode motors are set to when they are first initialized.
     public RunMode defaultMotorMode;
     public double PowerDecrease = 0.25;
 
@@ -42,6 +42,7 @@ public class RobotArm {
     public RobotArm(RobotConfig.Config config) {
         this.armJoint = (DcMotor)config.get("ArmJointMotor");
         this.armExtend = (DcMotor)config.get("ArmExtendMotor");
+        this.hangArm = (DcMotor)config.get("hangArm");
         this.rightClaw = (Servo)config.get("RightServo");
         this.leftClaw = (Servo)config.get("LeftServo");
         this.headlight = (Servo)config.get("Headlight");
@@ -51,12 +52,16 @@ public class RobotArm {
         this.headlight.setPosition(0.001);
         defaultMotorMode=armExtend.getMode();
 
+
         armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armJoint.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hangArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         armExtend.setMode(RunMode.STOP_AND_RESET_ENCODER);
         armExtend.setMode(defaultMotorMode);
         armJoint.setMode(RunMode.STOP_AND_RESET_ENCODER);
         armJoint.setMode(defaultMotorMode);
+        hangArm.setMode(RunMode.STOP_AND_RESET_ENCODER);
+        hangArm.setMode(defaultMotorMode);
     }
 
     //this double contains the number of pulses the encoder runs to move one rotation
@@ -168,6 +173,28 @@ public class RobotArm {
         }
     }
 
+    public void rotateHangArm(Direction direction, double power) {
+        switch (direction) {
+            case COUNTER_CLOCKWISE:
+                hangArm.setMode(defaultMotorMode);
+                hangArm.setPower(power);
+                hangArmPositionNeedsSet = true;
+                break;
+            case CLOCKWISE:
+                hangArm.setMode(defaultMotorMode);
+                hangArm.setPower(-power);
+                hangArmPositionNeedsSet = true;
+                break;
+            case BRAKE:
+                hangArm.setPower(power);
+                if (hangArmPositionNeedsSet) {
+                    hangArm.setTargetPosition(hangArm.getCurrentPosition());
+                    hangArmPositionNeedsSet = false;
+                }
+                hangArm.setMode(RunMode.RUN_TO_POSITION);
+                break;
+        }
+    }
 
     //this method accepts a double from 0 to 1 and a Servo. it then rotates to that double's 'position' on the Servo
     //the 'position' of a double the Servo can be understood as the fraction of the servo's maximum clockwise rotation that it's current clockwise rotation represents, where 0 is it's maximum counterclockwise rotation and 1 is it's maximum clockwise rotation
@@ -186,7 +213,7 @@ public class RobotArm {
     public void ArmUpMacro(){
         armJoint.setTargetPosition(1085);
         armExtend.setDirection(DcMotorSimple.Direction.FORWARD);
-        armExtend.setTargetPosition(-3025);
+        armExtend.setTargetPosition(-2900);
         armJoint.setMode(RunMode.RUN_TO_POSITION);
         armJoint.setPower(1);
         armExtend.setMode(RunMode.RUN_TO_POSITION);

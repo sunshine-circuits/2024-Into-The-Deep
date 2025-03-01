@@ -78,7 +78,7 @@ public class BucketAutoGood extends InchAutoParent {
                 telemetry.addData("JointTarg ",ArmJointMotor.getTargetPosition());
                 telemetry.update();
             }
-            InchDrive(18,90,powerlevel*0.75, "Forward");
+            InchDrive(18.1107703763,96.3401917459,powerlevel*0.75, "Forward 18 Right 2");
             ArmJointMotor.setTargetPosition(1185);
             while((ArmJointMotor.getCurrentPosition()<1160)){
                 telemetry.addData("ExtendPosition ",ArmExtendMotor.getCurrentPosition());
@@ -94,6 +94,7 @@ public class BucketAutoGood extends InchAutoParent {
             TimeUnit.MILLISECONDS.sleep(800);
             OpenClaws();
             TimeUnit.MILLISECONDS.sleep(150);
+            /*
             ArmJointMotor.setTargetPosition(750);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(1);
@@ -110,7 +111,7 @@ public class BucketAutoGood extends InchAutoParent {
             ArmExtendMotor.setPower(1);
             ArmExtendMotor.setTargetPosition(100);
             InchDrive(10,270,powerlevel*0.75, "back");
-            InchDrive(22.5,0,powerlevel*0.75, "right");
+            InchDrive(20.5,0,powerlevel*0.75, "right");
             driverInteruptable(100,-100,-100,100,powerlevel, "Interuptable left");
             Headlight.setPosition(1);
             outerloop:
