@@ -304,8 +304,8 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
                 }
             }
             CloseClaws();
-            InchDrive(40,180,1,"Left");
-            InchDrive(32,90,1,"Back");
+            SloppyInchDrive(40,180,1,"Left");
+            SloppyInchDrive(32,90,1,"Back");
             int pulsepos= ArmJointMotor.getCurrentPosition()+1350;
             ArmJointMotor.setTargetPosition(pulsepos);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);

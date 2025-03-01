@@ -205,7 +205,7 @@ public class ExampleTeleOp extends OpMode {
         }
 
         telemetry.addData("-----------------------------", "");
-        telemetry.addData("Hang Arm Target Position", arm.hangArmPositionTarget);
+        telemetry.addData("Hang Arm Target Position", arm.hangArm.getCurrentPosition());
         telemetry.addData("Hang Arm Current Position", arm.hangArm.getCurrentPosition());
         if (keybind.poll("hang_right")) {
             arm.rotateHangArm(RobotArm.Direction.COUNTER_CLOCKWISE, 1);

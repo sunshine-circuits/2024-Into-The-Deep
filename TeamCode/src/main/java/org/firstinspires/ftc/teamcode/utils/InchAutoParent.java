@@ -170,7 +170,7 @@ public class InchAutoParent extends LinearOpMode {
             telemetry.addData(telem+" TargetPosBL ",BLtargetpos);
             telemetry.update();
             if((10<=Math.abs(FRMotor.getCurrentPosition()-FRtargetpos))&&(10<=Math.abs(FLMotor.getCurrentPosition()-FLtargetpos))&&(10<=Math.abs(BRMotor.getCurrentPosition()-BRtargetpos))&&(10<=Math.abs(BLMotor.getCurrentPosition()-BLtargetpos))){
-
+                break;
             }
         }
 
@@ -337,6 +337,14 @@ public class InchAutoParent extends LinearOpMode {
         double pulsesInX = ((Math.cos((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
         double pulsesInY = ((Math.sin((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
         driver((int)(pulsesInY - pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY - pulsesInX), pow, telem);
+        //FR, FL, BR, BL
+    }
+    public void SloppyInchDrive(double distance, double angle, double pow, String telem){
+        double pulses = InchesToPulses(distance);
+        double diameterOfWheels = 104.0 / 25.4;
+        double pulsesInX = ((Math.cos((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
+        double pulsesInY = ((Math.sin((angle*Math.PI)/180.0) * distance) / (Math.PI * diameterOfWheels)) * 537.7;
+        sloppydriver((int)(pulsesInY - pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY + pulsesInX), (int)(pulsesInY - pulsesInX), pow, telem);
         //FR, FL, BR, BL
     }
     public void InterruptableInchDrive(double distance, double angle, double pow, String telem){
