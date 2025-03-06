@@ -86,15 +86,24 @@ public class InchAutoParent extends LinearOpMode {
         )
         {
             telemetry.addData(telem+" CurrentPosFR",FRMotor.getCurrentPosition());
-            telemetry.addData(telem+" CurrentPosFL",FLMotor.getCurrentPosition());
-            telemetry.addData(telem+" CurrentPosBR",BRMotor.getCurrentPosition());
-            telemetry.addData(telem+" CurrentPosBL",BLMotor.getCurrentPosition());
-
             telemetry.addData(telem+" TargetPosFR ",FRtargetpos);
+            telemetry.addData(telem+" CurrentPosFL",FLMotor.getCurrentPosition());
             telemetry.addData(telem+" TargetPosFL ",FLtargetpos);
+            telemetry.addData(telem+" CurrentPosBR",BRMotor.getCurrentPosition());
             telemetry.addData(telem+" TargetPosBR ",BRtargetpos);
+            telemetry.addData(telem+" CurrentPosBL",BLMotor.getCurrentPosition());
             telemetry.addData(telem+" TargetPosBL ",BLtargetpos);
+
             telemetry.update();
+            if((20>=Math.abs(FRMotor.getCurrentPosition()-FRtargetpos))&&(20>=Math.abs(FLMotor.getCurrentPosition()-FLtargetpos))&&(20>=Math.abs(BRMotor.getCurrentPosition()-BRtargetpos))&&(20>=Math.abs(BLMotor.getCurrentPosition()-BLtargetpos))){
+                FRMotor.setPower(1);
+                FLMotor.setPower(1);
+                BRMotor.setPower(1);
+                BLMotor.setPower(1);
+            }
+            if((5>=Math.abs(FRMotor.getCurrentPosition()-FRtargetpos))&&(5>=Math.abs(FLMotor.getCurrentPosition()-FLtargetpos))&&(5>=Math.abs(BRMotor.getCurrentPosition()-BRtargetpos))&&(5>=Math.abs(BLMotor.getCurrentPosition()-BLtargetpos))){
+                break;
+            }
         }
 
         telemetry.addData("While "+telem,"Done");
@@ -174,7 +183,7 @@ public class InchAutoParent extends LinearOpMode {
             telemetry.addData(telem+" TargetPosBR ",BRtargetpos);
             telemetry.addData(telem+" TargetPosBL ",BLtargetpos);
             telemetry.update();
-            if((10<=Math.abs(FRMotor.getCurrentPosition()-FRtargetpos))&&(10<=Math.abs(FLMotor.getCurrentPosition()-FLtargetpos))&&(10<=Math.abs(BRMotor.getCurrentPosition()-BRtargetpos))&&(10<=Math.abs(BLMotor.getCurrentPosition()-BLtargetpos))){
+            if((20>=Math.abs(FRMotor.getCurrentPosition()-FRtargetpos))&&(20>=Math.abs(FLMotor.getCurrentPosition()-FLtargetpos))&&(20>=Math.abs(BRMotor.getCurrentPosition()-BRtargetpos))&&(20>=Math.abs(BLMotor.getCurrentPosition()-BLtargetpos))){
                 break;
             }
         }
