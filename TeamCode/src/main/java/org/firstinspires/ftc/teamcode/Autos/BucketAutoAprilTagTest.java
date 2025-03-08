@@ -183,7 +183,7 @@ public class BucketAutoAprilTagTest extends InchAutoParent {
             telemetry.addData("XAprilTag", xAprilTag);
             telemetry.addData("YAprilTag", yAprilTag);
             telemetry.update();
-            InchDrive(xAprilTag+1,90,powerlevel*0.8, "move backwards");
+            InchDrive(xAprilTag+1.5,90,powerlevel*0.5, "move backwards");
             ArmJointMotor.setTargetPosition(2080);
             ArmJointMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             ArmJointMotor.setPower(0.75);
